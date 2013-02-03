@@ -1,0 +1,83 @@
+#ifndef __ALLOCATOR_H__
+#define __ALLOCATOR_H__
+
+#ifdef _DEBUG
+
+#	include <cstdio>
+#	include <string>
+#	include <vector>
+#	include <map>
+
+namespace sb
+{
+	class _Allocator
+	{
+	public:
+		struct AllocData {
+			size_t bytes;
+			size_t fileId;
+			int line;
+
+			AllocData(): bytes((size_t)0), fileId((size_t)-1), line(-1) {}
+			AllocData(size_t bytes, size_t fileId, int line): bytes(bytes), fileId(fileId), line(line) {}
+		};
+
+		static std::vector<std::wstring>		mFileNames;
+		static std::map<void*, AllocData>	mAllocations;
+		static unsigned long long			mTotalAllocated, mTotalFreed;
+		static bool mIsAlive;
+	
+		// _Allocator is only an interface!
+		_Allocator() {}
+		~_Allocator() { mIsAlive = false; }
+
+		static size_t GetFileNameId(const std::wstring& file);
+
+	public:
+		static void* malloc(size_t size, const wchar_t* file, int line);
+		static void free(void* p);
+
+		static void PrintMemleakReport(const wchar_t* file = NULL);
+	};
+} // namespace sb
+
+	// global operators
+	void* operator new(size_t size, const wchar_t* file, int line);
+	void* operator new[](size_t size, const wchar_t* file, int line);
+	void operator delete(void* p, const wchar_t* file, int line);
+	void operator delete[](void* p, const wchar_t* file, int line);
+	void operator delete(void* p);
+	void operator delete[](void* p);
+
+//	TODO: some magic to allow placement new
+#	ifndef DONT_TOUCH_NEW_MACRO
+#		if !defined(TEXT)
+#			define __TEXT(x)			L ## x
+#			define TEXT(x)				__TEXT(x)
+#		endif //!defined(TEXT)
+#		define new					new(TEXT(__FILE__), __LINE__)
+#		define malloc(size)			sb::_Allocator::malloc(size, TEXT(__FILE__), __LINE__)
+#	endif
+#	define PRINT_MEMLEAK_REPORT(foo)		sb::_Allocator::PrintMemleakReport(foo)
+
+#else
+
+namespace sb
+{
+	// dummy class stub for compatibility in release builds
+	class _Allocator
+	{
+	public:
+		static void PrintMemleakReport(const wchar_t* foo)
+		{
+		}
+	};
+} // namespace sb
+
+#	define PRINT_MEMLEAK_REPORT(foo)		sb::_Allocator::PrintMemleakReport(foo)
+
+#endif //_DEBUG
+
+#define OWN_ALLOC	public sb::_Allocator
+
+#endif //__ALLOCATOR_H__

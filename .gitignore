@@ -1,0 +1,21 @@
+#######################
+# MSVC-generated files
+#######################
+Debug
+Release
+ipch
+sandbox.sdf
+sandbox.opensdf
+sandbox.suo
+sandbox/Debug
+sandbox/Release
+sandbox/sandbox.vcxproj.*
+
+########
+# Other
+########
+sandbox/*.zip
+sandbox/extlibs
+sandbox/unused-gfx
+*.o
+*.d

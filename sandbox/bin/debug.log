@@ -1,0 +1,2521 @@
+[INFO] creating GL context...
+[INFO] initializing GLEW...
+[INFO] checking GL functions availability
+[INFO] glGenVertexArrays 	OK
+[INFO] glDeleteVertexArrays 	OK
+[INFO] glBindVertexArray 	OK
+[INFO] glGetVertexAttribiv 	OK
+[INFO] glVertexAttribPointer 	OK
+[INFO] glBindAttribLocation 	OK
+[INFO] glEnableVertexAttribArray 	OK
+[INFO] glDisableVertexAttribArray 	OK
+[INFO] glGenBuffers 	OK
+[INFO] glDeleteBuffers 	OK
+[INFO] glBindBuffer 	OK
+[INFO] glCopyBufferSubData 	OK
+[INFO] glBufferSubData 	OK
+[INFO] glGetBufferParameteriv 	OK
+[INFO] glActiveTexture 	OK
+[INFO] glGenerateMipmap 	OK
+[INFO] glGenerateMipmapEXT 	OK
+[INFO] glDrawElements 	OK
+[INFO] glUseProgram 	OK
+[INFO] glCreateProgram 	OK
+[INFO] glLinkProgram 	OK
+[INFO] glDeleteProgram 	OK
+[INFO] glCreateShader 	OK
+[INFO] glShaderSource 	OK
+[INFO] glCompileShader 	OK
+[INFO] glAttachShader 	OK
+[INFO] glDeleteShader 	OK
+[INFO] glDrawElements 	OK
+[INFO] glUniform1iv 	OK
+[INFO] glUniform1fv 	OK
+[INFO] glUniform2fv 	OK
+[INFO] glUniform3fv 	OK
+[INFO] glUniform4fv 	OK
+[INFO] glUniformMatrix4fv 	OK
+[INFO] initializing shaders...
+[INFO] loading shader: proj_texture.vert, texture.frag, (no geometry shader)
+[INFO] max texture size: 16384
+[INFO] creating shared vertex buffer
+[INFO] adding 2 elements to shared buffer
+[INFO] using offset 0
+[INFO] loading texture default.png
+[INFO] adding 4 elements to shared buffer
+[INFO] using offset 2
+[INFO] loading shader: proj_color.vert, color.frag, (no geometry shader)
+[INFO] loading shader: proj_texture.vert, color.frag, point_sprite.geom
+[INFO] compiling vertex shader...
+[INFO] compiling fragment shader...
+[INFO] linking shader program...
+[INFO] compiling vertex shader...
+[INFO] compiling fragment shader...
+[INFO] linking shader program...
+[INFO] compiling vertex shader...
+[INFO] compiling fragment shader...
+[INFO] linking shader program...
+[INFO] initializing font bitmaps...
+[INFO] creating shared vertex buffer
+[INFO] loading texture error.png
+[INFO] loading texture fire.png
+[INFO] loading texture water.png
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 20 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 20 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 40 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 40 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 60 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 60 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 80 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 80 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 100 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 100 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 120 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 120 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 180 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 180 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 200 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 200 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 200 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 200 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 200 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 200 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 200 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 200 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 200 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 200 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 200 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 200 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 200 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 200 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 200 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 200 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 200 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 200 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 200 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 200 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 220 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 220 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 140 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 140 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] adding 160 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 160 elements at offset 0
+[INFO] adding 240 elements to shared buffer
+[INFO] using offset 0
+[INFO] releasing 240 elements at offset 0
+[INFO] all shaders freed
+[INFO] releasing 2 elements at offset 0
+[INFO] releasing 4 elements at offset 2
+[INFO] all resources freed
+[INFO] GL context deleted
