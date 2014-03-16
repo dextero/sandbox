@@ -6,14 +6,14 @@
 
 namespace sb
 {
-	class Model: public Drawable
-	{
-	public:
-		Model();
-		Model(const std::wstring& path);
-	
-		bool LoadFromFile(const std::wstring& path);
-	};
+    class Model: public Drawable
+    {
+    public:
+        Model();
+        Model(const std::wstring& path);
+
+        bool LoadFromFile(const std::wstring& path);
+    };
 } // namespace sb
-	
+
 #endif //MODEL_H

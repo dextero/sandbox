@@ -6,14 +6,14 @@
 
 namespace sb
 {
-	class Sprite: public Drawable
-	{
-	public:
-		Sprite();
-		Sprite(const std::wstring& image);
+    class Sprite: public Drawable
+    {
+    public:
+        Sprite();
+        Sprite(const std::wstring& image);
 
-		void SetImage(const std::wstring& image);
-	};
+        void SetImage(const std::wstring& image);
+    };
 } // namespace sb
 
 #endif //SPRITE_H

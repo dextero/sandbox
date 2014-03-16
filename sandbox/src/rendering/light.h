@@ -6,21 +6,21 @@
 
 namespace sb
 {
-	class Light
-	{
-	public:
-		Vec3 mPos;
-		Color mColor;
-		float mIntensity;
-	
-		enum ELightType {
-			LightAmbient,
-			LightPoint,
-			LightParallel
-		} mType;
-	
-		Light(ELightType type, Color color, Vec3 posOrDir, float intensity);
-	};
+    class Light
+    {
+    public:
+        Vec3 mPos;
+        Color mColor;
+        float mIntensity;
+
+        enum ELightType {
+            LightAmbient,
+            LightPoint,
+            LightParallel
+        } mType;
+
+        Light(ELightType type, Color color, Vec3 posOrDir, float intensity);
+    };
 } // namespace sb
-	
+
 #endif // LIGHT_H

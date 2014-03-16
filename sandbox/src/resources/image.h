@@ -8,19 +8,19 @@
 
 namespace sb
 {
-	class Image
-	{
-		ILuint mId;
-	public:
-		Image();
-		Image(const std::wstring& file);
-	
-		bool LoadFromFile(const std::wstring& file);
-	
-		uint GetWidth();
-		uint GetHeight();
-		void* GetData();
-	};
+    class Image
+    {
+        ILuint mId;
+    public:
+        Image();
+        Image(const std::wstring& file);
+
+        bool LoadFromFile(const std::wstring& file);
+
+        uint GetWidth();
+        uint GetHeight();
+        void* GetData();
+    };
 } // namespace sb
-	
+
 #endif //IMAGE_H

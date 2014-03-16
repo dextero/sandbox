@@ -8,18 +8,18 @@
 
 namespace sb
 {
-	class Timer
-	{
-	private:
-		LARGE_INTEGER mFrequency, mTimeStart;
-	
-	public:
-		Timer();
-	
-		void Reset();
-		float GetSecsElapsed();
-		unsigned long long GetMillisecsElapsed();
-	};
+    class Timer
+    {
+    private:
+        LARGE_INTEGER mFrequency, mTimeStart;
+
+    public:
+        Timer();
+
+        void Reset();
+        float GetSecsElapsed();
+        unsigned long long GetMillisecsElapsed();
+    };
 } // namespace sb
 
 #endif //TIMER_H

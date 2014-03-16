@@ -31,9 +31,9 @@ template<typename T> hash_t make_hash(const T &elem)
 
 template<typename T> hash_t make_hash(const T *array, size_t size)
 {
-	hash_t *buf = new hash_t[size / sizeof(hash_t) + 1];
+    hash_t *buf = new hash_t[size / sizeof(hash_t) + 1];
     memcpy(buf, array, size);
-	size /= sizeof(hash_t);
+    size /= sizeof(hash_t);
 
     hash_t hash = buf[0];
     for (size_t i = 1; i < size; ++i)
@@ -42,7 +42,7 @@ template<typename T> hash_t make_hash(const T *array, size_t size)
         hash ^= (hash << 16) ^ (buf[i] << 11);
     }
 
-	delete[] buf;
+    delete[] buf;
 
     hash ^= hash << 3;
     hash += hash >> 5;
@@ -56,7 +56,7 @@ template<typename T> hash_t make_hash(const T *array, size_t size)
 
 template<> hash_t make_hash<std::string>(const std::string& elem)
 {
-	return make_hash(elem.c_str(), elem.size());
+    return make_hash(elem.c_str(), elem.size());
 }
 
 template<typename Key, typename Value> class hash_map
@@ -72,7 +72,7 @@ template<typename Key, typename Value> class hash_map
         Tree(hash_t key_hash, const Value& val, Tree *parent, Tree *left, Tree *right):
             key_hash(key_hash),
             value(val),
-			parent(parent),
+            parent(parent),
             left(left),
             right(right)
         {}
@@ -80,10 +80,10 @@ template<typename Key, typename Value> class hash_map
         ~Tree()
         {
             if (left)
-				delete left;
-			if (right)
-				delete right;
-			printf("deleting\n");
+                delete left;
+            if (right)
+                delete right;
+            printf("deleting\n");
         }
 
         Tree* copy()
@@ -95,123 +95,123 @@ template<typename Key, typename Value> class hash_map
                 ret->right = right->copy();
         }
 
-		void orphan()
-		{
-			left = right = parent = NULL;
-		}
+        void orphan()
+        {
+            left = right = parent = NULL;
+        }
     };
 
 public:
-	
-	class iterator
-	{
-		Tree *mNode;
 
-	public:
-		iterator(): mNode(NULL) {};
-		explicit iterator(Tree* node): mNode(node) {}
+    class iterator
+    {
+        Tree *mNode;
 
-		bool valid() const { return mNode != NULL; }
+    public:
+        iterator(): mNode(NULL) {};
+        explicit iterator(Tree* node): mNode(node) {}
 
-		iterator& operator ++()
-		{
-			assert(mNode);
+        bool valid() const { return mNode != NULL; }
 
-			if (mNode->right)
-			{
-				mNode = mNode->right;
-				while (mNode->left)
-					mNode = mNode->left;
-			}
-			else
-			{
-				hash_t hash = mNode->key_hash;
+        iterator& operator ++()
+        {
+            assert(mNode);
 
-				mNode = mNode->parent;
-				while (mNode && mNode->key_hash <= hash)
-				{
-					Tree* right = mNode->right;
-					while (right && right->key_hash <= hash)
-						right = right->right;
+            if (mNode->right)
+            {
+                mNode = mNode->right;
+                while (mNode->left)
+                    mNode = mNode->left;
+            }
+            else
+            {
+                hash_t hash = mNode->key_hash;
 
-					if (right)
-					{
-						mNode = right;
-						break;
-					}
+                mNode = mNode->parent;
+                while (mNode && mNode->key_hash <= hash)
+                {
+                    Tree* right = mNode->right;
+                    while (right && right->key_hash <= hash)
+                        right = right->right;
 
-					mNode = mNode->parent;
-				}
-			}
+                    if (right)
+                    {
+                        mNode = right;
+                        break;
+                    }
 
-			return *this;
-		}
+                    mNode = mNode->parent;
+                }
+            }
 
-		iterator operator ++(int) const
-		{
-			return ++iterator(*this);
-		}
+            return *this;
+        }
 
-		iterator& operator --()
-		{
-			assert(mNode);
+        iterator operator ++(int) const
+        {
+            return ++iterator(*this);
+        }
 
-			if (mNode->left)
-			{
-				mNode = mNode->left;
-				while (mNode->right)
-					mNode = mNode->right;
-			}
-			else
-			{
-				hash_t hash = mNode->key_hash;
+        iterator& operator --()
+        {
+            assert(mNode);
 
-				mNode = mNode->parent;
-				while (mNode && mNode->key_hash >= hash)
-				{
-					Tree* left = mNode->left;
-					while (left && left->key_hash >= hash)
-						left = left->left;
+            if (mNode->left)
+            {
+                mNode = mNode->left;
+                while (mNode->right)
+                    mNode = mNode->right;
+            }
+            else
+            {
+                hash_t hash = mNode->key_hash;
 
-					if (left)
-					{
-						mNode = left;
-						break;
-					}
-					
-					mNode = mNode->parent;
-				}
-			}
+                mNode = mNode->parent;
+                while (mNode && mNode->key_hash >= hash)
+                {
+                    Tree* left = mNode->left;
+                    while (left && left->key_hash >= hash)
+                        left = left->left;
 
-			return *this;
-		}
+                    if (left)
+                    {
+                        mNode = left;
+                        break;
+                    }
 
-		iterator operator --(int) const
-		{
-			return --iterator(*this);
-		}
+                    mNode = mNode->parent;
+                }
+            }
 
-		Value& operator *() const
-		{
-			assert(mNode);
+            return *this;
+        }
 
-			return mNode->value;
-		}
+        iterator operator --(int) const
+        {
+            return --iterator(*this);
+        }
 
-		bool operator ==(const iterator& it) const { return mNode == it.mNode; }
-		bool operator !=(const iterator& it) const { return mNode != it.mNode; }
+        Value& operator *() const
+        {
+            assert(mNode);
 
-		friend class hash_map<Key, Value>;
-	};
+            return mNode->value;
+        }
+
+        bool operator ==(const iterator& it) const { return mNode == it.mNode; }
+        bool operator !=(const iterator& it) const { return mNode != it.mNode; }
+
+        friend class hash_map<Key, Value>;
+    };
 
 private:
 
     Tree *mRoot;
     size_t mSize;
-	iterator mBegin, mRBegin;
+    iterator mBegin, mRBegin;
 
 public:
-	
+
     hash_map(): mRoot(NULL), mSize(0) {}
     hash_map(const hash_map &copy)
     {
@@ -226,7 +226,7 @@ public:
     virtual ~hash_map()
     {
         if (mRoot)
-			delete mRoot;
+            delete mRoot;
     }
 
     iterator insert(const Key& key, const Value& val)
@@ -234,117 +234,117 @@ public:
         hash_t hash = make_hash(key);
 
         if (!mRoot)
-		{
-			++mSize;
-			mRoot = new Tree(hash, val, NULL, NULL, NULL);
-			return iterator(mRoot);
-		}
+        {
+            ++mSize;
+            mRoot = new Tree(hash, val, NULL, NULL, NULL);
+            return iterator(mRoot);
+        }
         else
         {
             Tree* curr = mRoot;
             while (true)
             {
                 if (curr->key_hash == hash)
-				{
-					curr->value = val;
+                {
+                    curr->value = val;
                     return iterator(curr);
-				}
-				
+                }
+
                 if (curr->key_hash < hash)
                 {
                     if (curr->right)
                         curr = curr->right;
                     else
-					{
-						curr->right = new Tree(hash, val, curr, NULL, NULL);
-						if (!mRBegin.mNode || hash > mRBegin.mNode->key_hash)
-							mRBegin = iterator(curr->right);
-						++mSize;
-						return iterator(curr->right);
-					}
+                    {
+                        curr->right = new Tree(hash, val, curr, NULL, NULL);
+                        if (!mRBegin.mNode || hash > mRBegin.mNode->key_hash)
+                            mRBegin = iterator(curr->right);
+                        ++mSize;
+                        return iterator(curr->right);
+                    }
                 }
                 else
                 {
                     if (curr->left)
                         curr = curr->left;
                     else
-					{
-						curr->left = new Tree(hash, val, curr, NULL, NULL);
-						if (!mBegin.mNode || hash < mBegin.mNode->key_hash)
-							mBegin = iterator(curr->left);
-						++mSize;
-						return iterator(curr->right);
-					}
+                    {
+                        curr->left = new Tree(hash, val, curr, NULL, NULL);
+                        if (!mBegin.mNode || hash < mBegin.mNode->key_hash)
+                            mBegin = iterator(curr->left);
+                        ++mSize;
+                        return iterator(curr->right);
+                    }
                 }
             }
         }
     }
 
-	iterator erase(const iterator& where)
-	{
-		assert(where.valid());
+    iterator erase(const iterator& where)
+    {
+        assert(where.valid());
 
-		iterator ret(where);
-		++ret;
+        iterator ret(where);
+        ++ret;
 
-		Tree **curr = where.mNode->parent ?
-						(where.mNode->parent->left == where.mNode ? &where.mNode->parent->left : &where.mNode->parent->right) :
-						&mRoot;
+        Tree **curr = where.mNode->parent ?
+                        (where.mNode->parent->left == where.mNode ? &where.mNode->parent->left : &where.mNode->parent->right) :
+                        &mRoot;
 
-		if ((*curr)->right)
-		{
-			Tree *right = (*curr)->right;
+        if ((*curr)->right)
+        {
+            Tree *right = (*curr)->right;
 
-			if (right->left)
-			{
-				Tree **rightmost = &((*curr)->left);
-				if (*rightmost)
-				{
-					while ((*rightmost)->right)
-						rightmost = &((*rightmost)->right);
+            if (right->left)
+            {
+                Tree **rightmost = &((*curr)->left);
+                if (*rightmost)
+                {
+                    while ((*rightmost)->right)
+                        rightmost = &((*rightmost)->right);
 
-					right->left->parent = *rightmost;
-					(*rightmost)->right = right->left;
-					right->left = NULL;
-				}
-			}
-			else
-			{
-				if (mRBegin.mNode == *curr)
-					mRBegin.mNode = (*curr)->parent;
-			}
+                    right->left->parent = *rightmost;
+                    (*rightmost)->right = right->left;
+                    right->left = NULL;
+                }
+            }
+            else
+            {
+                if (mRBegin.mNode == *curr)
+                    mRBegin.mNode = (*curr)->parent;
+            }
 
-			right->parent = (*curr)->parent;
-			right->left = (*curr)->left;
-			if ((*curr)->left)
-				((*curr)->left->parent) = right;
+            right->parent = (*curr)->parent;
+            right->left = (*curr)->left;
+            if ((*curr)->left)
+                ((*curr)->left->parent) = right;
 
-			(*curr)->orphan();
-			delete (*curr);
-			*curr = right;
-			--mSize;
+            (*curr)->orphan();
+            delete (*curr);
+            *curr = right;
+            --mSize;
 
-			return ret;
-		}
-		else
-		{
-			Tree *left = (*curr)->left;
-			if (left)
-				left->parent = (*curr)->parent;
-			else
-				if (mBegin.mNode == *curr)
-					mBegin.mNode = (*curr)->parent;
+            return ret;
+        }
+        else
+        {
+            Tree *left = (*curr)->left;
+            if (left)
+                left->parent = (*curr)->parent;
+            else
+                if (mBegin.mNode == *curr)
+                    mBegin.mNode = (*curr)->parent;
 
-			(*curr)->orphan();
-			delete (*curr);
-			*curr = left;
-			--mSize;
+            (*curr)->orphan();
+            delete (*curr);
+            *curr = left;
+            --mSize;
 
-			return ret;
-		}
+            return ret;
+        }
 
-		return ret;
-	}
+        return ret;
+    }
 
     bool erase(const Key& key)
     {
@@ -370,21 +370,21 @@ public:
 
                                 right->left->parent = *rightmost;
                                 (*rightmost)->right = right->left;
-								right->left = NULL;
+                                right->left = NULL;
                             }
                         }
-						else
-						{
-							if (mRBegin.mNode == *curr)
-								mRBegin.mNode = (*curr)->parent;
-						}
+                        else
+                        {
+                            if (mRBegin.mNode == *curr)
+                                mRBegin.mNode = (*curr)->parent;
+                        }
 
-						right->parent = (*curr)->parent;
-						right->left = (*curr)->left;
-						if ((*curr)->left)
-							((*curr)->left->parent) = right;
+                        right->parent = (*curr)->parent;
+                        right->left = (*curr)->left;
+                        if ((*curr)->left)
+                            ((*curr)->left->parent) = right;
 
-						(*curr)->orphan();
+                        (*curr)->orphan();
                         delete (*curr);
                         *curr = right;
                         --mSize;
@@ -394,13 +394,13 @@ public:
                     else
                     {
                         Tree *left = (*curr)->left;
-						if (left)
-							left->parent = (*curr)->parent;
-						else
-							if (mBegin.mNode == *curr)
-								mBegin.mNode = (*curr)->parent;
+                        if (left)
+                            left->parent = (*curr)->parent;
+                        else
+                            if (mBegin.mNode == *curr)
+                                mBegin.mNode = (*curr)->parent;
 
-						(*curr)->orphan();
+                        (*curr)->orphan();
                         delete (*curr);
                         *curr = left;
                         --mSize;
@@ -418,28 +418,28 @@ public:
         return false;
     }
 
-	iterator find(const Key& key) const
-	{
-		Tree *curr = mRoot;
-		hash_t hash = make_hash(key);
+    iterator find(const Key& key) const
+    {
+        Tree *curr = mRoot;
+        hash_t hash = make_hash(key);
 
-		while (curr != NULL)
-		{
-			if (curr->key_hash == hash)
-				return iterator(curr);
-			else if (curr->key_hash < hash)
-				curr = curr->right;
-			else
-				curr = curr->left;
-		}
+        while (curr != NULL)
+        {
+            if (curr->key_hash == hash)
+                return iterator(curr);
+            else if (curr->key_hash < hash)
+                curr = curr->right;
+            else
+                curr = curr->left;
+        }
 
-		return iterator();
-	}
+        return iterator();
+    }
 
-	bool contains(const Key& key) const
-	{
-		return find(key).valid();
-	}
+    bool contains(const Key& key) const
+    {
+        return find(key).valid();
+    }
 
     Value& operator[](const Key& key)
     {
@@ -449,15 +449,15 @@ public:
         while ((*curr != NULL) && ((*curr)->key_hash != hash))
         {
             if ((*curr)->key_hash < hash)
-			{
-				parent = *curr;
+            {
+                parent = *curr;
                 curr = &((*curr)->right);
-			}
+            }
             else
-			{
-				parent = *curr;
+            {
+                parent = *curr;
                 curr = &((*curr)->left);
-			}
+            }
         }
 
         if ((*curr) == NULL)
@@ -466,22 +466,22 @@ public:
         return (*curr)->value;
     }
 
-	size_t size() const { return mSize; }
+    size_t size() const { return mSize; }
 
-	iterator begin() const
-	{
-		return mBegin;
-	}
+    iterator begin() const
+    {
+        return mBegin;
+    }
 
-	iterator rbegin() const
-	{
-		return mRBegin;
-	}
+    iterator rbegin() const
+    {
+        return mRBegin;
+    }
 
-	iterator end() const
-	{
-		return iterator();
-	}
+    iterator end() const
+    {
+        return iterator();
+    }
 
     void print_values(std::ostream& out, Tree* curr = NULL)
     {
