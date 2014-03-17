@@ -35,7 +35,7 @@ namespace sb
         vsprintf(buffer, msg, list);
         va_end(list);
 
-        fprintf(mFile, buffer);
+        fprintf(mFile, "%s", buffer);
         fflush(mFile);
     }
 
@@ -49,7 +49,7 @@ namespace sb
         vsprintf(buffer, msg, list);
         va_end(list);
 
-        fprintf(mFile, buffer);
+        fprintf(mFile, "%s", buffer);
         fflush(mFile);
     }
 
@@ -63,7 +63,7 @@ namespace sb
         vsprintf(buffer, msg, list);
         va_end(list);
 
-        fprintf(mFile, buffer);
+        fprintf(mFile, "%s", buffer);
         fflush(mFile);
     }
 
@@ -77,7 +77,7 @@ namespace sb
         vsprintf(buffer, msg, list);
         va_end(list);
 
-        fprintf(mFile, buffer);
+        fprintf(mFile, "%s", buffer);
         fflush(mFile);
     }
 } // namespace sb

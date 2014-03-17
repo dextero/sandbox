@@ -4,7 +4,8 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <cml/vector.h>
+
+#include "utils/types.h"
 
 namespace sb
 {
@@ -24,17 +25,17 @@ namespace sb
             return wss.str();
         }
 
-        template<typename T> const std::string ToString(const cml::vector<T, cml::fixed<3, -1> >& v)
+        template<typename T> const std::string ToString(const glm::detail::tvec3<T>& v)
         {
             std::stringstream ss;
-            ss << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")";
+            ss << "(" << v.x << ", " << v.y << ", " << v.z << ")";
             return ss.str();
         }
 
-        template<typename T> const std::wstring ToWString(const cml::vector<T, cml::fixed<3, -1> >& v)
+        template<typename T> const std::wstring ToWString(const glm::detail::tvec3<T>& v)
         {
             std::wstringstream wss;
-            wss << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")";
+            wss << "(" << v.x << ", " << v.y << ", " << v.z << ")";
             return wss.str();
         }
 

@@ -189,6 +189,8 @@ namespace sb
                 data.wndResize.width = x;
                 data.wndResize.height = y;
                 break;
+            default:
+                break;
             }
         }
 

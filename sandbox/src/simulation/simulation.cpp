@@ -14,11 +14,11 @@ namespace Sim
         mThrowStartLine(Vec3(1.f, 1.f, 1.f), sb::Color(ColorThrow, 0.4f)),
         mGravityLine(Vec3(1.f, 1.f, 1.f), sb::Color(ColorGravity, 0.4f)),
         mWindVelocityLine(Vec3(1.f, 1.f, 1.f), sb::Color(ColorWind, 0.4f)),
+        mAirDensity(1.204),
         mSimType(type),
         mBallThrowAccumulator(0.f),
         mMaxBalls(25u),
         mSloMoFactor(1.f),
-        mAirDensity(1.204),
         mBallMass(1.),
         mBallRadius(0.5),
         mBallPathLength(10.0),
@@ -202,17 +202,17 @@ namespace Sim
     {
         PROFILE();
 
-        Vec3d orig(rayOrig[0], rayOrig[1], rayOrig[2]);
-        Vec3d dir(rayDir[0], rayDir[1], rayDir[2]);
-        dir.normalize();
+        Vec3d orig = Vec3d(rayOrig);
+        Vec3d dir = Vec3d(rayDir);
+        dir = glm::normalize(dir);
 
         double intersection = std::numeric_limits<double>::infinity();
         Ball* ret = NULL;
         for (std::list<Ball*>::iterator it = mBalls.begin(); it != mBalls.end(); ++it)
         {
             Vec3d origToCenter(orig - (*it)->mPos);
-            double b = -cml::dot(dir, origToCenter);
-            double det = b * b - origToCenter.length_squared() + (*it)->mRadius * (*it)->mRadius;
+            double b = -glm::dot(dir, origToCenter);
+            double det = b * b - glm::dot(origToCenter, origToCenter) + (*it)->mRadius * (*it)->mRadius;
 
             if (det < 0.)
                 continue;

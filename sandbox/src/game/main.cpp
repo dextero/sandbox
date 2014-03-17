@@ -87,7 +87,7 @@ void ParticleManager::Update(float dt)
     {
         ParticleBatch& batch = it->second;
 
-        for (size_t i = 0; i < min(batch.position.size(), 100);)
+        for (size_t i = 0; i < std::min(batch.position.size(), (size_t)100);)
         {
             if (batch.timeToLive[i] <= 0.f)
                 Remove(it->first, i);
@@ -130,7 +130,7 @@ void ParticleManager::DrawAll(sb::Window& wnd)
 
             sb::Shader::Use(sb::Shader::ShaderPointSprite);
             sb::Shader& shader = sb::Shader::GetCurrent();
-            static Mat44 identity = cml::identity_4x4();
+            static Mat44 identity = Mat44();
 
             shader.SetUniform("u_matViewProjection", wnd.GetCamera().GetOrthographicProjectionMatrix());
             shader.SetUniform("u_matModel", identity);
@@ -155,7 +155,7 @@ int main()
     sb::Window window(800, 600);
     window.GetRenderer().EnableFeature(sb::Renderer::FeatureBackfaceCulling, false);
 
-    Vec2 halfWndSize = window.GetSize() / 2.f;
+    Vec2 halfWndSize = Vec2(window.GetSize()) / 2.f;
     sb::Timer timer;
 
     ParticleManager particles;

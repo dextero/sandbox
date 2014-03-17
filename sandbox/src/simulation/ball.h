@@ -1,14 +1,12 @@
 #ifndef SIM_BALL_H
 #define SIM_BALL_H
 
-#include <cml/cml.h>
+#include "utils/types.h"
 #include "../rendering/model.h"
 #include "../rendering/line.h"
 #include "../rendering/renderer.h"
 
 #include <list>
-
-typedef cml::vector3d    Vec3d;
 
 namespace Sim
 {

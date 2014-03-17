@@ -18,12 +18,6 @@ namespace sb
         mProjectionType(projType)
     {
         PROFILE();
-
-        mTransformationMatrix.identity();
-        mTranslationMatrix.identity();
-        mScaleMatrix.identity();
-        mRotationMatrix.identity();
-        mRotation.identity();
     }
 
     void Drawable::RecalculateMatrices()
@@ -32,14 +26,14 @@ namespace sb
 
         if (mFlags & FlagTransformationChanged)
         {
-            mTransformationMatrix.identity();
+            mTransformationMatrix = Mat44();
 
             if (mFlags & FlagScaleChanged)
-                cml::matrix_scale(mScaleMatrix, mScale);
+                mScaleMatrix = glm::scale(mScale);
             if (mFlags & FlagRotationChanged)
-                cml::matrix_rotation_quaternion(mRotationMatrix, mRotation);
+                mRotationMatrix = glm::toMat4(mRotation);
             if (mFlags & FlagPositionChanged)
-                cml::matrix_translation(mTranslationMatrix, mPosition);
+                mTranslationMatrix = glm::translate(mPosition);
 
             mTransformationMatrix = mTranslationMatrix * mRotationMatrix * mScaleMatrix;
             mFlags &= ~FlagTransformationChanged;
@@ -47,8 +41,8 @@ namespace sb
     }
 
     Drawable::Drawable():
-        mTexture(0),
-        mMesh(NULL)
+        mMesh(NULL),
+        mTexture(0)
     {
     }
 
@@ -83,40 +77,31 @@ namespace sb
     const Vec3 Drawable::GetRotationAxis() const
     {
         PROFILE();
-
-        Vec3 axis;
-        float angle;
-        cml::quaternion_to_axis_angle(mRotation, axis, angle);
-        return axis;
+        return glm::axis(mRotation);
     }
 
     float Drawable::GetRotationAngle() const
     {
         PROFILE();
-
-        Vec3 axis;
-        float angle;
-        cml::quaternion_to_axis_angle(mRotation, axis, angle);
-        return angle;
+        return glm::angle(mRotation);
     }
     void Drawable::GetRotationAxisAngle(Vec3& axis, float& angle) const
     {
         PROFILE();
 
-        cml::quaternion_to_axis_angle(mRotation, axis, angle);
+        axis = GetRotationAxis();
+        angle = GetRotationAngle();
     }
 
     const Quat& Drawable::GetRotationQuaternion() const
     {
         PROFILE();
-
         return mRotation;
     }
 
     const Vec3& Drawable::GetScale() const
     {
         PROFILE();
-
         return mScale;
     }
 
@@ -147,8 +132,7 @@ namespace sb
     void Drawable::SetRotation(const Vec3& axis, float angle)
     {
         PROFILE();
-
-        cml::quaternion_rotation_axis_angle(mRotation, axis.normalized(), angle);
+        mRotation = glm::angleAxis(angle, glm::normalize(axis));
         mFlags |= FlagRotationChanged;
     }
 
@@ -156,7 +140,7 @@ namespace sb
     {
         PROFILE();
 
-        cml::quaternion_rotation_euler(mRotation, x, y, z, cml::euler_order_xyz);
+        mRotation = glm::toQuat(glm::eulerAngleYXZ(y, x, z));
         mFlags |= FlagRotationChanged;
     }
 
@@ -188,11 +172,7 @@ namespace sb
     {
         PROFILE();
 
-        Vec3 axis;
-        float prevAngle;
-        cml::quaternion_to_axis_angle(mRotation, axis, prevAngle);
-        cml::quaternion_rotation_axis_angle(mRotation, axis, fmodf(prevAngle + angle, PI_2));
-
+        mRotation = glm::rotate(mRotation, angle, GetRotationAxis());
         mFlags |= FlagRotationChanged;
     }
 
@@ -200,10 +180,7 @@ namespace sb
     {
         PROFILE();
 
-        Quat q;
-        cml::quaternion_rotation_axis_angle(q, axis.normalized(), angle);
-        mRotation *= q;
-
+        mRotation = glm::rotate(mRotation, angle, axis);
         mFlags |= FlagRotationChanged;
     }
 

@@ -68,7 +68,7 @@ namespace sb
 
                 gLog.Info("matching fbconfig %d, visual id 0x%2x: SAMPLE_BUFFERS = %d, SAMPLES = %d\n", i, vi->visualid, sampBuf, samples);
 
-                if (bestFbcId < 0 || sampBuf && samples > bestNumSamp)
+                if (bestFbcId < 0 || (sampBuf && samples > bestNumSamp))
                     bestFbcId = i, bestNumSamp = samples;
                 if (worstFbcId < 0 || !sampBuf || samples < worstNumSamp)
                     worstFbcId = i, worstNumSamp = samples;
@@ -112,6 +112,8 @@ namespace sb
 
     void Window::Resize(unsigned width, unsigned height)
     {
+        (void)width;
+        (void)height;
         assert(0);
     }
 
@@ -119,6 +121,7 @@ namespace sb
     {
         PROFILE();
 
+        (void)fullscreen;
         assert(!"Window::SetFullscreen not implemented!");
 
         return true;

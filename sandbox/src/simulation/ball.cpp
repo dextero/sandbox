@@ -120,7 +120,7 @@ namespace Sim
 
         // updating energy
         if (mPos[1] > mRadius)
-            mTotalEnergy = mMass * (gravity.length() * mPos[1] + mVelocity.first.length_squared() / 2.0);
+            mTotalEnergy = mMass * (gravity.length() * mPos[1] + glm::dot(mVelocity.first, mVelocity.first) / 2.0);
 
         // accelerations:
         // gravity - constant
@@ -134,19 +134,21 @@ namespace Sim
         // Cd - drag coefficient, 0.47 for sphere
         // A - reference area
         static double dragCoefficient = 0.47;
-        Vec3d newDragForce = (-mVelocity.first.normalized()) * 0.5 * fluidDensity * mVelocity.first.length_squared() * dragCoefficient * mArea;
+        Vec3d newDragForce = glm::normalize(-mVelocity.first) * 0.5 * fluidDensity * glm::dot(mVelocity.first, mVelocity.first) * dragCoefficient * mArea;
 
-        if (Vec3d(newDragForce * dt).length_squared() > Vec3d(mVelocity.first * mMass).length_squared())
+        Vec3d dragForceStep = Vec3d(newDragForce * dt);
+        Vec3d momentum = Vec3d(mVelocity.first * mMass);
+        if (glm::dot(dragForceStep, dragForceStep) > glm::dot(momentum, momentum))
         {
             // drag force too big!
-            double length = Vec3d(mVelocity.first * mMass / dt).length();
-            Set(mAccDrag, newDragForce.normalized() * length, force);
+            double length = Vec3d(momentum / dt).length();
+            Set(mAccDrag, glm::normalize(newDragForce) * length, force);
         }
         else
             Set(mAccDrag, newDragForce / mMass, force);
 
         // wind
-        Vec3d newWindForce = (windVelocity != Vec3d(0., 0., 0.) ? windVelocity.normalized() * 0.5 * fluidDensity * windVelocity.length_squared() * dragCoefficient * mArea : Vec3d(0., 0., 0.));
+        Vec3d newWindForce = (windVelocity != Vec3d(0., 0., 0.) ? glm::normalize(windVelocity) * 0.5 * fluidDensity * glm::dot(windVelocity, windVelocity) * dragCoefficient * mArea : Vec3d(0., 0., 0.));
         Set(mAccWind, newWindForce / mMass, force);
 
         // buoyancy

@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "utils/mathUtils.h"
 
 
 namespace sb
@@ -18,7 +19,6 @@ namespace sb
 
         SetOrthographicMatrix();
         SetPerspectiveMatrix();
-        mViewMatrix.identity();
 
         LookAt(mEye, mAt, mUp);
     }
@@ -27,43 +27,14 @@ namespace sb
     {
         PROFILE();
 
-        float r_min_l = right - left;
-        float t_min_b = top - bottom;
-        float f_min_n = far - near;
-
-        mOrthographicProjectionMatrix.set(
-            2.f / r_min_l, 0, 0, -(right + left) / r_min_l,
-            0, 2.f / t_min_b, 0, -(top + bottom) / t_min_b,
-            0, 0, -2 / f_min_n, -(far + near) / f_min_n,
-            0, 0, 0, 1
-        );
+        mOrthographicProjectionMatrix = Math::MatrixOrthographic(left, right, bottom, top, near, far);
     }
 
     void Camera::SetPerspectiveMatrix(float fov, float aspectRatio, float near, float far)
     {
         PROFILE();
 
-        float xymax = near * tan(fov / 2.f);
-        float ymin = -xymax;
-        float xmin = -xymax;
-
-        float width = xymax - xmin;
-        float height = xymax - ymin;
-
-        float depth = far - near;
-        float q = -(far + near) / depth;
-        float qn = -2 * (far * near) / depth;
-
-        float w = 2 * near / width;
-        w = w / aspectRatio;
-        float h = 2 * near / height;
-
-        mPerspectiveProjectionMatrix.set(
-            w, 0, 0, 0,
-            0, h, 0, 0,
-            0, 0, q, qn,
-            0, 0, -1, 0
-        );
+        mPerspectiveProjectionMatrix = Math::MatrixPerspective(fov, aspectRatio, near, far);
     }
 
     void Camera::UpdateViewMatrix()
@@ -71,18 +42,14 @@ namespace sb
         PROFILE();
 
         if (mMatrixUpdateFlags & MatrixRotationUpdated)
-            mRotationMatrix.set(
-                /*mRight[0],    mUpReal[0],    -mFront[0], 0.f,
-                mRight[1],    mUpReal[1],    -mFront[1], 0.f,
-                mRight[2],    mUpReal[2],    -mFront[2], 0.f,
-                0.f,        0.f,        0.f,        1.f*/
-                mRight[0],    mRight[1],    mRight[2],    0.f,
-                mUpReal[0],    mUpReal[1],    mUpReal[2],    0.f,
-                -mFront[0],    -mFront[1],    -mFront[2],    0.f,
-                0.f,        0.f,        0.f,        1.f
+            mRotationMatrix = Mat44(
+                 mRight.x,   mRight.y,   mRight.z,  0.f,
+                 mUpReal.x,  mUpReal.y,  mUpReal.z, 0.f,
+                -mFront.x,  -mFront.y,  -mFront.z,  0.f,
+                 0.f,        0.f,        0.f,       1.f
             );
         if (mMatrixUpdateFlags & MatrixTranslationUpdated)
-            cml::matrix_translation(mTranslationMatrix, -mEye);
+            mTranslationMatrix = glm::translate(-mEye);
 
         mMatrixUpdateFlags = 0;
         mViewMatrix = mRotationMatrix * mTranslationMatrix;
@@ -119,17 +86,11 @@ namespace sb
 
         mEye = pos;
         mAt = at;
-        mUp = up.normalized();
+        mUp = glm::normalize(up);
 
-        mFront = Vec3(mAt - mEye).normalized();
-        mRight = cml::cross(mFront, mUp).normalized();
-        //if (mRight != mRight) // hgw
-            //mRight = cml::cross(mFront, mUpReal);
-
-        mUpReal = cml::cross(mRight, mFront).normalized();
-
-        //mAngleXZ = cml::asin_safe(mFront[2] / mFront.length());
-        //mAngleY = atanf(mFront[1] / mFront[0]);
+        mFront = glm::normalize(Vec3(mAt - mEye));
+        mRight = glm::normalize(glm::cross(mFront, mUp));
+        mUpReal = glm::normalize(glm::cross(mRight, mFront));
 
         mMatrixUpdateFlags |= MatrixTranslationUpdated | MatrixRotationUpdated;
     }
@@ -138,11 +99,10 @@ namespace sb
     {
         PROFILE();
 
-        Mat33 rotMat;
-        cml::matrix_rotation_axis_angle(rotMat, mUpReal, angle);
+        Quat rot = glm::angleAxis(angle, mUpReal);
 
-        mFront = rotMat * mFront;
-        mRight = rotMat * mRight;
+        mFront = rot * mFront;
+        mRight = rot * mRight;
 
         mMatrixUpdateFlags |= MatrixRotationUpdated;
     }
@@ -151,30 +111,28 @@ namespace sb
     {
         PROFILE();
 
-        Mat33 rotMat;
-        cml::matrix_rotation_axis_angle(rotMat, axis.normalized(), angle);
-        LookAt(mEye, mEye + (rotMat * (mAt - mEye)), mUp);
+        Quat rot = glm::angleAxis(angle, glm::normalize(axis));
+        LookAt(mEye, mEye + (rot * (mAt - mEye)), mUp);
     }
 
     void Camera::RotateAround(float angle)
     {
         PROFILE();
 
-        Mat33 rotMat;
-        cml::matrix_rotation_axis_angle(rotMat, mUpReal, angle);
-        LookAt(mAt + (rotMat * (mEye - mAt)), mAt, mUp);
+        Quat rot = glm::angleAxis(angle, mUpReal);
+        LookAt(mAt + (rot * (mEye - mAt)), mAt, mUp);
     }
 
     void Camera::MouseLook(float dtX, float dtY)
     {
         PROFILE();
 
-        mAngleXZ = atan(mFront[0] / mFront[2]) + cml::constantsf::pi() * (float)(mFront[2] < 0.f);
-        mAngleY = acos(mFront[1] / mFront.length());
+        mAngleXZ = atan(mFront.x / mFront.z) + PI * (float)(mFront.z < 0.f);
+        mAngleY = acos(mFront.y / mFront.length());
 
         // don't know why -, but it works
         mAngleXZ = mAngleXZ - atan(dtX);
-        mAngleY = cml::clamp(mAngleY + atanf(dtY), 0.00001f, cml::constantsf::pi() - 0.00001f);
+        mAngleY = glm::clamp(mAngleY + atanf(dtY), 0.00001f, PI - 0.00001f);
 
         float len = Vec3(mAt - mEye).length();
         Vec3 at = mEye + Vec3(len * sinf(mAngleXZ) * sinf(mAngleY), len * cosf(mAngleY), len * cosf(mAngleXZ) * sinf(mAngleY));
@@ -186,7 +144,7 @@ namespace sb
     {
         PROFILE();
 
-        Vec3 delta = mFront.normalize() * distance;
+        Vec3 delta = glm::normalize(mFront) * distance;
         mEye += delta;
         mAt += delta;
 
@@ -207,7 +165,7 @@ namespace sb
     {
         PROFILE();
 
-        Vec3 delta = mRight.normalize() * distance;
+        Vec3 delta = glm::normalize(mRight) * distance;
         mEye += delta;
         mAt += delta;
 
@@ -218,7 +176,7 @@ namespace sb
     {
         PROFILE();
 
-        Vec3 delta = mUpReal.normalize() * distance;
+        Vec3 delta = glm::normalize(mUpReal) * distance;
         mEye += delta;
         mAt += delta;
 
@@ -230,7 +188,7 @@ namespace sb
     {
         PROFILE();
 
-        Vec3 d = mRight.normalize() * delta[0] + mUpReal.normalize() * delta[1] + mFront.normalize() * delta[2];
+        Vec3 d = glm::normalize(mRight) * delta.x + glm::normalize(mUpReal) * delta.y + glm::normalize(mFront) * delta.z;
         mEye += d;
         mAt += d;
 

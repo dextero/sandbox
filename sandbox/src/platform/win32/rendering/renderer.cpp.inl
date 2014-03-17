@@ -230,7 +230,7 @@ namespace sb
         glViewport(x, y, cx, cy);
 
         // adjust aspect ratio
-        mCamera.SetPerspectiveMatrix(cml::constantsf::pi() * 0.33333333f, (float)cx / (float)cy);
+        mCamera.SetPerspectiveMatrix(PI_3, (float)cx / (float)cy);
     }
 
     void Renderer::Draw(Drawable& d)

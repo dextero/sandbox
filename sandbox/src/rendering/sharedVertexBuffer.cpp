@@ -52,7 +52,8 @@ namespace sb
         gLog.Info("expanding buffer, needed: %u elements\n", elemsNeeded);
 
         GLuint newBuffers[BufferCount];
-        GLint vbufSize = 0, vbufOldSize = 0;
+        GLint vbufSize = 0;
+        GLint vbufOldSize = 0;
         GL_CHECK(glGenBuffers(BufferCount, newBuffers));
 
         GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, mBuffers[BufferVertex]));
@@ -88,7 +89,7 @@ namespace sb
 
         std::list<SChunk>::iterator it = mEmptyChunks.begin();
         for (; it != mEmptyChunks.end(); ++it)
-            if (it->offset + it->size == vbufOldSize)
+            if (it->offset + it->size == (uint)vbufOldSize)
             {
                 it->size += vbufSize - vbufOldSize;
                 break;
@@ -148,7 +149,7 @@ namespace sb
         {
             GLint current;
             GL_CHECK(glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &current));
-            if (current == mVAO)
+            if ((GLuint)current == mVAO)
                 GL_CHECK(glBindVertexArray(0));
 
             GL_CHECK(glDeleteVertexArrays(1, &mVAO));

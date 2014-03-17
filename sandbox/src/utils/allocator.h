@@ -79,6 +79,7 @@
     public:
         static void PrintMemleakReport(const wchar_t* foo)
         {
+            (void)foo;
         }
     };
 

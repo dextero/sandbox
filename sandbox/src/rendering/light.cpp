@@ -4,10 +4,10 @@
 namespace sb
 {
     Light::Light(ELightType type, Color color, Vec3 posOrDir, float intensity):
-        mType(type),
-        mColor(color),
         mPos(posOrDir),
-        mIntensity(intensity)
+        mColor(color),
+        mIntensity(intensity),
+        mType(type)
     {
         PROFILE();
     }

@@ -1,7 +1,6 @@
-// ai* includes should be included first, to avoid new keyword replacement (macro)
-#include <assimp.hpp>
-#include <aiScene.h>
-#include <aiPostProcess.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include <IL/il.h>
 #include <IL/ilu.h>

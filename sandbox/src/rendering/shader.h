@@ -44,6 +44,9 @@ namespace sb
 
         template<typename T> bool SetUniform(const char* name, const T* value_array, uint elements)
         {
+            (void)name;
+            (void)value_array;
+            (void)elements;
             assert(!"Wrong overload called!");
             return false;
         }
