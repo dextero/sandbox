@@ -1,8 +1,6 @@
 #ifndef UTILS_TYPES_H
 #define UTILS_TYPES_H
 
-typedef unsigned int uint;
-
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/compatibility.hpp>

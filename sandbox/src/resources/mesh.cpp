@@ -11,7 +11,7 @@ namespace sb
 
 
     Mesh::Mesh():
-        mBufferOffset((uint)-1),
+        mBufferOffset((uint32_t)-1),
         mBufferSize(0u),
         mIndexBuffer(0),
         mIndexBufferSize(0u)
@@ -33,7 +33,7 @@ namespace sb
             GL_CHECK(glDeleteBuffers(1, &mIndexBuffer));
     }
 
-    bool Mesh::Create(EShape shape, Vec3* vertices, Vec2* texcoords, Color* colors, uint elements, uint* indices, uint numIndices, uint textureId)
+    bool Mesh::Create(EShape shape, Vec3* vertices, Vec2* texcoords, Color* colors, uint32_t elements, uint32_t* indices, uint32_t numIndices, uint32_t textureId)
     {
         PROFILE();
 
@@ -54,7 +54,7 @@ namespace sb
         }
         else
         {
-            for (uint i = 0; i < numIndices; ++i)
+            for (uint32_t i = 0; i < numIndices; ++i)
                 indices[i] += mBufferOffset;
 
             // index buffer
@@ -76,7 +76,7 @@ namespace sb
         return *msBuffer;
     }
 
-    uint Mesh::GetVertexBufferOffset()
+    uint32_t Mesh::GetVertexBufferOffset()
     {
         PROFILE();
 
@@ -90,7 +90,7 @@ namespace sb
         return mIndexBuffer;
     }
 
-    uint Mesh::GetIndexBufferSize()
+    uint32_t Mesh::GetIndexBufferSize()
     {
         PROFILE();
 

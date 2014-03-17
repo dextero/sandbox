@@ -125,7 +125,7 @@ void ParticleManager::DrawAll(sb::Window& wnd)
 
         if (batch.position.size() > 0)
         {
-            uint offset = mSharedVertexBuffer.AddVertices(&batch.position[0], NULL, NULL, batch.position.size());
+            uint32_t offset = mSharedVertexBuffer.AddVertices(&batch.position[0], NULL, NULL, batch.position.size());
             mSharedVertexBuffer.Bind();
 
             sb::Shader::Use(sb::Shader::ShaderPointSprite);

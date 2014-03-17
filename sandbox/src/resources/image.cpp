@@ -39,7 +39,7 @@ namespace sb
         return true;
     }
 
-    uint Image::GetWidth()
+    uint32_t Image::GetWidth()
     {
         PROFILE();
 
@@ -47,7 +47,7 @@ namespace sb
         return ilGetInteger(IL_IMAGE_WIDTH);
     }
 
-    uint Image::GetHeight()
+    uint32_t Image::GetHeight()
     {
         PROFILE();
 

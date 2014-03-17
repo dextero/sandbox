@@ -75,7 +75,7 @@ namespace sb
     }
 
     // (0,0) - top-left corner, (1,1) - bottom-right corner
-    void String::Print(const std::string& str, float x, float y, const Color& color, uint line)
+    void String::Print(const std::string& str, float x, float y, const Color& color, uint32_t line)
     {
         PROFILE();
         GL_CHECK(glDisable(GL_TEXTURE_2D));
@@ -92,7 +92,7 @@ namespace sb
         {
             RecalculateLineHeight();
 
-            for (uint i = 0; i < lines.size(); ++i)
+            for (size_t i = 0; i < lines.size(); ++i)
                 PrintLine(lines[i], x, y - (float)(i + line) * mLineHeight, color);
         }
         else

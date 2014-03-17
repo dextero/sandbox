@@ -123,7 +123,7 @@ int main()
         "/' - decrease/increase ball radius**\n"
         "* hold button to adjust value\n"
         "** doesn't affect existing balls";
-    const uint helpStringLines = 27u;
+    const uint32_t helpStringLines = 27u;
 
     gLog.Info("entering main loop\n");
 
@@ -397,7 +397,7 @@ int main()
         }
 
         // physics update
-        uint guard = 3u;
+        uint32_t guard = 3u;
         while ((deltaTime.GetValue() >= physicsUpdateStep) && guard--)
         {
             sim.Update(physicsUpdateStep);
@@ -433,7 +433,7 @@ int main()
         wnd.Draw(crosshair);
 
         // info strings
-        uint nextLine = 0u;
+        uint32_t nextLine = 0u;
         sb::String::Print(fpsString, 0.f, 0.f, (fpsCurrValue > 30.f ? sb::Color::Green : (fpsCurrValue > 20.f ? sb::Color::Yellow : sb::Color::Red)), nextLine++);
         sb::String::Print("pos = " + sb::StringUtils::ToString(wnd.GetCamera().GetEye()) +
                       "\nfront = " + sb::StringUtils::ToString(wnd.GetCamera().GetFront()) +

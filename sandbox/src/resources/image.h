@@ -17,8 +17,8 @@ namespace sb
 
         bool LoadFromFile(const std::wstring& file);
 
-        uint GetWidth();
-        uint GetHeight();
+        uint32_t GetWidth();
+        uint32_t GetHeight();
         void* GetData();
     };
 } // namespace sb

@@ -25,14 +25,14 @@ namespace sb
 #endif
 } // namespace sb
 
-#define SHAPE_POINTS            GL_POINTS
-#define SHAPE_LINES                GL_LINES
-#define SHAPE_TRIANGLES            GL_TRIANGLES
-#define SHAPE_QUADS                GL_QUADS
-#define SHAPE_TRIANGLE_STRIP    GL_TRIANGLE_STRIP
+#define SHAPE_POINTS                GL_POINTS
+#define SHAPE_LINES                 GL_LINES
+#define SHAPE_TRIANGLES             GL_TRIANGLES
+#define SHAPE_QUADS                 GL_QUADS
+#define SHAPE_TRIANGLE_STRIP        GL_TRIANGLE_STRIP
 
-#define RENDERER_DEPTH_TEST            GL_DEPTH_TEST
-#define RENDERER_BACKFACE_CULLING    GL_CULL_FACE
-#define RENDERER_ALPHA_BLENDING        GL_BLEND
+#define RENDERER_DEPTH_TEST         GL_DEPTH_TEST
+#define RENDERER_BACKFACE_CULLING   GL_CULL_FACE
+#define RENDERER_ALPHA_BLENDING     GL_BLEND
 
 #endif //RENDERER_TYPES_H

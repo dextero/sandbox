@@ -79,7 +79,7 @@ namespace sb
             Vec3(1.f, 1.f, 1.f)
         };
 
-        uint lineIndices[] = { 0, 1 };
+        uint32_t lineIndices[] = { 0, 1 };
 
         Vec3 quadVertices[] = {
             Vec3(-1.f, -1.f, 0.f),
@@ -95,7 +95,7 @@ namespace sb
             Vec2(1.f, 1.f)
         };
 
-        uint quadIndices[] = { 0, 1, 2, 3 };
+        uint32_t quadIndices[] = { 0, 1, 2, 3 };
 
         line->Create(Mesh::ShapeLine, lineVertices, NULL, NULL, 2, lineIndices, 2, 0);
         quad->Create(Mesh::ShapeQuad, quadVertices, quadTexcoords, NULL, 4, quadIndices, 4, GetDefaultTexture());
@@ -177,10 +177,10 @@ namespace sb
         IL_CHECK_RET(ilLoadImage(StringUtils::ToString(mBasePath + mTypePath[ResourceTexture] + name).c_str()), false);
 #endif // PLATFORM_WIN32
 
-        uint maxTexSize;
+        uint32_t maxTexSize;
         GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, (GLint*)&maxTexSize));
 
-        uint imgWidth = ilGetInteger(IL_IMAGE_WIDTH), imgHeight = ilGetInteger(IL_IMAGE_HEIGHT), potWidth = 1, potHeight = 1;
+        uint32_t imgWidth = ilGetInteger(IL_IMAGE_WIDTH), imgHeight = ilGetInteger(IL_IMAGE_HEIGHT), potWidth = 1, potHeight = 1;
         while (potWidth < imgWidth && potWidth < maxTexSize) potWidth *= 2;
         while (potHeight < imgHeight && potHeight < maxTexSize) potHeight *= 2;
 
@@ -237,7 +237,7 @@ namespace sb
         if (!scene->HasMeshes())
             return false;
 
-        for (uint i = 0; i < scene->mNumMeshes; ++i)
+        for (uint32_t i = 0; i < scene->mNumMeshes; ++i)
         {
             aiMesh* mesh = scene->mMeshes[i];
 
@@ -250,7 +250,7 @@ namespace sb
             // texcoords
             Vec2* texcoords = NULL;
             aiString filename;
-            uint texture;
+            uint32_t texture;
 
             aiReturn result = scene->mMaterials[mesh->mMaterialIndex]->GetTexture(aiTextureType_DIFFUSE, 0, &filename);
             if (result == AI_SUCCESS)
@@ -258,22 +258,22 @@ namespace sb
                 texture = GetTexture(StringUtils::ToWString(filename.data));
 
                 texcoords = new Vec2[mesh->mNumVertices];
-                for (uint i = 0; i < mesh->mNumVertices; ++i)
+                for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
                     texcoords[i] = Vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
             }
             else
                 gLog.Err("%ls: texture not loaded\n", name.c_str());
 
             // indices
-            uint numIndices = 0;
-            for (uint i = 0; i < mesh->mNumFaces; ++i)
+            uint32_t numIndices = 0;
+            for (uint32_t i = 0; i < mesh->mNumFaces; ++i)
                 numIndices += mesh->mFaces[i].mNumIndices;
 
-            uint* indices = new uint[numIndices];
+            uint32_t* indices = new uint32_t[numIndices];
             numIndices = 0;
-            for (uint i = 0; i < mesh->mNumFaces; ++i)
+            for (uint32_t i = 0; i < mesh->mNumFaces; ++i)
             {
-                memcpy(indices + numIndices, mesh->mFaces[i].mIndices, mesh->mFaces[i].mNumIndices * sizeof(uint));
+                memcpy(indices + numIndices, mesh->mFaces[i].mIndices, mesh->mFaces[i].mNumIndices * sizeof(uint32_t));
                 numIndices += mesh->mFaces[i].mNumIndices;
             }
 
@@ -301,28 +301,28 @@ namespace sb
         /*
         FILE* f = _wfopen(heightmap.c_str(), L"r");
         fseek(f, 0, SEEK_END);
-        uint filesize = ftell(f);
+        uint32_t filesize = ftell(f);
         fseek(f, 0, SEEK_SET);
         short* data = new short[filesize / 2];
         fread(data, 1, filesize, f);
         fclose(f);
-        uint w = (uint)sqrt((double)(filesize / 2)),
+        uint32_t w = (uint32_t)sqrt((double)(filesize / 2)),
              h = w;
 
         Vec3* vertices = new Vec3[w * h];
-        for (uint i = 0; i < w * h; ++i)
+        for (uint32_t i = 0; i < w * h; ++i)
             vertices[i] = Vec3((float)(i % w), (float)data[i], (float)(i / w));
         */
 
         Image& img = *GetImage(heightmap);
-        uint w = img.GetWidth(),
+        uint32_t w = img.GetWidth(),
             h = img.GetHeight();
         unsigned int* data = (unsigned int*)img.GetData();
 
         gLog.Info("loading terrain %ls: %ux%u vertices\n", heightmap.c_str(), w, h);
 
         Vec3* vertices = new Vec3[w * h];
-        for (uint i = 0; i < w * h; ++i)
+        for (uint32_t i = 0; i < w * h; ++i)
             vertices[i] = Vec3((float)(i % w), (float)((data[i] & 0x00FF0000) | ((data[i] & 0xFF000000) << 16) | ((data[i] & 0x0000FF00) >> 16)) / 100000.f, (float)(i / w));
 
         Vec2* texcoords = new Vec2[w * h];
@@ -331,11 +331,11 @@ namespace sb
         /*switch (texturingMode)
         {
         case TexturingStretch:
-            for (uint i = 0; i < w * h; ++i)
+            for (uint32_t i = 0; i < w * h; ++i)
                 texcoords[i] = Vec2((float)(i % w) / (float)w, (float)(i / w) / (float)w);
             break;
         case TexturingTile:*/
-            for (uint i = 0; i < w * h; ++i)
+            for (uint32_t i = 0; i < w * h; ++i)
                 texcoords[i] = Vec2((i % w) % 2 ? 0.f : 1.f, (i / w) % 2 ? 0.f : 1.f);
             /*break;
         default:
@@ -345,13 +345,13 @@ namespace sb
             break;
         }*/
 
-        uint numIndices = (w - 1) * (h - 1) * 6;
-        uint* indices = new uint[numIndices];
-        for (uint x = 0; x < (w - 2); ++x)
-            for (uint y = 0; y < (h - 1); ++y)
+        uint32_t numIndices = (w - 1) * (h - 1) * 6;
+        uint32_t* indices = new uint32_t[numIndices];
+        for (uint32_t x = 0; x < (w - 2); ++x)
+            for (uint32_t y = 0; y < (h - 1); ++y)
             {
-                uint idx = x * h + y;
-                uint idxTimes6 = idx * 6;
+                uint32_t idx = x * h + y;
+                uint32_t idxTimes6 = idx * 6;
 
                 assert(idxTimes6 + 5 < numIndices);
 

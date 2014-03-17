@@ -21,10 +21,10 @@ namespace sb
 
     private:
         static SharedVertexBuffer* msBuffer;
-        uint mBufferOffset, mBufferSize;
+        uint32_t mBufferOffset, mBufferSize;
 
         BufferId mIndexBuffer;
-        uint mIndexBufferSize;
+        uint32_t mIndexBufferSize;
 
         EShape mShape;
         TextureId mTexture;
@@ -32,13 +32,13 @@ namespace sb
         Mesh();
         ~Mesh();
 
-        bool Create(EShape shape, Vec3* vertices, Vec2* texcoords, Color* colors, uint elements, uint* indices, uint numIndices, uint textureId);
+        bool Create(EShape shape, Vec3* vertices, Vec2* texcoords, Color* colors, uint32_t elements, uint32_t* indices, uint32_t numIndices, uint32_t textureId);
 
     public:
         static SharedVertexBuffer& GetVertexBuffer();
-        uint GetVertexBufferOffset();
+        uint32_t GetVertexBufferOffset();
         BufferId GetIndexBuffer();
-        uint GetIndexBufferSize();
+        uint32_t GetIndexBufferSize();
         EShape GetShape();
         TextureId GetTexture();
 

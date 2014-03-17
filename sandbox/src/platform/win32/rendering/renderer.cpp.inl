@@ -69,8 +69,8 @@ namespace sb
 #undef FUNC_REQ
         };
 
-        uint requiredFunctionsMissing = 0;
-        for (uint i = 0; i < sizeof(functions) / sizeof(functions[0]); ++i)
+        uint32_t requiredFunctionsMissing = 0;
+        for (size_t i = 0; i < sizeof(functions) / sizeof(functions[0]); ++i)
         {
             if (functions[i].func != NULL)
                 gLog.Info("%s \tOK\n", functions[i].name);

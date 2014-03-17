@@ -49,7 +49,7 @@ namespace Sim
         Vec3d mPos;
         sb::Model mModel;
 
-        uint mTimeToLive;    // after how many ball-ground collisions should we erase the ball?
+        uint32_t mTimeToLive;    // after how many ball-ground collisions should we erase the ball?
 
         Ball(const Vec3d& pos, const Vec3d& velocity, double mass, double radius);
         Ball(const Ball& copy);

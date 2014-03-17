@@ -15,14 +15,14 @@
 
 namespace sb
 {
-    const uint SharedVertexBuffer::SizeofElem[] = {
+    const uint32_t SharedVertexBuffer::SizeofElem[] = {
         3,    // Vertex
         4,    // Color
         2    // Texcoord
     };
 
 
-    void SharedVertexBuffer::CopyBufferData(BufferId from, BufferId to, uint bytes)
+    void SharedVertexBuffer::CopyBufferData(BufferId from, BufferId to, uint32_t bytes)
     {
         if (glCopyBufferSubData)
         {
@@ -46,7 +46,7 @@ namespace sb
         }
     }
 
-    void SharedVertexBuffer::ExpandBuffers(uint elemsNeeded)
+    void SharedVertexBuffer::ExpandBuffers(uint32_t elemsNeeded)
     {
         PROFILE();
         gLog.Info("expanding buffer, needed: %u elements\n", elemsNeeded);
@@ -61,13 +61,13 @@ namespace sb
 
         vbufOldSize /= SizeofElem[BufferVertex];
         vbufSize = vbufOldSize;
-        while ((uint)(vbufSize - vbufOldSize) < elemsNeeded)
+        while ((uint32_t)(vbufSize - vbufOldSize) < elemsNeeded)
             vbufSize *= 2;
 
         gLog.Info("current buffer size: %u, new size: %u\n", vbufOldSize, vbufSize);
 
         GL_CHECK(glBindVertexArray(mVAO));
-        for (uint i = 0; i < BufferCount; ++i)
+        for (uint32_t i = 0; i < BufferCount; ++i)
         {
             if (!HasBuffer((EBufferType)i))
             {
@@ -84,12 +84,12 @@ namespace sb
         GL_CHECK(glBindVertexArray(0));
 
         GL_CHECK(glDeleteBuffers(BufferCount, mBuffers));
-        for (uint i = 0; i < BufferCount; ++i)
+        for (uint32_t i = 0; i < BufferCount; ++i)
             mBuffers[i] = newBuffers[i];
 
         std::list<SChunk>::iterator it = mEmptyChunks.begin();
         for (; it != mEmptyChunks.end(); ++it)
-            if (it->offset + it->size == (uint)vbufOldSize)
+            if (it->offset + it->size == (uint32_t)vbufOldSize)
             {
                 it->size += vbufSize - vbufOldSize;
                 break;
@@ -99,7 +99,7 @@ namespace sb
             mEmptyChunks.push_back(SChunk(vbufOldSize, vbufSize - vbufOldSize));
     }
 
-    SharedVertexBuffer::SharedVertexBuffer(EBufferType activeBuffers, uint initialSizeElems):
+    SharedVertexBuffer::SharedVertexBuffer(EBufferType activeBuffers, uint32_t initialSizeElems):
         mVAO(0),
         mActiveBuffers(activeBuffers)
     {
@@ -110,10 +110,10 @@ namespace sb
         GL_CHECK(glBindVertexArray(mVAO));
 
         // GL doesn't create buffer of desired size, but _at least_ that size
-        uint realSizeElems = 0;
+        uint32_t realSizeElems = 0;
 
         GL_CHECK(glGenBuffers(BufferCount, mBuffers));
-        for (uint i = BufferVertex; i < BufferCount; ++i)
+        for (uint32_t i = BufferVertex; i < BufferCount; ++i)
         {
             if (!HasBuffer((EBufferType)i))
             {
@@ -156,7 +156,7 @@ namespace sb
         }
     }
 
-    void SharedVertexBuffer::AddElements(EBufferType buffer, void* data, uint elements, uint offset)
+    void SharedVertexBuffer::AddElements(EBufferType buffer, void* data, uint32_t elements, uint32_t offset)
     {
         PROFILE();
 
@@ -164,7 +164,7 @@ namespace sb
         if (!data)
         {
             placeholderBuffer = new GLfloat[elements * SizeofElem[buffer]];
-            for (uint i = 0; i < elements * SizeofElem[buffer]; ++i)
+            for (uint32_t i = 0; i < elements * SizeofElem[buffer]; ++i)
                 placeholderBuffer[i] = 1.f;
         }
 
@@ -173,12 +173,12 @@ namespace sb
         delete[] placeholderBuffer;
     }
 
-    uint SharedVertexBuffer::AddVertices(void* vertices, void* texcoords, void* colors, uint elements)
+    uint32_t SharedVertexBuffer::AddVertices(void* vertices, void* texcoords, void* colors, uint32_t elements)
     {
         PROFILE();
         gLog.Info("adding %u elements to shared buffer\n", elements);
 
-        if (!elements) return (uint)-1;
+        if (!elements) return (uint32_t)-1;
 
         std::list<SChunk>::iterator it = mEmptyChunks.begin();
         while (it != mEmptyChunks.end() && it->size < elements) ++it;
@@ -189,7 +189,7 @@ namespace sb
             it = mEmptyChunks.begin();
         }
 
-        uint offset = it->offset;
+        uint32_t offset = it->offset;
         gLog.Info("using offset %u\n", offset);
 
         // vertices
@@ -216,11 +216,11 @@ namespace sb
         return offset;
     }
 
-    void SharedVertexBuffer::ReleaseVertices(uint offset)
+    void SharedVertexBuffer::ReleaseVertices(uint32_t offset)
     {
         PROFILE();
 
-        uint sizeElements = mUsedChunks[offset];
+        uint32_t sizeElements = mUsedChunks[offset];
         gLog.Info("releasing %u elements at offset %u\n", sizeElements, offset);
 
         mUsedChunks.erase(offset);
@@ -283,7 +283,7 @@ namespace sb
 
         GL_CHECK(glBindVertexArray(mVAO));
 
-        for (uint i = 0; i < BufferCount; ++i)
+        for (uint32_t i = 0; i < BufferCount; ++i)
         {
             if (!HasBuffer((EBufferType)i))
                 continue;

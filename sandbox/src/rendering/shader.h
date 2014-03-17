@@ -42,7 +42,7 @@ namespace sb
             return SetUniform(name, &value, 1);
         }
 
-        template<typename T> bool SetUniform(const char* name, const T* value_array, uint elements)
+        template<typename T> bool SetUniform(const char* name, const T* value_array, uint32_t elements)
         {
             (void)name;
             (void)value_array;
@@ -51,12 +51,12 @@ namespace sb
             return false;
         }
 
-        bool SetUniform(const char* name, const float* value_array, uint elements);
-        bool SetUniform(const char* name, const Vec2* value_array, uint elements);
-        bool SetUniform(const char* name, const Vec3* value_array, uint elements);
-        bool SetUniform(const char* name, const Color* value_array, uint elements);
-        bool SetUniform(const char* name, const Mat44* value_array, uint elements);
-        bool SetUniform(const char* name, const int* value_array, uint elements);
+        bool SetUniform(const char* name, const float* value_array, uint32_t elements);
+        bool SetUniform(const char* name, const Vec2* value_array, uint32_t elements);
+        bool SetUniform(const char* name, const Vec3* value_array, uint32_t elements);
+        bool SetUniform(const char* name, const Color* value_array, uint32_t elements);
+        bool SetUniform(const char* name, const Mat44* value_array, uint32_t elements);
+        bool SetUniform(const char* name, const int* value_array, uint32_t elements);
 
         enum ESamplerType {
             SamplerImage = 0,
@@ -76,7 +76,7 @@ namespace sb
             ShaderCount
         };
         static std::vector<Shader> msShaders;
-        static std::vector<std::vector<std::pair<uint, std::string> > > msAttribs;
+        static std::vector<std::vector<std::pair<uint32_t, std::string> > > msAttribs;
         static EShader msCurrent;
 
         static void InitShaders();

@@ -24,7 +24,7 @@ namespace sb
             MatrixRotationUpdated = 1,
             MatrixTranslationUpdated = 1 << 1
         };
-        uint mMatrixUpdateFlags;
+        uint32_t mMatrixUpdateFlags;
 
     public:
         Camera();

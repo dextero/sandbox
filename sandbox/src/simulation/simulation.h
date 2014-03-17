@@ -39,7 +39,7 @@ namespace Sim
         double mAirDensity;
         ESimType mSimType;
         float mBallThrowDelay, mBallThrowAccumulator;
-        uint mMaxBalls;
+        uint32_t mMaxBalls;
         float mSloMoFactor;
 
         double mBallMass, mBallRadius, mBallPathLength;
@@ -59,9 +59,9 @@ namespace Sim
         void Reset();
 
         // returns lines displayed
-        uint PrintParametersToScreen(float x = 0.f, float y = 0.f, uint line = 0u);
+        uint32_t PrintParametersToScreen(float x = 0.f, float y = 0.f, uint32_t line = 0u);
         const Ball* Raycast(const Vec3& rayOrig, const Vec3& rayDir);
-        uint PrintBallParametersToScreen(const Ball* ball, float x = 0.f, float y = 0.f, uint line = 0u);
+        uint32_t PrintBallParametersToScreen(const Ball* ball, float x = 0.f, float y = 0.f, uint32_t line = 0u);
     };
 }
 

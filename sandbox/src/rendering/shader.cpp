@@ -11,7 +11,7 @@
 namespace sb
 {
     std::vector<Shader> Shader::msShaders = std::vector<Shader>();
-    std::vector<std::vector<std::pair<uint, std::string> > > Shader::msAttribs;
+    std::vector<std::vector<std::pair<uint32_t, std::string> > > Shader::msAttribs;
     Shader::EShader    Shader::msCurrent = Shader::ShaderCount;
 
     GLenum Shader::TranslateShaderType(EShaderType type)
@@ -196,32 +196,32 @@ namespace sb
         GL_CHECK(funccall); \
         return true
 
-    bool Shader::SetUniform(const char* name, const float* value_array, uint elements)
+    bool Shader::SetUniform(const char* name, const float* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniform1fv(loc, elements, (const GLfloat*)value_array));
     }
 
-    bool Shader::SetUniform(const char* name, const Vec2* value_array, uint elements)
+    bool Shader::SetUniform(const char* name, const Vec2* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniform2fv(loc, elements, (const GLfloat*)value_array));
     }
 
-    bool Shader::SetUniform(const char* name, const Vec3* value_array, uint elements)
+    bool Shader::SetUniform(const char* name, const Vec3* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniform3fv(loc, elements, (const GLfloat*)value_array));
     }
 
-    bool Shader::SetUniform(const char* name, const Color* value_array, uint elements)
+    bool Shader::SetUniform(const char* name, const Color* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniform4fv(loc, elements, (const GLfloat*)value_array));
     }
 
-    bool Shader::SetUniform(const char* name, const Mat44* value_array, uint elements)
+    bool Shader::SetUniform(const char* name, const Mat44* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniformMatrix4fv(loc, elements, GL_FALSE, (const GLfloat*)value_array));
     }
 
-    bool Shader::SetUniform(const char* name, const int* value_array, uint elements)
+    bool Shader::SetUniform(const char* name, const int* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniform1iv(loc, elements, (const GLint*)value_array));
     }
@@ -240,7 +240,7 @@ namespace sb
         msShaders[ShaderPointSprite].Load("proj_texture.vert", "color.frag", "point_sprite.geom");
 
         // start from 1, omitting ShaderNone
-        for (uint i = 1; i < ShaderCount; ++i)
+        for (uint32_t i = 1; i < ShaderCount; ++i)
             msShaders[i].CompileAndLink();
 
         msAttribs[ShaderTexture].push_back(std::make_pair(SharedVertexBuffer::BufferVertex, "a_vertex"));
@@ -280,7 +280,7 @@ namespace sb
         PROFILE();
 
         if (msCurrent < ShaderCount)
-            for (std::vector<std::pair<uint, std::string> >::iterator it = msAttribs[msCurrent].begin(); it != msAttribs[msCurrent].end(); ++it)
+            for (std::vector<std::pair<uint32_t, std::string> >::iterator it = msAttribs[msCurrent].begin(); it != msAttribs[msCurrent].end(); ++it)
                 GL_CHECK(glDisableVertexAttribArray(it->first));
 
         if (shader != msCurrent)
@@ -292,8 +292,8 @@ namespace sb
             msCurrent = shader;
         }
 
-        if ((uint)msCurrent < msAttribs.size())
-            for (std::vector<std::pair<uint, std::string> >::iterator it = msAttribs[msCurrent].begin(); it != msAttribs[msCurrent].end(); ++it)
+        if ((size_t)msCurrent < msAttribs.size())
+            for (std::vector<std::pair<uint32_t, std::string> >::iterator it = msAttribs[msCurrent].begin(); it != msAttribs[msCurrent].end(); ++it)
             {
                 GL_CHECK(glEnableVertexAttribArray(it->first));
                 GL_CHECK(glBindAttribLocation(msShaders[msCurrent].GetProgram(), it->first, it->second.c_str()));

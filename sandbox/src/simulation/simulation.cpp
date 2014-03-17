@@ -166,7 +166,7 @@ namespace Sim
     }
 
     // returns lines displayed
-    uint Simulation::PrintParametersToScreen(float x, float y, uint line)
+    uint32_t Simulation::PrintParametersToScreen(float x, float y, uint32_t line)
     {
         PROFILE();
 
@@ -236,7 +236,7 @@ namespace Sim
         return ret;
     }
 
-    uint Simulation::PrintBallParametersToScreen(const Ball* ball, float x, float y, uint line)
+    uint32_t Simulation::PrintBallParametersToScreen(const Ball* ball, float x, float y, uint32_t line)
     {
         PROFILE();
 

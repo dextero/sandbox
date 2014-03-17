@@ -20,7 +20,7 @@ namespace sb
         };
 
     private:
-        static const uint SizeofElem[];
+        static const uint32_t SizeofElem[];
 
         BufferId mVAO;
         BufferId mBuffers[BufferCount];
@@ -29,25 +29,25 @@ namespace sb
         EBufferType mActiveBuffers;
 
         struct SChunk {
-            uint offset;    // in elements
-            uint size;        // in elements
+            uint32_t offset;    // in elements
+            uint32_t size;        // in elements
 
-            SChunk(uint offset, uint size): offset(offset), size(size) {}
+            SChunk(uint32_t offset, uint32_t size): offset(offset), size(size) {}
         };
         std::list<SChunk> mEmptyChunks;
-        std::map<uint, uint> mUsedChunks;
+        std::map<uint32_t, uint32_t> mUsedChunks;
 
-        void CopyBufferData(BufferId from, BufferId to, uint bytes);
-        void ExpandBuffers(uint elemsNeeded);
+        void CopyBufferData(BufferId from, BufferId to, uint32_t bytes);
+        void ExpandBuffers(uint32_t elemsNeeded);
 
     public:
-        SharedVertexBuffer(EBufferType activeBuffers = BufferVertex, uint initialSizeElems = 1024);
+        SharedVertexBuffer(EBufferType activeBuffers = BufferVertex, uint32_t initialSizeElems = 1024);
         SharedVertexBuffer(const SharedVertexBuffer& copy);
         ~SharedVertexBuffer();
 
-        void AddElements(EBufferType buffer, void* data, uint elements, uint offset);
-        uint AddVertices(void* vertices, void* texcoords, void* colors, uint elements);
-        void ReleaseVertices(uint offset);
+        void AddElements(EBufferType buffer, void* data, uint32_t elements, uint32_t offset);
+        uint32_t AddVertices(void* vertices, void* texcoords, void* colors, uint32_t elements);
+        void ReleaseVertices(uint32_t offset);
 
         void Bind() const;
         void Unbind() const;

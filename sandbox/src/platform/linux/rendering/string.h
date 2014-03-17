@@ -24,7 +24,7 @@ namespace sb
         static void RecalculateLineHeight();
 
         // (0,0) - top-left corner, (1,1) - bottom-right corner
-        static void Print(const std::string& str, float x, float y, const Color& color = Color(1.f, 1.f, 1.f), uint line = 0u);
+        static void Print(const std::string& str, float x, float y, const Color& color = Color(1.f, 1.f, 1.f), uint32_t line = 0u);
     };
 } // namespace sb
 
