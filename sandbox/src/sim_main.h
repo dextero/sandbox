@@ -1,4 +1,3 @@
-/*
 #include "window/window.h"
 #include "rendering/sprite.h"
 #include "rendering/line.h"
@@ -74,7 +73,6 @@ int main()
 
     wnd.GetCamera().LookAt(Vec3(5.f, 5.f, 20.f), Vec3(5.f, 5.f, 0.f));
 
-    float angleX = 0.f, angleY = 0.f;
     float moveSpeed = 0.f, strafeSpeed = 0.f, ascendSpeed = 0.f;
     const float SPEED = 0.5f;
 
@@ -163,6 +161,8 @@ int main()
                         if (!windVelocity.Running())
                             windVelocity.Reset();
                         break;
+                    default:
+                        break;
                     }
                     break;
                 }
@@ -176,7 +176,7 @@ int main()
                             if (pos[1] < sim.mBallRadius)
                                 pos[1] = (float)sim.mBallRadius;
 
-                            Vec3 v = wnd.GetCamera().GetFront().normalized() * throwVelocity.GetValue();
+                            Vec3 v = glm::normalize(wnd.GetCamera().GetFront()) * throwVelocity.GetValue();
                             sim.SetThrowStart(Vec3d(pos[0], pos[1], pos[2]), Vec3d(v[0], v[1], v[2]));
                             sim.Reset();
                             throwVelocity.Stop();
@@ -184,8 +184,10 @@ int main()
                         }
                         break;
                     case sb::Mouse::ButtonRight:
-                        sim.SetWind(wnd.GetCamera().GetFront().normalized() * windVelocity.GetValue());
+                        sim.SetWind(Vec3d(glm::normalize(wnd.GetCamera().GetFront()) * windVelocity.GetValue()));
                         windVelocity.Stop();
+                        break;
+                    default:
                         break;
                     }
                     break;
@@ -451,7 +453,7 @@ int main()
         if (displaySimInfo)
             nextLine = sim.PrintParametersToScreen(0.f, 0.f, ++nextLine);
         if (displayBallInfo)
-            nextLine = sim.PrintBallParametersToScreen(sim.Raycast(wnd.GetCamera().GetEye(), wnd.GetCamera().GetFront().normalized()), 0.f, 0.0f, nextLine);
+            nextLine = sim.PrintBallParametersToScreen(sim.Raycast(wnd.GetCamera().GetEye(), glm::normalize(wnd.GetCamera().GetFront())), 0.f, 0.0f, nextLine);
 
         wnd.Display();
     }
@@ -459,5 +461,3 @@ int main()
     gLog.Info("window closed\n");
     return 0;
 }
-
-*/

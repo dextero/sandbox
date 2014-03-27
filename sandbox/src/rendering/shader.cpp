@@ -18,9 +18,9 @@ namespace sb
     {
         switch (type)
         {
-        case ShaderTypeVertex:        return GL_VERTEX_SHADER;
-        case ShaderTypeFragment:    return GL_FRAGMENT_SHADER;
-        case ShaderTypeGeometry:    return GL_GEOMETRY_SHADER;
+        case ShaderTypeVertex: return GL_VERTEX_SHADER;
+        case ShaderTypeFragment: return GL_FRAGMENT_SHADER;
+        case ShaderTypeGeometry: return GL_GEOMETRY_SHADER;
         default:
             assert(!"Invalid shader type!");
             gLog.Err("Invalid shader type: %d. Assuming it's a vertex shader\n");
@@ -113,8 +113,8 @@ namespace sb
         int filesize = ftell(f);
         fseek(f, 0, SEEK_SET);
 
-        char* buffer = new char[filesize];
-        memset(buffer, 0, filesize * sizeof(char));
+        char* buffer = new char[filesize + 1];
+        memset(buffer, 0, (filesize + 1) * sizeof(char));
 
         fread(buffer, 1, filesize, f);
         fclose(f);
@@ -124,6 +124,12 @@ namespace sb
 
         GL_CHECK(mShaders[type] = glCreateShader(TranslateShaderType(type)));
         GL_CHECK(glShaderSource(mShaders[type], 1, (const GLchar**)&buffer, NULL));
+
+        static const char* shaders[] = { "vertex", "fragment", "geometry" };
+        gLog.Info("compiling %s shader: %s...\n", shaders[type], file);
+        GL_CHECK(glCompileShader(mShaders[type]));
+        if (!CheckCompilationStatus(mShaders[type]))
+            return false;
 
         delete[] buffer;
         return true;
@@ -139,24 +145,16 @@ namespace sb
         ret &= LoadShader(ShaderTypeFragment, fragment);
         if (geometry) ret &= LoadShader(ShaderTypeGeometry, geometry);
 
+        if (ret) {
+            ret = CompileAndLink();
+        }
+
         return ret;
     }
 
     bool Shader::CompileAndLink()
     {
         PROFILE();
-
-        static const char* shaders[] = { "vertex", "fragment", "geometry" };
-        for (int i = ShaderTypeVertex; i != ShaderTypesCount; ++i)
-        {
-            if (mShaders[i])
-            {
-                gLog.Info("compiling %s shader...\n", shaders[i]);
-                GL_CHECK(glCompileShader(mShaders[i]));
-                if (!CheckCompilationStatus(mShaders[i]))
-                    return false;
-            }
-        }
 
         if (mProgram)
             GL_CHECK(glDeleteProgram(mProgram));
@@ -238,10 +236,6 @@ namespace sb
         msShaders[ShaderTexture].Load("proj_texture.vert", "texture.frag");
         msShaders[ShaderColor].Load("proj_color.vert", "color.frag");
         msShaders[ShaderPointSprite].Load("proj_texture.vert", "color.frag", "point_sprite.geom");
-
-        // start from 1, omitting ShaderNone
-        for (uint32_t i = 1; i < ShaderCount; ++i)
-            msShaders[i].CompileAndLink();
 
         msAttribs[ShaderTexture].push_back(std::make_pair(SharedVertexBuffer::BufferVertex, "a_vertex"));
         msAttribs[ShaderTexture].push_back(std::make_pair(SharedVertexBuffer::BufferColor, "a_color"));

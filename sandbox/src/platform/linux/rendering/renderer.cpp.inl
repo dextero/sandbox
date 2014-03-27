@@ -82,14 +82,14 @@ namespace sb
         for (size_t i = 0; i < sizeof(functions) / sizeof(functions[0]); ++i)
         {
             if (functions[i].func != NULL)
-                gLog.Info("%s \tOK\n", functions[i].name);
+                gLog.Info("%-40sOK\n", functions[i].name);
             else
             {
                 if (functions[i].severity == GLFunc::SevOptional)
-                    gLog.Warn("%s \tNOT AVAILABLE\n", functions[i].name);
+                    gLog.Warn("%-40sNOT AVAILABLE\n", functions[i].name);
                 else
                 {
-                    gLog.Err("%s \tNOT AVAILABLE\n", functions[i].name);
+                    gLog.Err("%-40sNOT AVAILABLE\n", functions[i].name);
                     ++requiredFunctionsMissing;
                 }
 

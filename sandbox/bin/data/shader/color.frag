@@ -1,8 +1,13 @@
+#version 330
+
 uniform vec4 u_color;
 
-varying vec4 v_color;
+in vec4 v_color;
+
+out vec4 out_color;
 
 void main()
 {
-	gl_FragColor = u_color * v_color;
+	out_color = u_color * v_color;
 }
+

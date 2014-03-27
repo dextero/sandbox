@@ -1,3 +1,7 @@
+#define SIMULATION
+#ifdef SIMULATION
+#include "sim_main.h"
+#else
 #include "window/window.h"
 #include "utils/timer.h"
 #include "utils/types.h"
@@ -215,3 +219,4 @@ int main()
 
     return 0;
 }
+#endif /* SIMULATION */
