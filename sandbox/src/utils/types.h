@@ -81,6 +81,18 @@ namespace sb
         private:
             Float mRadians;
         };
+
+        template<typename Float>
+        std::ostream& operator <<(std::ostream& os, const Degrees<Float>& deg)
+        {
+            return os << deg.value() << " deg";
+        }
+
+        template<typename Float>
+        std::ostream& operator <<(std::ostream& os, const Radians<Float>& rad)
+        {
+            return os << rad.value() << " rad";
+        }
     } // namespace Math
 } // namespace sb
 
