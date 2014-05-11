@@ -1,6 +1,10 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#include <vector>
+#include <string>
+#include <map>
+
 #include "types.h"
 #include "color.h"
 #include "../utils/types.h"

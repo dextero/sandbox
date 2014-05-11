@@ -7,6 +7,7 @@
 #include "utils/logger.h"
 #include "utils/stringUtils.h"
 #include "utils/libUtils.h"
+#include "utils/timer.h"
 #include "simulation/simulation.h"
 #include "simulation/ball.h"
 #include <sstream>
