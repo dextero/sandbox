@@ -17,7 +17,10 @@ namespace sb
     float String::mLineHeight = 0.f;
 
 
-    void String::PrintLine(const std::string& str, float x, float y, const Color& color)
+    void String::PrintLine(const std::string& str,
+                           float x,
+                           float y,
+                           const Color& /*color*/)
     {
         PROFILE();
 

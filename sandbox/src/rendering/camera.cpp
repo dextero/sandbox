@@ -95,11 +95,11 @@ namespace sb
         mMatrixUpdateFlags |= MatrixTranslationUpdated | MatrixRotationUpdated;
     }
 
-    void Camera::Rotate(float angle)
+    void Camera::Rotate(Radians angle)
     {
         PROFILE();
 
-        Quat rot = glm::angleAxis(angle, mUpReal);
+        Quat rot = glm::angleAxis(angle.value(), mUpReal);
 
         mFront = rot * mFront;
         mRight = rot * mRight;
@@ -107,35 +107,40 @@ namespace sb
         mMatrixUpdateFlags |= MatrixRotationUpdated;
     }
 
-    void Camera::Rotate(const Vec3& axis, float angle)
+    void Camera::Rotate(const Vec3& axis, Radians angle)
     {
         PROFILE();
 
-        Quat rot = glm::angleAxis(angle, glm::normalize(axis));
+        Quat rot = glm::angleAxis(angle.value(), glm::normalize(axis));
         LookAt(mEye, mEye + (rot * (mAt - mEye)), mUp);
     }
 
-    void Camera::RotateAround(float angle)
+    void Camera::RotateAround(Radians angle)
     {
         PROFILE();
 
-        Quat rot = glm::angleAxis(angle, mUpReal);
+        Quat rot = glm::angleAxis(angle.value(), mUpReal);
         LookAt(mAt + (rot * (mEye - mAt)), mAt, mUp);
     }
 
-    void Camera::MouseLook(float dtX, float dtY)
+    void Camera::MouseLook(Radians dtX, Radians dtY)
     {
         PROFILE();
 
-        mAngleXZ = atan(mFront.x / mFront.z) + PI * (float)(mFront.z < 0.f);
-        mAngleY = acos(mFront.y / mFront.length());
+        mAngleXZ = Radians(atan2(mFront.z, mFront.x));
+        mAngleY = Radians(acos(mFront.y / mFront.length()));
 
         // don't know why -, but it works
-        mAngleXZ = mAngleXZ - atan(dtX);
-        mAngleY = glm::clamp(mAngleY + atanf(dtY), 0.00001f, PI - 0.00001f);
+        mAngleXZ = Radians(mAngleXZ.value() - atan(dtX.value()));
+        mAngleY = Radians(glm::clamp(mAngleY.value() + atanf(dtY.value()),
+                                     0.00001f, PI - 0.00001f));
 
         float len = Vec3(mAt - mEye).length();
-        Vec3 at = mEye + Vec3(len * sinf(mAngleXZ) * sinf(mAngleY), len * cosf(mAngleY), len * cosf(mAngleXZ) * sinf(mAngleY));
+        Vec3 at = mEye + Vec3(len * sinf(mAngleXZ.value())
+                                  * sinf(mAngleY.value()),
+                              len * cosf(mAngleY.value()),
+                              len * cosf(mAngleXZ.value())
+                                  * sinf(mAngleY.value()));
 
         LookAt(mEye, at, mUp);
     }
@@ -194,61 +199,5 @@ namespace sb
 
         mMatrixUpdateFlags |= MatrixTranslationUpdated;
 
-    }
-
-    const Vec3& Camera::GetEye()
-    {
-        PROFILE();
-
-        return mEye;
-    }
-
-    const Vec3& Camera::GetAt()
-    {
-        PROFILE();
-
-        return mAt;
-    }
-
-    const Vec3& Camera::GetUp()
-    {
-        PROFILE();
-
-        return mUp;
-    }
-
-    const Vec3& Camera::GetFront()
-    {
-        PROFILE();
-
-        return mFront;
-    }
-
-    const Vec3& Camera::GetRight()
-    {
-        PROFILE();
-
-        return mRight;
-    }
-
-    const Vec3& Camera::GetUpReal()
-    {
-        PROFILE();
-
-        return mUpReal;
-    }
-
-    float Camera::GetHorizontalAngle()
-    {
-        PROFILE();
-
-        return mAngleXZ;
-    }
-
-    float Camera::GetVerticalAngle()
-    {
-        PROFILE();
-
-        return mAngleY;
     }
 }

@@ -43,7 +43,7 @@ namespace sb
 
         SetScale(to - from);
         SetPosition(from);
-        SetRotation(0.f, 0.f, 0.f);
+        SetRotation(0.0_rad, 0.0_rad, 0.0_rad);
     }
 
     void Line::AttachTo(const Drawable* drawable)

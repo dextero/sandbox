@@ -36,4 +36,57 @@ typedef Quatf Quat;
 #define PI_2 (glm::half_pi<float>())
 #define PI_3 (glm::pi<float>() * 0.33333333f)
 
+namespace sb
+{
+    namespace Math
+    {
+        template<typename Float> class Radians;
+
+        template<typename Float>
+        class Degrees
+        {
+        public:
+            explicit Degrees(Float value): mDegrees(value) {}
+
+            Degrees(const Radians<Float>& radians):
+                mDegrees(glm::degrees(radians.value()))
+            {}
+
+            inline Float value() const { return mDegrees; }
+
+        private:
+            Float mDegrees;
+        };
+
+        template<typename Float>
+        class Radians
+        {
+        public:
+            explicit Radians(Float value): mRadians(value) {}
+
+            Radians(const Degrees<Float>& degrees):
+                mRadians(glm::radians(degrees.value()))
+            {}
+
+            inline Float value() const { return mRadians; }
+        private:
+            Float mRadians;
+        };
+    } // namespace Math
+} // namespace sb
+
+typedef sb::Math::Degrees<float> Degrees;
+typedef sb::Math::Radians<float> Radians;
+
+inline Degrees operator "" _deg(long double degrees)
+{
+    return Degrees(degrees);
+}
+
+inline Radians operator "" _rad(long double radians)
+{
+    return Radians(radians);
+}
+
 #endif // UTILS_TYPES_H
+

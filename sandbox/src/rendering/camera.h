@@ -12,13 +12,22 @@ namespace sb
 
     class Camera
     {
-        Mat44 mOrthographicProjectionMatrix,
-              mPerspectiveProjectionMatrix,
-              mViewMatrix;
+        Mat44 mOrthographicProjectionMatrix;
+        Mat44 mPerspectiveProjectionMatrix;
+        Mat44 mViewMatrix;
 
-        Mat44 mRotationMatrix, mTranslationMatrix;
-        Vec3 mEye, mAt, mUp, mFront, mRight, mUpReal;
-        float mAngleXZ, mAngleY;
+        Mat44 mRotationMatrix;
+        Mat44 mTranslationMatrix;
+
+        Vec3 mEye;
+        Vec3 mAt;
+        Vec3 mUp;
+        Vec3 mFront;
+        Vec3 mRight;
+        Vec3 mUpReal;
+
+        Radians mAngleXZ;
+        Radians mAngleY;
 
         enum EMatrixUpdateFlags {
             MatrixRotationUpdated = 1,
@@ -29,19 +38,31 @@ namespace sb
     public:
         Camera();
 
-        void SetOrthographicMatrix(float left = -1.f, float right = 1.f, float bottom = -1.f, float top = 1.f, float near = -1.f, float far = 1.f);
-        void SetPerspectiveMatrix(float fov = PI_3, float aspectRatio = 1.33f, float near = Z_NEAR, float far = Z_FAR);
+        void SetOrthographicMatrix(float left = -1.f,
+                                   float right = 1.f,
+                                   float bottom = -1.f,
+                                   float top = 1.f,
+                                   float near = -1.f,
+                                   float far = 1.f);
+        void SetPerspectiveMatrix(float fov = PI_3,
+                                  float aspectRatio = 1.33f,
+                                  float near = Z_NEAR,
+                                  float far = Z_FAR);
         void UpdateViewMatrix();
 
         Mat44& GetOrthographicProjectionMatrix();
         Mat44& GetPerspectiveProjectionMatrix();
         Mat44& GetViewMatrix();    // updates only if needed
 
-        void LookAt(Vec3 pos, Vec3 at, Vec3 up = Vec3(0.f, 1.f, 0.f));
-        void Rotate(float angle);
-        void Rotate(const Vec3& axis, float angle);
-        void RotateAround(float angle);
-        void MouseLook(float dtX, float dtY);
+        void LookAt(Vec3 pos,
+                    Vec3 at,
+                    Vec3 up = Vec3(0.f, 1.f, 0.f));
+        void Rotate(Radians angle);
+        void Rotate(const Vec3& axis,
+                    Radians angle);
+        void RotateAround(Radians angle);
+        void MouseLook(Radians dtX,
+                       Radians dtY);
 
         void Move(float distance);
         void Move(const Vec3& delta);
@@ -49,14 +70,14 @@ namespace sb
         void Ascend(float distance);
         void MoveRelative(const Vec3& delta); // delta = (right, upReal, front) instead of (x, y, z)
 
-        const Vec3& GetEye();
-        const Vec3& GetAt();
-        const Vec3& GetUp();
-        const Vec3& GetFront();
-        const Vec3& GetRight();
-        const Vec3& GetUpReal();
-        float GetHorizontalAngle();
-        float GetVerticalAngle();
+        const Vec3& GetEye() { return mEye; }
+        const Vec3& GetAt() { return mAt; }
+        const Vec3& GetUp() { return mUp; }
+        const Vec3& GetFront() { return mFront; }
+        const Vec3& GetRight() { return mRight; }
+        const Vec3& GetUpReal() { return mUpReal; }
+        Radians GetHorizontalAngle() { return mAngleXZ; }
+        Radians GetVerticalAngle() { return mAngleY; }
     };
 } // namespace sb
 

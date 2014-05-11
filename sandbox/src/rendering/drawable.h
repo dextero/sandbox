@@ -49,21 +49,21 @@ namespace sb
 
         const Vec3& GetPosition() const;
         const Vec3 GetRotationAxis() const;
-        float GetRotationAngle() const;
-        void GetRotationAxisAngle(Vec3& axis, float& angle) const;
+        Radians GetRotationAngle() const;
+        void GetRotationAxisAngle(Vec3& axis, Radians& angle) const;
         const Quat& GetRotationQuaternion() const;
         const Vec3& GetScale() const;
         Shader::EShader GetShader() const;
 
         void SetPosition(const Vec3& pos);
         void SetPosition(float x, float y, float z);
-        void SetRotation(const Vec3& axis, float angle);
-        void SetRotation(float x, float y, float z);
+        void SetRotation(const Vec3& axis, Radians angle);
+        void SetRotation(Radians x, Radians y, Radians z);
         void SetScale(const Vec3& scale);
         void SetScale(float x, float y, float z);
         void SetScale(float uniform);
-        void Rotate(float angle);
-        void Rotate(const Vec3& axis, float angle);
+        void Rotate(Radians angle);
+        void Rotate(const Vec3& axis, Radians angle);
         const Mat44& GetTransformationMatrix();
 
     friend class Renderer;

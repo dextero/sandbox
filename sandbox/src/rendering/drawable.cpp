@@ -35,7 +35,9 @@ namespace sb
             if (mFlags & FlagPositionChanged)
                 mTranslationMatrix = glm::translate(mPosition);
 
-            mTransformationMatrix = mTranslationMatrix * mRotationMatrix * mScaleMatrix;
+            mTransformationMatrix = mTranslationMatrix
+                                    * mRotationMatrix
+                                    * mScaleMatrix;
             mFlags &= ~FlagTransformationChanged;
         }
     }
@@ -80,12 +82,12 @@ namespace sb
         return glm::axis(mRotation);
     }
 
-    float Drawable::GetRotationAngle() const
+    Radians Drawable::GetRotationAngle() const
     {
         PROFILE();
-        return glm::angle(mRotation);
+        return Radians(glm::angle(mRotation));
     }
-    void Drawable::GetRotationAxisAngle(Vec3& axis, float& angle) const
+    void Drawable::GetRotationAxisAngle(Vec3& axis, Radians& angle) const
     {
         PROFILE();
 
@@ -129,18 +131,20 @@ namespace sb
         mFlags |= FlagPositionChanged;
     }
 
-    void Drawable::SetRotation(const Vec3& axis, float angle)
+    void Drawable::SetRotation(const Vec3& axis, Radians angle)
     {
         PROFILE();
-        mRotation = glm::angleAxis(angle, glm::normalize(axis));
+        mRotation = glm::angleAxis(angle.value(), glm::normalize(axis));
         mFlags |= FlagRotationChanged;
     }
 
-    void Drawable::SetRotation(float x, float y, float z)
+    void Drawable::SetRotation(Radians x, Radians y, Radians z)
     {
         PROFILE();
 
-        mRotation = glm::toQuat(glm::eulerAngleYXZ(y, x, z));
+        mRotation = glm::toQuat(glm::eulerAngleYXZ(y.value(),
+                                                   x.value(),
+                                                   z.value()));
         mFlags |= FlagRotationChanged;
     }
 
@@ -168,19 +172,19 @@ namespace sb
         mFlags |= FlagScaleChanged;
     }
 
-    void Drawable::Rotate(float angle)
+    void Drawable::Rotate(Radians angle)
     {
         PROFILE();
 
-        mRotation = glm::rotate(mRotation, angle, GetRotationAxis());
+        mRotation = glm::rotate(mRotation, angle.value(), GetRotationAxis());
         mFlags |= FlagRotationChanged;
     }
 
-    void Drawable::Rotate(const Vec3& axis, float angle)
+    void Drawable::Rotate(const Vec3& axis, Radians angle)
     {
         PROFILE();
 
-        mRotation = glm::rotate(mRotation, angle, axis);
+        mRotation = glm::rotate(mRotation, angle.value(), axis);
         mFlags |= FlagRotationChanged;
     }
 

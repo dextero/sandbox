@@ -19,8 +19,16 @@ namespace sb
             return (value < min ? min : (value > max ? max : value));
         }
 
-        Mat44 MatrixOrthographic(float left, float right, float bottom, float top, float near = Z_NEAR, float far = Z_FAR);
-        Mat44 MatrixPerspective(float fov, float aspectRatio, float near = Z_NEAR, float far = Z_FAR);
+        Mat44 MatrixOrthographic(float left,
+                                 float right,
+                                 float bottom,
+                                 float top,
+                                 float near = Z_NEAR,
+                                 float far = Z_FAR);
+        Mat44 MatrixPerspective(float fov,
+                                float aspectRatio,
+                                float near = Z_NEAR,
+                                float far = Z_FAR);
     } // namespace Math
 } // namespace sb
 
