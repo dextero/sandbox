@@ -11,38 +11,52 @@ namespace sb
 {
     namespace StringUtils
     {
-        template<typename T> const std::string ToString(T elem)
+        template<typename T>
+        std::string toString(const T& elem)
         {
             std::stringstream ss;
             ss << elem;
             return ss.str();
         }
 
-        template<typename T> const std::wstring ToWString(T elem)
+        template<typename T>
+        std::wstring toWString(const T& elem)
         {
             std::wstringstream wss;
             wss << elem;
             return wss.str();
         }
 
-        template<typename T> const std::string ToString(const glm::detail::tvec3<T, glm::highp>& v)
+        namespace detail {
+            template<typename Arg>
+            void makeString(std::ostream& os,
+                            Arg&& arg)
+            {
+                os << arg;
+            }
+
+            template<typename FirstArg, typename... Args>
+            void makeString(std::ostream& os,
+                            FirstArg&& first,
+                            Args&&... args)
+            {
+                os << first;
+                makeString(os, std::forward<Args>(args)...);
+            }
+        }
+
+        template<typename... Args>
+        std::string makeString(Args&&... args)
         {
             std::stringstream ss;
-            ss << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+            detail::makeString(ss, std::forward<Args>(args)...);
             return ss.str();
         }
 
-        template<typename T> const std::wstring ToWString(const glm::detail::tvec3<T, glm::highp>& v)
-        {
-            std::wstringstream wss;
-            wss << "(" << v.x << ", " << v.y << ", " << v.z << ")";
-            return wss.str();
-        }
+        std::string toString(const std::wstring& wstr);
+        std::wstring toWString(const std::string& str);
 
-        const std::string ToString(const std::wstring& wstr);
-        const std::wstring ToWString(const std::string& str);
-
-        std::vector<std::string> Split(const std::string& str, char c);
+        std::vector<std::string> split(const std::string& str, char c);
     } // namespace StringUtils
 } // namespace sb
 

@@ -158,7 +158,7 @@ namespace sb
 #ifdef PLATFORM_WIN32
         IL_CHECK_RET(ilLoadImage((mBasePath + mTypePath[ResourceTexture] + name).c_str()), false);
 #else //PLATFORM_LINUX
-        IL_CHECK_RET(ilLoadImage(StringUtils::ToString(mBasePath + mTypePath[ResourceTexture] + name).c_str()), false);
+        IL_CHECK_RET(ilLoadImage(StringUtils::toString(mBasePath + mTypePath[ResourceTexture] + name).c_str()), false);
 #endif // PLATFORM_WIN32
 
         uint32_t maxTexSize;
@@ -211,7 +211,7 @@ namespace sb
 
         // TODO: wiele tekstur
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(StringUtils::ToString(mBasePath + mTypePath[ResourceMesh] + name),
+        const aiScene* scene = importer.ReadFile(StringUtils::toString(mBasePath + mTypePath[ResourceMesh] + name),
             aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
 
         if (!scene)
@@ -238,7 +238,7 @@ namespace sb
             aiReturn result = scene->mMaterials[mesh->mMaterialIndex]->GetTexture(aiTextureType_DIFFUSE, 0, &filename);
             if (result == AI_SUCCESS)
             {
-                texture = GetTexture(StringUtils::ToWString(filename.data));
+                texture = GetTexture(StringUtils::toWString(filename.data));
 
                 texcoords = new Vec2[mesh->mNumVertices];
                 for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
@@ -429,7 +429,7 @@ namespace sb
 
     const std::string ResourceMgr::GetShaderPath()
     {
-        return StringUtils::ToString(mBasePath + mTypePath[ResourceShader]);
+        return StringUtils::toString(mBasePath + mTypePath[ResourceShader]);
     }
 
     // there should be 1 Free* for every Get* call!

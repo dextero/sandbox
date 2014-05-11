@@ -1,6 +1,8 @@
 #ifndef UTILS_TYPES_H
 #define UTILS_TYPES_H
 
+#include <ostream>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/compatibility.hpp>
@@ -35,6 +37,13 @@ typedef Quatf Quat;
 #define PI2 (glm::pi<float>() * 2.f)
 #define PI_2 (glm::half_pi<float>())
 #define PI_3 (glm::pi<float>() * 0.33333333f)
+
+template<typename T>
+std::ostream& operator <<(std::ostream& os,
+                          const glm::detail::tvec3<T, glm::highp>& v)
+{
+    return os << '(' << v.x << ", " << v.y << ", " << v.z << ')';
+}
 
 namespace sb
 {

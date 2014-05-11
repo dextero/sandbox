@@ -392,7 +392,7 @@ namespace sb
         ilTexImage(width, height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, data);
         free(data);
 
-        IL_CHECK(ilSaveImage(StringUtils::ToString(filename).c_str()));
+        IL_CHECK(ilSaveImage(StringUtils::toString(filename).c_str()));
         IL_CHECK(ilDeleteImage(tex));
     }
 } // namespace sb

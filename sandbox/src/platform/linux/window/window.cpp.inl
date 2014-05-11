@@ -217,7 +217,7 @@ namespace sb
 
     void Window::SetTitle(const std::wstring& str)
     {
-        XStoreName(mDisplay, mWindow, StringUtils::ToString(str).c_str());
+        XStoreName(mDisplay, mWindow, StringUtils::toString(str).c_str());
     }
 
 

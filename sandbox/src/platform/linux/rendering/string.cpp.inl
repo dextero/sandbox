@@ -81,7 +81,7 @@ namespace sb
 
         GL_CHECK(glColor4fv((GLfloat*)&color));
 
-        std::vector<std::string> lines = StringUtils::Split(str, '\n');
+        std::vector<std::string> lines = StringUtils::split(str, '\n');
         if (lines.size() > 1)
         {
             RecalculateLineHeight();

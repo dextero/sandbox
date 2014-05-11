@@ -5,6 +5,8 @@
 #include "../rendering/string.h"
 #include "../utils/logger.h"
 
+using sb::StringUtils::toString;
+
 namespace Sim
 {
     Simulation::Simulation(ESimType type):
@@ -95,7 +97,7 @@ namespace Sim
 
     void Simulation::SetThrowStart(const Vec3d& pos, const Vec3d& v)
     {
-        gLog.Info("simulation: throw_start set to %s\n", sb::StringUtils::ToString(v).c_str());
+        gLog.Info("simulation: throw_start set to %s\n", toString(v).c_str());
 
         mThrowStartLine.SetPosition((float)pos[0], (float)pos[1], (float)pos[2]);
         mThrowStartLine.SetScale((float)v[0], (float)v[1], (float)v[2]);
@@ -110,7 +112,7 @@ namespace Sim
 
     void Simulation::SetGravity(const Vec3d& g)
     {
-        gLog.Info("simulation: gravity set to %s\n", sb::StringUtils::ToString(g).c_str());
+        gLog.Info("simulation: gravity set to %s\n", toString(g).c_str());
 
         mGravityLine.SetScale((float)g[0], (float)g[1], (float)g[2]);
         mGravity = g;
@@ -118,7 +120,7 @@ namespace Sim
 
     void Simulation::SetWind(const Vec3d& w)
     {
-        gLog.Info("simulation: wind set to %s\n", sb::StringUtils::ToString(w).c_str());
+        gLog.Info("simulation: wind set to %s\n", toString(w).c_str());
 
         mWindVelocityLine.SetScale((float)w[0], (float)w[1], (float)w[2]);
         mWindVelocity = w;
@@ -153,30 +155,43 @@ namespace Sim
     // returns lines displayed
     uint32_t Simulation::PrintParametersToScreen(float x, float y, uint32_t line)
     {
-        sb::String::Print("velocity = " + sb::StringUtils::ToString(mThrowStartVelocity) + " (" + sb::StringUtils::ToString(mThrowStartVelocity.length()) + ")", x, y, ColorVelocity, line++);
-        sb::String::Print("gravity = " + sb::StringUtils::ToString(mGravity) + " (" + sb::StringUtils::ToString(mGravity.length()) + ")", x, y, ColorGravity, line++);
+        using sb::StringUtils::makeString;
+
+        sb::String::Print(makeString("velocity = ", mThrowStartVelocity,
+                                     " (", mThrowStartVelocity.length(), ")"),
+                          x, y, ColorVelocity, line++);
+        sb::String::Print(makeString("gravity = ", mGravity,
+                                     " (", mGravity.length(), ")"),
+                          x, y, ColorGravity, line++);
         sb::String::Print("drag", x, y, ColorDrag, line++);
-        sb::String::Print("wind velocity = " + sb::StringUtils::ToString(mWindVelocity) + " (" + sb::StringUtils::ToString(mWindVelocity.length()) + ")", x, y, ColorWind, line++);
+        sb::String::Print(makeString("wind velocity = ", mWindVelocity,
+                                     " (", mWindVelocity.length(), ")"),
+                          x, y, ColorWind, line++);
         sb::String::Print("buoyancy", x, y, ColorBuoyancy, line++);
         sb::String::Print("net", x, y, ColorNet, line++);
         sb::String::Print("trajectory", x, y, ColorPath, line++);
         // additional line
-        sb::String::Print("simulation type = " + std::string(mSimType == SimSingleThrow ? "single ball" : "multiple balls") +
-                      "\nthrow delay = " + sb::StringUtils::ToString(mBallThrowDelay) +
-                      "\nthrow accumulator = " + sb::StringUtils::ToString(mBallThrowAccumulator) +
-                      "\nmax balls = " + sb::StringUtils::ToString(mMaxBalls) +
-                      "\nslomo factor = " + sb::StringUtils::ToString(mSloMoFactor) +
-                      "\nair density = " + sb::StringUtils::ToString(mAirDensity) +
-                      "\nthrow start pos = " + sb::StringUtils::ToString(mThrowStartPos) +
-                      "\nball throw velocity = " + sb::StringUtils::ToString(mThrowStartVelocity) +
-                      "\nball mass = " + sb::StringUtils::ToString(mBallMass) +
-                      "\nball radius = " + sb::StringUtils::ToString(mBallRadius) +
-                      "\nball path_length = " + sb::StringUtils::ToString(mBallPathLength) +
-                      "\npaused = " + sb::StringUtils::ToString(mPaused) +
-                      "\nshow throw lines = " + sb::StringUtils::ToString(mShowLauncherLines) +
-                      "\nvector display type = " + (mVectorDisplayType == DisplayForce ? "forces" : "accelerations") +
-                      "\nauto-pause on ground hit = " + sb::StringUtils::ToString(mPauseOnGroundHit),
-                      x, y, sb::Color::White, line);
+        sb::String::Print(
+                makeString("simulation type = ",
+                           mSimType == SimSingleThrow ? "single ball"
+                                                      : "multiple balls",
+                           "\nthrow delay = ", mBallThrowDelay,
+                           "\nthrow accumulator = ", mBallThrowAccumulator,
+                           "\nmax balls = ", mMaxBalls,
+                           "\nslomo factor = ", mSloMoFactor,
+                           "\nair density = ", mAirDensity,
+                           "\nthrow start pos = ", mThrowStartPos,
+                           "\nball throw velocity = ", mThrowStartVelocity,
+                           "\nball mass = ", mBallMass,
+                           "\nball radius = ", mBallRadius,
+                           "\nball path_length = ", mBallPathLength,
+                           "\npaused = ", mPaused,
+                           "\nshow throw lines = ", mShowLauncherLines,
+                           "\nvector display type = ",
+                           mVectorDisplayType == DisplayForce ? "forces"
+                                                              : "accelerations",
+                           "\nauto-pause on ground hit = ", mPauseOnGroundHit),
+                x, y, sb::Color::White, line);
         line += 15;
         return line;
     }
@@ -219,23 +234,41 @@ namespace Sim
 
     uint32_t Simulation::PrintBallParametersToScreen(const Ball* ball, float x, float y, uint32_t line)
     {
+        using sb::StringUtils::makeString;
+
         if (ball)
         {
-            sb::String::Print("velocity = " + sb::StringUtils::ToString(ball->mVelocity.first) + " (" + sb::StringUtils::ToString(ball->mVelocity.first.length()) + ")", x, y, ColorVelocity, line++);
-            sb::String::Print("gravity = " + sb::StringUtils::ToString(ball->mAccGravity.first) + " (" + sb::StringUtils::ToString(ball->mAccGravity.first.length()) + ")", x, y, ColorGravity, line++);
-            sb::String::Print("drag = " + sb::StringUtils::ToString(ball->mAccDrag.first) + " (" + sb::StringUtils::ToString(ball->mAccDrag.first.length()) + ")", x, y, ColorDrag, line++);
-            sb::String::Print("wind = " + sb::StringUtils::ToString(ball->mAccWind.first) + " (" + sb::StringUtils::ToString(ball->mAccWind.first.length()) + ")", x, y, ColorWind, line++);
-            sb::String::Print("buoyancy = " + sb::StringUtils::ToString(ball->mAccBuoyancy.first) + " (" + sb::StringUtils::ToString(ball->mAccBuoyancy.first.length()) + ")", x, y, ColorBuoyancy, line++);
-            sb::String::Print("net = " + sb::StringUtils::ToString(ball->mAccNet.first) + " (" + sb::StringUtils::ToString(ball->mAccNet.first.length()) + ")", x, y, ColorNet, line++);
-            sb::String::Print("distance covered = " + sb::StringUtils::ToString(ball->mDistanceCovered), x, y, ColorPath, line++);
-            sb::String::Print("mass = " + sb::StringUtils::ToString(ball->mMass) +
-                          "\nradius = " + sb::StringUtils::ToString(ball->mRadius) +
-                          "\narea = " + sb::StringUtils::ToString(ball->mArea) +
-                          "\nvolume = " + sb::StringUtils::ToString(ball->mVolume) +
-                          "\nhorizontal distance covered = " + sb::StringUtils::ToString(ball->mHorizontalDistanceCovered) +
-                          "\nenergy = " + sb::StringUtils::ToString(ball->mTotalEnergy) +
-                          "\ntime = " + sb::StringUtils::ToString(ball->mTime) +
-                          "\nTTL = " + sb::StringUtils::ToString(ball->mTimeToLive), x, y, sb::Color::White, line);
+            sb::String::Print(makeString("velocity = ", ball->mVelocity.first,
+                                         " (", ball->mVelocity.first.length(), ")"),
+                              x, y, ColorVelocity, line++);
+            sb::String::Print(makeString("gravity = ", ball->mAccGravity.first,
+                                         " (", ball->mAccGravity.first.length(), ")"),
+                              x, y, ColorGravity, line++);
+            sb::String::Print(makeString("drag = ", ball->mAccDrag.first,
+                                         " (", ball->mAccDrag.first.length(), ")"),
+                              x, y, ColorDrag, line++);
+            sb::String::Print(makeString("wind = ", ball->mAccWind.first,
+                                         " (", ball->mAccWind.first.length(), ")"),
+                              x, y, ColorWind, line++);
+            sb::String::Print(makeString("buoyancy = ", ball->mAccBuoyancy.first,
+                                         " (", ball->mAccBuoyancy.first.length(), ")"),
+                              x, y, ColorBuoyancy, line++);
+            sb::String::Print(makeString("net = ", ball->mAccNet.first,
+                                         " (", ball->mAccNet.first.length(), ")"),
+                              x, y, ColorNet, line++);
+            sb::String::Print(makeString("distance covered = ",
+                                         ball->mDistanceCovered),
+                              x, y, ColorPath, line++);
+            sb::String::Print(makeString("mass = ", ball->mMass,
+                                         "\nradius = ", ball->mRadius,
+                                         "\narea = ", ball->mArea,
+                                         "\nvolume = ", ball->mVolume,
+                                         "\nhorizontal distance covered = ",
+                                         ball->mHorizontalDistanceCovered,
+                                         "\nenergy = ", ball->mTotalEnergy,
+                                         "\ntime = ", ball->mTime,
+                                         "\nTTL = ", ball->mTimeToLive),
+                              x, y, sb::Color::White, line);
             line += 9;
         }
         else

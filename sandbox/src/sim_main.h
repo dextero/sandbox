@@ -129,7 +129,7 @@ int main()
         if (fpsDeltaTime.GetValue() >= fpsUpdateStep)
         {
             fpsCurrValue = fpsCounter / fpsUpdateStep;
-            fpsString = "FPS = " + sb::StringUtils::ToString(fpsCurrValue);
+            fpsString = "FPS = " + sb::StringUtils::toString(fpsCurrValue);
             fpsDeltaTime.Update(-fpsUpdateStep);
             fpsCounter = 0.f;
         }
@@ -425,13 +425,13 @@ int main()
         // info strings
         uint32_t nextLine = 0u;
         sb::String::Print(fpsString, 0.f, 0.f, (fpsCurrValue > 30.f ? sb::Color::Green : (fpsCurrValue > 20.f ? sb::Color::Yellow : sb::Color::Red)), nextLine++);
-        sb::String::Print("pos = " + sb::StringUtils::ToString(wnd.GetCamera().GetEye()) +
-                      "\nfront = " + sb::StringUtils::ToString(wnd.GetCamera().GetFront()) +
-                      "\nphi = " + sb::StringUtils::ToString(Degrees(wnd.GetCamera().GetHorizontalAngle()).value()) + " deg"
-                      "\ntheta = " + sb::StringUtils::ToString(Degrees(wnd.GetCamera().GetVerticalAngle()).value()) + " deg", 0.f, 0.f, sb::Color::White, nextLine);
+        sb::String::Print("pos = " + sb::StringUtils::toString(wnd.GetCamera().GetEye()) +
+                      "\nfront = " + sb::StringUtils::toString(wnd.GetCamera().GetFront()) +
+                      "\nphi = " + sb::StringUtils::toString(Degrees(wnd.GetCamera().GetHorizontalAngle()).value()) + " deg"
+                      "\ntheta = " + sb::StringUtils::toString(Degrees(wnd.GetCamera().GetVerticalAngle()).value()) + " deg", 0.f, 0.f, sb::Color::White, nextLine);
         nextLine += 4;
-        sb::String::Print("throw velocity = " + sb::StringUtils::ToString(throwVelocity.GetValue()), 0.f, 0.f, Sim::ColorThrow, nextLine++);
-        sb::String::Print("wind velocity = " + sb::StringUtils::ToString(windVelocity.GetValue()), 0.f, 0.f, Sim::ColorWind, nextLine++);
+        sb::String::Print("throw velocity = " + sb::StringUtils::toString(throwVelocity.GetValue()), 0.f, 0.f, Sim::ColorThrow, nextLine++);
+        sb::String::Print("wind velocity = " + sb::StringUtils::toString(windVelocity.GetValue()), 0.f, 0.f, Sim::ColorWind, nextLine++);
 
         if (displayHelp)
         {

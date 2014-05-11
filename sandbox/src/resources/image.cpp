@@ -23,7 +23,7 @@ namespace sb
 #ifdef PLATFORM_WIN32
         IL_CHECK_RET(ilLoadImage(file.c_str()), false);
 #else //PLATFORM_LINUX
-        IL_CHECK_RET(ilLoadImage(StringUtils::ToString(file).c_str()), false);
+        IL_CHECK_RET(ilLoadImage(StringUtils::toString(file).c_str()), false);
 #endif // PLATFORM_WIN32
 
         IL_CHECK_RET(ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE), false);

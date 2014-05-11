@@ -4,17 +4,17 @@ namespace sb
 {
     namespace StringUtils
     {
-        const std::string ToString(const std::wstring& wstr)
+        std::string toString(const std::wstring& wstr)
         {
             return std::string(wstr.begin(), wstr.end());
         }
 
-        const std::wstring ToWString(const std::string& str)
+        std::wstring toWString(const std::string& str)
         {
             return std::wstring(str.begin(), str.end());
         }
 
-        std::vector<std::string> Split(const std::string& str, char c)
+        std::vector<std::string> split(const std::string& str, char c)
         {
             std::vector<std::string> ret;
 
