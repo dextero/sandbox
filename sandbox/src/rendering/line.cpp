@@ -7,8 +7,6 @@ namespace sb
         Drawable(ProjectionPerspective),
         mAttachedTo(NULL)
     {
-        PROFILE();
-
         mMesh = gResourceMgr.GetLine();
     }
 
@@ -16,8 +14,6 @@ namespace sb
         Drawable(ProjectionPerspective),
         mAttachedTo(NULL)
     {
-        PROFILE();
-
         mMesh = gResourceMgr.GetLine();
         mColor = col;
 
@@ -28,8 +24,6 @@ namespace sb
         Drawable(ProjectionPerspective),
         mAttachedTo(NULL)
     {
-        PROFILE();
-
         mMesh = gResourceMgr.GetLine();
         mColor = col;
 
@@ -39,8 +33,6 @@ namespace sb
 
     void Line::Set(const Vec3& from, const Vec3& to)
     {
-        PROFILE();
-
         SetScale(to - from);
         SetPosition(from);
         SetRotation(0.0_rad, 0.0_rad, 0.0_rad);
@@ -48,16 +40,12 @@ namespace sb
 
     void Line::AttachTo(const Drawable* drawable)
     {
-        PROFILE();
-
         mAttachedTo = drawable;
     }
 
     // synchronize position with attached drawable
     void Line::Update()
     {
-        PROFILE();
-
         if (!mAttachedTo)
             return;
 

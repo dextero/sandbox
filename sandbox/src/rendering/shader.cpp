@@ -30,8 +30,6 @@ namespace sb
 
     bool Shader::CheckCompilationStatus(ShaderId shader)
     {
-        PROFILE();
-
         GLint retval;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &retval);
         if (retval == GL_FALSE)
@@ -58,8 +56,6 @@ namespace sb
 
     bool Shader::CheckLinkStatus(ProgramId program)
     {
-        PROFILE();
-
         GLint retval;
         glGetProgramiv(program, GL_LINK_STATUS, &retval);
         if (retval == GL_FALSE)
@@ -98,8 +94,6 @@ namespace sb
 
     bool Shader::LoadShader(EShaderType type, const char* file)
     {
-        PROFILE();
-
         std::string path = gResourceMgr.GetShaderPath() + file;
 
     #define _CRT_SECURE_NO_WARNINGS
@@ -137,8 +131,6 @@ namespace sb
 
     bool Shader::Load(const char* vertex, const char* fragment, const char* geometry)
     {
-        PROFILE();
-
         gLog.Info("loading shader: %s, %s, %s\n", vertex, fragment, geometry ? geometry : "(no geometry shader)");
 
         bool ret = LoadShader(ShaderTypeVertex, vertex);
@@ -154,8 +146,6 @@ namespace sb
 
     bool Shader::CompileAndLink()
     {
-        PROFILE();
-
         if (mProgram)
             GL_CHECK(glDeleteProgram(mProgram));
         mProgram = GL_CHECK(glCreateProgram());
@@ -187,7 +177,6 @@ namespace sb
     }
 
     #define SET_UNIFORM(funccall) \
-        PROFILE(); \
         if (!mProgram) return false; \
         GLint loc = glGetUniformLocation(mProgram, name); \
         if (loc == -1) return false; \
@@ -226,8 +215,6 @@ namespace sb
 
     void Shader::InitShaders()
     {
-        PROFILE();
-
         gLog.Info("initializing shaders...\n");
 
         msShaders.resize(ShaderCount);
@@ -257,22 +244,16 @@ namespace sb
 
     Shader& Shader::Get(EShader shader)
     {
-        PROFILE();
-
         return msShaders[shader];
     }
 
     Shader& Shader::GetCurrent()
     {
-        PROFILE();
-
         return msShaders[msCurrent];
     }
 
     void Shader::Use(EShader shader)
     {
-        PROFILE();
-
         if (msCurrent < ShaderCount)
             for (std::vector<std::pair<uint32_t, std::string> >::iterator it = msAttribs[msCurrent].begin(); it != msAttribs[msCurrent].end(); ++it)
                 GL_CHECK(glDisableVertexAttribArray(it->first));

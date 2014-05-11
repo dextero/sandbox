@@ -33,15 +33,11 @@ namespace sb
 
     Color Color::operator *(float factor) const
     {
-        PROFILE();
-
         return Color(r * factor, g * factor, b * factor, a);
     }
 
     Color& Color::operator *=(float factor)
     {
-        PROFILE();
-
         r *= factor;
         g *= factor;
         b *= factor;
@@ -50,15 +46,11 @@ namespace sb
 
     Color Color::operator +(const Color& c) const
     {
-        PROFILE();
-
         return Color(r + c.r, g + c.g, b + c.b, (a + c.a) / 2.f);
     }
 
     Color& Color::operator +=(const Color& c)
     {
-        PROFILE();
-
         r += c.r;
         g += c.g;
         b += c.b;

@@ -16,14 +16,10 @@ namespace sb
         mPosition(0.f, 0.f, 0.f),
         mScale(1.f, 1.f, 1.f),
         mProjectionType(projType)
-    {
-        PROFILE();
-    }
+    {}
 
     void Drawable::RecalculateMatrices()
     {
-        PROFILE();
-
         if (mFlags & FlagTransformationChanged)
         {
             mTransformationMatrix = Mat44();
@@ -50,8 +46,6 @@ namespace sb
 
     Drawable::~Drawable()
     {
-        PROFILE();
-
         if (mMesh)
             gResourceMgr.FreeMesh(mMesh);
         if (mTexture)
@@ -60,8 +54,6 @@ namespace sb
 
     Drawable::Drawable(const Drawable& copy)
     {
-        PROFILE();
-
         *this = copy;
 
         if (copy.mMesh)
@@ -72,38 +64,31 @@ namespace sb
 
     const Vec3& Drawable::GetPosition() const
     {
-        PROFILE();
         return mPosition;
     }
 
     const Vec3 Drawable::GetRotationAxis() const
     {
-        PROFILE();
         return glm::axis(mRotation);
     }
 
     Radians Drawable::GetRotationAngle() const
     {
-        PROFILE();
         return Radians(glm::angle(mRotation));
     }
     void Drawable::GetRotationAxisAngle(Vec3& axis, Radians& angle) const
     {
-        PROFILE();
-
         axis = GetRotationAxis();
         angle = GetRotationAngle();
     }
 
     const Quat& Drawable::GetRotationQuaternion() const
     {
-        PROFILE();
         return mRotation;
     }
 
     const Vec3& Drawable::GetScale() const
     {
-        PROFILE();
         return mScale;
     }
 
@@ -117,31 +102,24 @@ namespace sb
 
     void Drawable::SetPosition(const Vec3& pos)
     {
-        PROFILE();
-
         mPosition = pos;
         mFlags |= FlagPositionChanged;
     }
 
     void Drawable::SetPosition(float x, float y, float z)
     {
-        PROFILE();
-
         mPosition = Vec3(x, y, z);
         mFlags |= FlagPositionChanged;
     }
 
     void Drawable::SetRotation(const Vec3& axis, Radians angle)
     {
-        PROFILE();
         mRotation = glm::angleAxis(angle.value(), glm::normalize(axis));
         mFlags |= FlagRotationChanged;
     }
 
     void Drawable::SetRotation(Radians x, Radians y, Radians z)
     {
-        PROFILE();
-
         mRotation = glm::toQuat(glm::eulerAngleYXZ(y.value(),
                                                    x.value(),
                                                    z.value()));
@@ -150,48 +128,36 @@ namespace sb
 
     void Drawable::SetScale(const Vec3& scale)
     {
-        PROFILE();
-
         mScale = scale;
         mFlags |= FlagScaleChanged;
     }
 
     void Drawable::SetScale(float x, float y, float z)
     {
-        PROFILE();
-
         mScale = Vec3(x, y, z);
         mFlags |= FlagScaleChanged;
     }
 
     void Drawable::SetScale(float uniform)
     {
-        PROFILE();
-
         mScale = Vec3(uniform, uniform, uniform);
         mFlags |= FlagScaleChanged;
     }
 
     void Drawable::Rotate(Radians angle)
     {
-        PROFILE();
-
         mRotation = glm::rotate(mRotation, angle.value(), GetRotationAxis());
         mFlags |= FlagRotationChanged;
     }
 
     void Drawable::Rotate(const Vec3& axis, Radians angle)
     {
-        PROFILE();
-
         mRotation = glm::rotate(mRotation, angle.value(), axis);
         mFlags |= FlagRotationChanged;
     }
 
     const Mat44& Drawable::GetTransformationMatrix()
     {
-        PROFILE();
-
         RecalculateMatrices();
         return mTransformationMatrix;
     }

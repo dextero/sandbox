@@ -7,8 +7,6 @@ namespace sb
     Sprite::Sprite():
         Drawable(ProjectionOrthographic)
     {
-        PROFILE();
-
         mTexture = gResourceMgr.GetTexture(L"default.png");
         mMesh = NULL;
     }
@@ -16,8 +14,6 @@ namespace sb
     Sprite::Sprite(const std::wstring& image):
         Drawable(ProjectionOrthographic)
     {
-        PROFILE();
-
         mTexture = gResourceMgr.GetTexture(image);
         mMesh = NULL;
     }

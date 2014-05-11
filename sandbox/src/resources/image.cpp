@@ -7,24 +7,17 @@
 
 namespace sb
 {
-    Image::Image(): mId(0u)
-    {
-        PROFILE();
-    }
+    Image::Image(): mId(0u) {}
 
     Image::Image(const std::wstring& file):
         mId(0u)
     {
-        PROFILE();
-
         if (!LoadFromFile(file))
             gLog.Err("couldn't load image %ls\n", file.c_str());
     }
 
     bool Image::LoadFromFile(const std::wstring& file)
     {
-        PROFILE();
-
         IL_CHECK(mId = ilGenImage());
         IL_CHECK_RET(ilBindImage(mId), false);
 
@@ -41,24 +34,18 @@ namespace sb
 
     uint32_t Image::GetWidth()
     {
-        PROFILE();
-
         IL_CHECK(ilBindImage(mId));
         return ilGetInteger(IL_IMAGE_WIDTH);
     }
 
     uint32_t Image::GetHeight()
     {
-        PROFILE();
-
         IL_CHECK(ilBindImage(mId));
         return ilGetInteger(IL_IMAGE_HEIGHT);
     }
 
     void* Image::GetData()
     {
-        PROFILE();
-
         IL_CHECK(ilBindImage(mId));
         return ilGetData();
     }

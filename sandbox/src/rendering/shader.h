@@ -37,8 +37,6 @@ namespace sb
 
         template<typename T> bool SetUniform(const char* name, const T& value)
         {
-            PROFILE();
-
             return SetUniform(name, &value, 1);
         }
 

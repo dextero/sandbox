@@ -48,7 +48,6 @@ namespace sb
 
     void SharedVertexBuffer::ExpandBuffers(uint32_t elemsNeeded)
     {
-        PROFILE();
         gLog.Info("expanding buffer, needed: %u elements\n", elemsNeeded);
 
         GLuint newBuffers[BufferCount];
@@ -103,7 +102,6 @@ namespace sb
         mVAO(0),
         mActiveBuffers(activeBuffers)
     {
-        PROFILE();
         gLog.Info("creating shared vertex buffer\n");
 
         GL_CHECK(glGenVertexArrays(1, &mVAO));
@@ -134,8 +132,6 @@ namespace sb
 
     SharedVertexBuffer::SharedVertexBuffer(const SharedVertexBuffer& copy)
     {
-        PROFILE();
-
         *this = copy;
         // copying should be made ONLY while *moving* (STL containers), so...
         ((SharedVertexBuffer&)copy).mVAO = 0;
@@ -143,8 +139,6 @@ namespace sb
 
     SharedVertexBuffer::~SharedVertexBuffer()
     {
-        PROFILE();
-
         if (mVAO)
         {
             GLint current;
@@ -158,8 +152,6 @@ namespace sb
 
     void SharedVertexBuffer::AddElements(EBufferType buffer, void* data, uint32_t elements, uint32_t offset)
     {
-        PROFILE();
-
         GLfloat* placeholderBuffer = NULL;
         if (!data)
         {
@@ -175,7 +167,6 @@ namespace sb
 
     uint32_t SharedVertexBuffer::AddVertices(void* vertices, void* texcoords, void* colors, uint32_t elements)
     {
-        PROFILE();
         gLog.Info("adding %u elements to shared buffer\n", elements);
 
         if (!elements) return (uint32_t)-1;
@@ -218,8 +209,6 @@ namespace sb
 
     void SharedVertexBuffer::ReleaseVertices(uint32_t offset)
     {
-        PROFILE();
-
         uint32_t sizeElements = mUsedChunks[offset];
         gLog.Info("releasing %u elements at offset %u\n", sizeElements, offset);
 
@@ -251,36 +240,26 @@ namespace sb
 
     void SharedVertexBuffer::Bind() const
     {
-        PROFILE();
-
         GL_CHECK(glBindVertexArray(mVAO));
     }
 
     void SharedVertexBuffer::Unbind() const
     {
-        PROFILE();
-
         GL_CHECK(glBindVertexArray(0));
     }
 
     bool SharedVertexBuffer::Empty() const
     {
-        PROFILE();
-
         return mUsedChunks.empty();
     }
 
     bool SharedVertexBuffer::HasBuffer(EBufferType type) const
     {
-        PROFILE();
-
         return mActiveBuffers >= type;
     }
 
     void SharedVertexBuffer::Debug()
     {
-        PROFILE();
-
         GL_CHECK(glBindVertexArray(mVAO));
 
         for (uint32_t i = 0; i < BufferCount; ++i)

@@ -16,8 +16,6 @@ namespace sb
 {
     bool Renderer::InitGLEW()
     {
-        PROFILE();
-
         gLog.Info("initializing GLEW...\n");
         GLenum error = glewInit();
         if (error != GLEW_OK)
@@ -169,8 +167,6 @@ namespace sb
 
     Renderer::~Renderer()
     {
-        PROFILE();
-
         // let's free everything before deleting gl context
         Shader::FreeShaders();
         gResourceMgr.FreeAllResources();
@@ -190,8 +186,6 @@ namespace sb
 
     bool Renderer::Init(::Display* display, ::Window window, GLXFBConfig& fbc)
     {
-        PROFILE();
-
         assert(display);
 
         mDisplay = display;
@@ -245,22 +239,16 @@ namespace sb
 
     void Renderer::SetClearColor(const Color& c)
     {
-        PROFILE();
-
         glClearColor(c.r, c.g, c.b, c.a);
     }
 
     void Renderer::Clear()
     {
-        PROFILE();
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void Renderer::SetViewport(unsigned x, unsigned y, unsigned cx, unsigned cy)
     {
-        PROFILE();
-
         glViewport(x, y, cx, cy);
 
         // adjust aspect ratio
@@ -269,8 +257,6 @@ namespace sb
 
     void Renderer::Draw(Drawable& d)
     {
-        PROFILE();
-
         if (!d.mMesh && !d.mTexture)
         {
             gLog.Err("Renderer::Draw: invalid call, mMesh == NULL\n");
@@ -390,8 +376,6 @@ namespace sb
 
     void Renderer::EnableFeature(EFeature feature, bool enable)
     {
-        PROFILE();
-
         if (enable)
             GL_CHECK(glEnable((GLenum)feature));
         else

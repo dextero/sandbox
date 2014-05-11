@@ -27,7 +27,6 @@ namespace Sim
         mPauseOnGroundHit(false),
         mVectorDisplayType(DisplayForce)
     {
-        PROFILE();
         gLog.Info("starting simulation, type: %d\n", (int)type);
 
         switch (mSimType)
@@ -55,16 +54,12 @@ namespace Sim
 
     Simulation::~Simulation()
     {
-        PROFILE();
-
         for (std::list<Ball*>::iterator it = mBalls.begin(); it != mBalls.end(); ++it)
             delete (*it);
     }
 
     void Simulation::Update(float dt)
     {
-        PROFILE();
-
         if (mPaused)
             return;
 
@@ -101,7 +96,6 @@ namespace Sim
 
     void Simulation::SetThrowStart(const Vec3d& pos, const Vec3d& v)
     {
-        PROFILE();
         gLog.Info("simulation: throw_start set to %s\n", sb::StringUtils::ToString(v).c_str());
 
         mThrowStartLine.SetPosition((float)pos[0], (float)pos[1], (float)pos[2]);
@@ -117,7 +111,6 @@ namespace Sim
 
     void Simulation::SetGravity(const Vec3d& g)
     {
-        PROFILE();
         gLog.Info("simulation: gravity set to %s\n", sb::StringUtils::ToString(g).c_str());
 
         mGravityLine.SetScale((float)g[0], (float)g[1], (float)g[2]);
@@ -126,7 +119,6 @@ namespace Sim
 
     void Simulation::SetWind(const Vec3d& w)
     {
-        PROFILE();
         gLog.Info("simulation: wind set to %s\n", sb::StringUtils::ToString(w).c_str());
 
         mWindVelocityLine.SetScale((float)w[0], (float)w[1], (float)w[2]);
@@ -135,8 +127,6 @@ namespace Sim
 
     void Simulation::DrawAll(sb::Renderer& renderer)
     {
-        PROFILE();
-
         if (mShowLauncherLines)
         {
             renderer.Draw(mThrowStartLine);
@@ -150,15 +140,11 @@ namespace Sim
 
     void Simulation::TogglePause()
     {
-        PROFILE();
-
         mPaused = !mPaused;
     }
 
     void Simulation::Reset()
     {
-        PROFILE();
-
         for (std::list<Ball*>::iterator it = mBalls.begin(); it != mBalls.end(); ++it)
             delete (*it);
 
@@ -168,8 +154,6 @@ namespace Sim
     // returns lines displayed
     uint32_t Simulation::PrintParametersToScreen(float x, float y, uint32_t line)
     {
-        PROFILE();
-
         sb::String::Print("velocity = " + sb::StringUtils::ToString(mThrowStartVelocity) + " (" + sb::StringUtils::ToString(mThrowStartVelocity.length()) + ")", x, y, ColorVelocity, line++);
         sb::String::Print("gravity = " + sb::StringUtils::ToString(mGravity) + " (" + sb::StringUtils::ToString(mGravity.length()) + ")", x, y, ColorGravity, line++);
         sb::String::Print("drag", x, y, ColorDrag, line++);
@@ -200,8 +184,6 @@ namespace Sim
 
     const Ball* Simulation::Raycast(const Vec3& rayOrig, const Vec3& rayDir)
     {
-        PROFILE();
-
         Vec3d orig = Vec3d(rayOrig);
         Vec3d dir = Vec3d(rayDir);
         dir = glm::normalize(dir);
@@ -238,8 +220,6 @@ namespace Sim
 
     uint32_t Simulation::PrintBallParametersToScreen(const Ball* ball, float x, float y, uint32_t line)
     {
-        PROFILE();
-
         if (ball)
         {
             sb::String::Print("velocity = " + sb::StringUtils::ToString(ball->mVelocity.first) + " (" + sb::StringUtils::ToString(ball->mVelocity.first.length()) + ")", x, y, ColorVelocity, line++);

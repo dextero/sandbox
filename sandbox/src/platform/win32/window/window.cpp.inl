@@ -8,8 +8,6 @@ namespace sb
 {
     LRESULT __stdcall Window::WndProc(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
     {
-        PROFILE();
-
         Window* wndPtr = (Window*)::GetWindowLongPtrA(hwnd, 0);
 
         switch (msg)
@@ -120,8 +118,6 @@ namespace sb
         mLockCursor(false),
         mFullscreen(false)
     {
-        PROFILE();
-
         mInstance = ::GetModuleHandleA(0);
 
         Create(width, height);
@@ -129,16 +125,9 @@ namespace sb
         mRenderer.SetViewport(0, 0, width, height);
     }
 
-    Window::~Window()
-    {
-        PROFILE();
-    }
-
 
     bool Window::Create(unsigned width, unsigned height)
     {
-        PROFILE();
-
         static bool classRegistered = false;
         static const wchar_t* className = L"ILikeTrains8@3";
 
@@ -197,8 +186,6 @@ namespace sb
 
     void Window::Resize(unsigned width, unsigned height)
     {
-        PROFILE();
-
         assert(mWnd);
 
         RECT rect;
@@ -212,8 +199,6 @@ namespace sb
 
     bool Window::SetFullscreen(bool fullscreen)
     {
-        PROFILE();
-
         assert(!"Window::SetFullscreen not implemented!");
 
         if (fullscreen != mFullscreen)
@@ -273,16 +258,12 @@ namespace sb
 
     void Window::Close()
     {
-        PROFILE();
-
         ::DestroyWindow(mWnd);
         mWnd = NULL;
     }
 
     bool Window::GetEvent(Event& e)
     {
-        PROFILE();
-
         MSG msg;
         while (PeekMessage(&msg, mWnd, 0, 0, PM_REMOVE))
         {
@@ -302,52 +283,38 @@ namespace sb
 
     bool Window::IsOpened()
     {
-        PROFILE();
-
         return mWnd != NULL;
     }
 
     bool Window::HasFocus()
     {
-        PROFILE();
-
         return ::GetActiveWindow() == mWnd;
     }
 
     void Window::SetTitle(const std::string& str)
     {
-        PROFILE();
-
         ::SetWindowText(mWnd, (LPCTSTR)str.c_str());
     }
 
     void Window::SetTitle(const std::wstring& str)
     {
-        PROFILE();
-
         ::SetWindowText(mWnd, (LPCTSTR)StringUtils::ToWString(str).c_str());
     }
 
 
     void Window::Clear(const Color& c)
     {
-        PROFILE();
-
         mRenderer.SetClearColor(c);
         mRenderer.Clear();
     }
 
     void Window::Draw(Drawable& d)
     {
-        PROFILE();
-
         mRenderer.Draw(d);
     }
 
     void Window::Display()
     {
-        PROFILE();
-
         mRenderer.DrawAll();
         ::SwapBuffers(::GetDC(mWnd));
     }

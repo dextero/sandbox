@@ -22,8 +22,6 @@ namespace sb
                            float y,
                            const Color& /*color*/)
     {
-        PROFILE();
-
         Vec3 pos(x, y, 0.f);
         GL_CHECK(glRasterPos3fv((GLfloat*)&pos));
 
@@ -35,7 +33,6 @@ namespace sb
 
     void String::Init(::Display* display)
     {
-        PROFILE();
         gLog.Info("initializing font bitmaps...\n");
 
         mDisplay = display;
@@ -58,15 +55,11 @@ namespace sb
 
     void String::Release()
     {
-        PROFILE();
-
         GL_CHECK(glDeleteLists(mBase, 96));
     }
 
     void String::RecalculateLineHeight()
     {
-        PROFILE();
-
         ::Window window;
         int focusState;
         XGetInputFocus(mDisplay, &window, &focusState);
@@ -80,7 +73,6 @@ namespace sb
     // (0,0) - top-left corner, (1,1) - bottom-right corner
     void String::Print(const std::string& str, float x, float y, const Color& color, uint32_t line)
     {
-        PROFILE();
         GL_CHECK(glDisable(GL_TEXTURE_2D));
 
         x = (x - 0.5f) * 2.f;

@@ -15,24 +15,18 @@ namespace sb
         mLockCursor(false),
         mFullscreen(false)
     {
-        PROFILE();
-
         Create(width, height);
         mRenderer.SetViewport(0, 0, width, height);
     }
 
     Window::~Window()
     {
-        PROFILE();
-
         Close();
     }
 
 
     bool Window::Create(unsigned width, unsigned height)
     {
-        PROFILE();
-
         mDisplay = XOpenDisplay(0);
         if (!mDisplay)
             return false;
@@ -119,8 +113,6 @@ namespace sb
 
     bool Window::SetFullscreen(bool fullscreen)
     {
-        PROFILE();
-
         (void)fullscreen;
         assert(!"Window::SetFullscreen not implemented!");
 
@@ -137,8 +129,6 @@ namespace sb
 
     void Window::Close()
     {
-        PROFILE();
-
         if (mDisplay && mWindow)
         {
             XDestroyWindow(mDisplay, mWindow);
@@ -148,8 +138,6 @@ namespace sb
 
     bool Window::GetEvent(Event& e)
     {
-        PROFILE();
-
         while (XPending(mDisplay))
         {
             XEvent event;
@@ -212,15 +200,11 @@ namespace sb
 
     bool Window::IsOpened()
     {
-        PROFILE();
-
         return mWindow != 0;
     }
 
     bool Window::HasFocus()
     {
-        PROFILE();
-
         ::Window focused;
         int focusState;
         XGetInputFocus(mDisplay, &focused, &focusState);
@@ -229,38 +213,28 @@ namespace sb
 
     void Window::SetTitle(const std::string& str)
     {
-        PROFILE();
-
         XStoreName(mDisplay, mWindow, str.c_str());
     }
 
     void Window::SetTitle(const std::wstring& str)
     {
-        PROFILE();
-
         XStoreName(mDisplay, mWindow, StringUtils::ToString(str).c_str());
     }
 
 
     void Window::Clear(const Color& c)
     {
-        PROFILE();
-
         mRenderer.SetClearColor(c);
         mRenderer.Clear();
     }
 
     void Window::Draw(Drawable& d)
     {
-        PROFILE();
-
         mRenderer.Draw(d);
     }
 
     void Window::Display()
     {
-        PROFILE();
-
         mRenderer.DrawAll();
         glXSwapBuffers(mDisplay, mWindow);
     }

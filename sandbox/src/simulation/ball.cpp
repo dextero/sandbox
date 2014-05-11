@@ -14,8 +14,6 @@ namespace Sim
 
     void Ball::AttachLines()
     {
-        PROFILE();
-
         mVelocity.second.AttachTo(&mModel);
         mAccGravity.second.AttachTo(&mModel);
         mAccDrag.second.AttachTo(&mModel);
@@ -43,8 +41,6 @@ namespace Sim
         mModel(L"sphere.obj"),
         mTimeToLive(5u)
     {
-        PROFILE();
-
         mPath.push_back(pos);
 
         mModel.SetPosition(0.f, 0.f, 0.f);
@@ -58,8 +54,6 @@ namespace Sim
 
     Ball::Ball(const Ball& copy)
     {
-        PROFILE();
-
         *this = copy;
 
         AttachLines();
@@ -67,8 +61,6 @@ namespace Sim
 
     void Ball::Set(ColVec& what, const Vec3d& value, bool scaleToForce)
     {
-        PROFILE();
-
         what.first = value;
         if (scaleToForce)
             what.second.SetScale(Vec3((float)(value[0] * mMass), (float)(value[1] * mMass), (float)(value[2] * mMass)));
@@ -78,8 +70,6 @@ namespace Sim
 
     bool Ball::Update(double dt, const Vec3d& gravity, const Vec3d& windVelocity, double fluidDensity, double maxPathLength, bool force)
     {
-        PROFILE();
-
         mTime += dt;
         if (mTime < 0.0)
             return true;
@@ -170,8 +160,6 @@ namespace Sim
 
     void Ball::DrawAll(sb::Renderer& r)
     {
-        PROFILE();
-
         r.Draw(mModel);
 
         // temporarily disable depth testing, to make lines fully visible

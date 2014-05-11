@@ -16,15 +16,11 @@ namespace sb
         mIndexBuffer(0),
         mIndexBufferSize(0u)
     {
-        PROFILE();
-
         assert(msBuffer && "Mesh::msBuffer should be already initialized. Use ResourceMgr to create Mesh objects.");
     }
 
     Mesh::~Mesh()
     {
-        PROFILE();
-
         assert(msBuffer);
 
         if (mBufferSize)
@@ -35,8 +31,6 @@ namespace sb
 
     bool Mesh::Create(EShape shape, Vec3* vertices, Vec2* texcoords, Color* colors, uint32_t elements, uint32_t* indices, uint32_t numIndices, uint32_t textureId)
     {
-        PROFILE();
-
         assert(msBuffer);
 
         mShape = shape;
@@ -70,44 +64,32 @@ namespace sb
 
     SharedVertexBuffer& Mesh::GetVertexBuffer()
     {
-        PROFILE();
-
         assert(msBuffer);
         return *msBuffer;
     }
 
     uint32_t Mesh::GetVertexBufferOffset()
     {
-        PROFILE();
-
         return mBufferOffset;
     }
 
     BufferId Mesh::GetIndexBuffer()
     {
-        PROFILE();
-
         return mIndexBuffer;
     }
 
     uint32_t Mesh::GetIndexBufferSize()
     {
-        PROFILE();
-
         return mIndexBufferSize;
     }
 
     Mesh::EShape Mesh::GetShape()
     {
-        PROFILE();
-
         return mShape;
     }
 
     TextureId Mesh::GetTexture()
     {
-        PROFILE();
-
         return mTexture;
     }
 } // namespace sb

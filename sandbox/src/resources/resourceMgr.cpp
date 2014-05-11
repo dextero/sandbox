@@ -24,37 +24,27 @@ namespace sb
     ResourceMgr::ResourceRefCounter::ResourceRefCounter(ResourceHandle h):
         handle(h),
         references(0)
-    {
-        PROFILE();
-    }
+    {}
 
     ResourceHandle ResourceMgr::ResourceRefCounter::Attach()
     {
-        PROFILE();
-
         ++references;
         return handle;
     }
 
     bool ResourceMgr::ResourceRefCounter::Detach()
     {
-        PROFILE();
-
         return --references == 0;
     }
 
     TextureId ResourceMgr::GetDefaultTexture()
     {
-        PROFILE();
-
         return GetTexture(L"default.png");
     }
 
     ResourceMgr::ResourceMgr():
         mBasePath(L"data/")
     {
-        PROFILE();
-
         GLint maxTexSize;
         GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize));
         gLog.Info("max texture size: %d\n", maxTexSize);
@@ -106,8 +96,6 @@ namespace sb
 
     ResourceMgr::~ResourceMgr()
     {
-        PROFILE();
-
         FreeAllResources();
 
         // releasing meshs' vertex buffer
@@ -130,8 +118,6 @@ namespace sb
 
     bool ResourceMgr::LoadResource(EResourceType type, const std::wstring& name)
     {
-        PROFILE();
-
         switch (type)
         {
         case ResourceTexture:
@@ -157,7 +143,6 @@ namespace sb
 
     bool ResourceMgr::LoadTexture(const std::wstring& name)
     {
-        PROFILE();
         gLog.Info("loading texture %ls\n", name.c_str());
 
         std::map<std::wstring, ResourceRefCounter>& textures = mResources[ResourceTexture];
@@ -221,7 +206,6 @@ namespace sb
 
     bool ResourceMgr::LoadMesh(const std::wstring& name)
     {
-        PROFILE();
         gLog.Info("loading mesh %ls\n", name.c_str());
 
         std::map<std::wstring, ResourceRefCounter>& meshs = mResources[ResourceMesh];
@@ -293,7 +277,6 @@ namespace sb
 
     bool ResourceMgr::LoadTerrain(const std::wstring& heightmap)
     {
-        PROFILE();
         gLog.Info("loading terrain %ls\n", heightmap.c_str());
 
         std::map<std::wstring, ResourceRefCounter>& meshs = mResources[ResourceTerrain];
@@ -376,8 +359,6 @@ namespace sb
 
     void ResourceMgr::DeleteResource(EResourceType type, ResourceHandle& handle)
     {
-        PROFILE();
-
         switch (type)
         {
         case ResourceTexture:
@@ -402,8 +383,6 @@ namespace sb
 
     ResourceHandle ResourceMgr::GetResource(EResourceType type, const std::wstring& name)
     {
-        PROFILE();
-
         std::map<std::wstring, ResourceRefCounter>& resources = mResources[type];
 
         if (resources.find(name) != resources.end())
@@ -419,8 +398,6 @@ namespace sb
 
     bool ResourceMgr::AddReference(EResourceType type, ResourceHandle handle)
     {
-        PROFILE();
-
         std::map<std::wstring, ResourceRefCounter>& resources = mResources[type];
 
         for (std::map<std::wstring, ResourceRefCounter>::iterator it = resources.begin(); it != resources.end(); ++it)
@@ -435,8 +412,6 @@ namespace sb
 
     void ResourceMgr::FreeResource(EResourceType type, ResourceHandle handle)
     {
-        PROFILE();
-
         std::map<std::wstring, ResourceRefCounter>& resources = mResources[type];
 
         for (std::map<std::wstring, ResourceRefCounter>::iterator it = resources.begin(); it != resources.end(); ++it)
@@ -455,107 +430,77 @@ namespace sb
 
     const std::string ResourceMgr::GetShaderPath()
     {
-        PROFILE();
-
         return StringUtils::ToString(mBasePath + mTypePath[ResourceShader]);
     }
 
     // there should be 1 Free* for every Get* call!
     TextureId ResourceMgr::GetTexture(const std::wstring& name)
     {
-        PROFILE();
-
         return (TextureId)GetResource(ResourceTexture, name);
     }
 
     TextureId ResourceMgr::GetTexture(TextureId id)
     {
-        PROFILE();
-
         return AddReference(ResourceTexture, (ResourceHandle)id) ? id : 0;
     }
 
     void ResourceMgr::FreeTexture(TextureId id)
     {
-        PROFILE();
-
         FreeResource(ResourceTexture, (ResourceHandle)id);
     }
 
     Image* ResourceMgr::GetImage(const std::wstring& name)
     {
-        PROFILE();
-
         return (Image*)GetResource(ResourceImage, name);
     }
 
     Image* ResourceMgr::GetImage(Image* img)
     {
-        PROFILE();
-
         return AddReference(ResourceImage, (ResourceHandle)img) ? img : NULL;
     }
 
     void ResourceMgr::FreeImage(Image* img)
     {
-        PROFILE();
-
         FreeResource(ResourceImage, (ResourceHandle)img);
     }
 
     Mesh* ResourceMgr::GetMesh(const std::wstring& name)
     {
-        PROFILE();
-
         return (Mesh*)GetResource(ResourceMesh, name);
     }
 
     Mesh* ResourceMgr::GetMesh(Mesh* mesh)
     {
-        PROFILE();
-
         return AddReference(ResourceMesh, (ResourceHandle)mesh) ? mesh : NULL;
     }
 
     void ResourceMgr::FreeMesh(Mesh* mesh)
     {
-        PROFILE();
-
         FreeResource(ResourceMesh, (ResourceHandle)mesh);
     }
 
     Mesh* ResourceMgr::GetTerrain(const std::wstring& heightmap)
     {
-        PROFILE();
-
         return (Mesh*)GetResource(ResourceTerrain, heightmap);
     }
 
     Mesh* ResourceMgr::GetTerrain(Mesh* terrain)
     {
-        PROFILE();
-
         return AddReference(ResourceTerrain, (ResourceHandle)terrain) ? terrain : NULL;
     }
 
     void ResourceMgr::FreeTerrain(Mesh* terrain)
     {
-        PROFILE();
-
         FreeResource(ResourceTerrain, (ResourceHandle)terrain);
     }
 
     Mesh* ResourceMgr::GetLine()
     {
-        PROFILE();
-
         return GetMesh(L"*line");
     }
 
     Mesh* ResourceMgr::GetSprite(TextureId texture)
     {
-        PROFILE();
-
         Mesh* ret = GetMesh(L"*quad");
         if (ret)
             ret->mTexture = texture;

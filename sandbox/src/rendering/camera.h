@@ -50,8 +50,14 @@ namespace sb
                                   float far = Z_FAR);
         void UpdateViewMatrix();
 
-        Mat44& GetOrthographicProjectionMatrix();
-        Mat44& GetPerspectiveProjectionMatrix();
+        Mat44& GetOrthographicProjectionMatrix()
+        {
+            return mOrthographicProjectionMatrix;
+        }
+        Mat44& GetPerspectiveProjectionMatrix()
+        {
+            return mPerspectiveProjectionMatrix;
+        }
         Mat44& GetViewMatrix();    // updates only if needed
 
         void LookAt(Vec3 pos,

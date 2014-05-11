@@ -8,7 +8,5 @@ namespace sb
         mColor(color),
         mIntensity(intensity),
         mType(type)
-    {
-        PROFILE();
-    }
+    {}
 } // namespace sb

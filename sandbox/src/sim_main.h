@@ -19,12 +19,6 @@ void wait_for_key()
     getchar();
 }
 
-void print_reports()
-{
-    PRINT_MEMLEAK_REPORT(L"memleak.txt");
-    PRINT_PROFILE_REPORT("profile.txt");
-}
-
 class Accumulator
 {
     float mAccumulator,
@@ -44,8 +38,6 @@ public:
 
 int main()
 {
-    PROFILE();
-
     sb::Window wnd(1200, 900);
     wnd.SetTitle("Sandbox");
     wnd.LockCursor();
@@ -271,11 +263,6 @@ int main()
                         sim.mBallMass += 0.1f;
                         break;
                     case sb::Key::Esc:
-                        wnd.Close();
-                        break;
-                    case sb::Key::F8:
-                        atexit(wait_for_key);
-                        atexit(print_reports);
                         wnd.Close();
                         break;
                     default:
