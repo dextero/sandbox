@@ -347,7 +347,7 @@ namespace sb
             GL_CHECK(glDisable((GLenum)feature));
     }
 
-    void Renderer::SaveScreenshot(const wchar_t* filename, int width, int height)
+    void Renderer::SaveScreenshot(const std::string& filename, int width, int height)
     {
         ILuint tex;
         tex = IL_CHECK(ilGenImage());
@@ -358,7 +358,7 @@ namespace sb
         ilTexImage(width, height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, data);
         free(data);
 
-        IL_CHECK(ilSaveImage(filename));
+        IL_CHECK(ilSaveImage(StringUtils::toWString(filename).c_str()));
         IL_CHECK(ilDeleteImage(tex));
     }
 } // namespace sb

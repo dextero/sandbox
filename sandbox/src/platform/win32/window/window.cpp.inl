@@ -128,7 +128,7 @@ namespace sb
     bool Window::Create(unsigned width, unsigned height)
     {
         static bool classRegistered = false;
-        static const wchar_t* className = L"ILikeTrains8@3";
+        static LPCTSTR className = _T("ILikeTrains8@3");
 
         if (!classRegistered)
         {
@@ -152,7 +152,7 @@ namespace sb
         rect.right = width;
         rect.bottom = height;
         ::AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, FALSE, NULL);
-        mWnd = ::CreateWindowExW(NULL, className, (LPCTSTR)"Window", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, mInstance, (void*)this);
+        mWnd = ::CreateWindowExW(NULL, className, _T("Window"), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, mInstance, (void*)this);
 
         PIXELFORMATDESCRIPTOR pfd = {
             sizeof(PIXELFORMATDESCRIPTOR),
