@@ -11,7 +11,6 @@
 #include "utils/stringUtils.h"
 #include "utils/types.h"
 #include "utils/logger.h"
-#include "utils/profiler.h"
 
 #include "mesh.h"
 #include "image.h"

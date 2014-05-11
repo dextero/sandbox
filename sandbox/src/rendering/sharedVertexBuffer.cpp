@@ -2,7 +2,6 @@
 #include "color.h"
 
 #include "../utils/libUtils.h"
-#include "../utils/profiler.h"
 #include "../utils/logger.h"
 
 #include <cassert>

@@ -78,12 +78,11 @@ int main()
 #include <string>
 #include <iomanip>
 
-#include "utils/allocator.h"
 
 
 typedef __int64 int_t;
 
-class BigInt: OWN_ALLOC
+class BigInt
 {
 private:
     static const int_t MAX_DEC = 1000000000;

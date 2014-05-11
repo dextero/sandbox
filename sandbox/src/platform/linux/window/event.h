@@ -1,7 +1,6 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-#include "utils/allocator.h"
 
 #include <X11/Xlib.h>
 
@@ -135,7 +134,7 @@ namespace sb
         };
     }
 
-    class Event: OWN_ALLOC
+    class Event
     {
     public:
         enum Type {

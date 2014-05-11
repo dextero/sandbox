@@ -10,12 +10,11 @@
 #include "rendering/color.h"
 #include "rendering/camera.h"
 #include "window/event.h"
-#include "utils/allocator.h"
 
 
 namespace sb
 {
-    class Window: OWN_ALLOC
+    class Window
     {
     private:
         HINSTANCE mInstance;

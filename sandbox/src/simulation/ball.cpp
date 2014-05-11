@@ -1,5 +1,4 @@
 #include "ball.h"
-#include "../utils/profiler.h"
 
 namespace Sim
 {

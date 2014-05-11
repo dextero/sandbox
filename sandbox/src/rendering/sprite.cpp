@@ -1,6 +1,5 @@
 #include "sprite.h"
 #include "../resources/resourceMgr.h"
-#include "../utils/profiler.h"
 
 namespace sb
 {

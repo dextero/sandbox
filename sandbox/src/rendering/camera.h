@@ -4,7 +4,6 @@
 #include "types.h"
 #include "../utils/mathUtils.h"
 #include "../utils/types.h"
-#include "../utils/profiler.h"
 
 namespace sb
 {

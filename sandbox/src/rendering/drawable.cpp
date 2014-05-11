@@ -4,8 +4,6 @@
 #include "resources/mesh.h"
 #include "resources/image.h"
 
-#include "utils/profiler.h"
-
 namespace sb
 {
     Drawable::Drawable(EProjectionType projType):

@@ -3,7 +3,6 @@
 #include "../resources/resourceMgr.h"
 #include "../utils/libUtils.h"
 #include "../utils/stringUtils.h"
-#include "../utils/profiler.h"
 #include "../utils/logger.h"
 
 #include <cstring>

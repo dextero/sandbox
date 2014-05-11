@@ -1,5 +1,4 @@
 #include "image.h"
-#include "utils/profiler.h"
 #include "utils/libUtils.h"
 #include "utils/logger.h"
 #include "utils/stringUtils.h"

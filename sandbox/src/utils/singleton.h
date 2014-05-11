@@ -4,11 +4,10 @@
 #include <cassert>
 #include <cstdlib>
 
-#include "allocator.h"
 
 namespace sb
 {
-    template<typename T> class Singleton: OWN_ALLOC
+    template<typename T> class Singleton
     {
     private:
         static T* mPtr;

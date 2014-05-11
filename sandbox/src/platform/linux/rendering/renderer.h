@@ -14,13 +14,12 @@
 #include "rendering/shader.h"
 #include "rendering/camera.h"
 #include "rendering/drawable.h"
-#include "utils/allocator.h"
 
 #include <vector>
 
 namespace sb
 {
-    class Renderer: OWN_ALLOC
+    class Renderer
     {
     private:
         GLXContext mGLContext;

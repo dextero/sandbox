@@ -3,7 +3,6 @@
 #include "ball.h"
 #include "../utils/stringUtils.h"
 #include "../rendering/string.h"
-#include "../utils/profiler.h"
 #include "../utils/logger.h"
 
 namespace Sim

@@ -1,6 +1,5 @@
 #include "window.h"
 
-#include "utils/profiler.h"
 #include "utils/stringUtils.h"
 #include "utils/logger.h"
 

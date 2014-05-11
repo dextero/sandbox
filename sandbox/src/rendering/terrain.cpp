@@ -1,5 +1,4 @@
 #include "terrain.h"
-#include "../utils/profiler.h"
 #include "../resources/resourceMgr.h"
 
 namespace sb

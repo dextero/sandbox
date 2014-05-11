@@ -6,7 +6,6 @@
 #include "rendering/sprite.h"
 #include "utils/libUtils.h"
 #include "utils/stringUtils.h"
-#include "utils/profiler.h"
 #include "utils/logger.h"
 #include "resources/mesh.h"
 #include "resources/image.h"

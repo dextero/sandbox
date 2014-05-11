@@ -3,7 +3,6 @@
 
 #include <WinUser.h>
 
-#include "../utils/allocator.h"
 
 namespace sb
 {
@@ -134,7 +133,7 @@ namespace sb
         };
     }
 
-    class Event: OWN_ALLOC
+    class Event
     {
     public:
         enum Type {

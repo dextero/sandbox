@@ -1,5 +1,4 @@
 #include "line.h"
-#include "../utils/profiler.h"
 
 namespace sb
 {

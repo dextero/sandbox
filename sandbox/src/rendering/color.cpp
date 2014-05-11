@@ -1,5 +1,4 @@
 #include "color.h"
-#include "../utils/profiler.h"
 
 namespace sb
 {
