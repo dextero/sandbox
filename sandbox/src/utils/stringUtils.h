@@ -25,14 +25,14 @@ namespace sb
             return wss.str();
         }
 
-        template<typename T> const std::string ToString(const glm::detail::tvec3<T>& v)
+        template<typename T> const std::string ToString(const glm::detail::tvec3<T, glm::highp>& v)
         {
             std::stringstream ss;
             ss << "(" << v.x << ", " << v.y << ", " << v.z << ")";
             return ss.str();
         }
 
-        template<typename T> const std::wstring ToWString(const glm::detail::tvec3<T>& v)
+        template<typename T> const std::wstring ToWString(const glm::detail::tvec3<T, glm::highp>& v)
         {
             std::wstringstream wss;
             wss << "(" << v.x << ", " << v.y << ", " << v.z << ")";
