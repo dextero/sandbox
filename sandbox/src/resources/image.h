@@ -13,9 +13,9 @@ namespace sb
         ILuint mId;
     public:
         Image();
-        Image(const std::wstring& file);
+        Image(const std::string& file);
 
-        bool LoadFromFile(const std::wstring& file);
+        bool LoadFromFile(const std::string& file);
 
         uint32_t GetWidth();
         uint32_t GetHeight();

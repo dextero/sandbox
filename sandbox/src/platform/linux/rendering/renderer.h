@@ -59,7 +59,7 @@ namespace sb
         };
 
         void EnableFeature(EFeature feature, bool enable = true);
-        void SaveScreenshot(const wchar_t* filename, int width, int height);
+        void SaveScreenshot(const std::string& filename, int width, int height);
     };
 } // namespace sb
 

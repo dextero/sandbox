@@ -6,18 +6,18 @@ namespace sb
     Sprite::Sprite():
         Drawable(ProjectionOrthographic)
     {
-        mTexture = gResourceMgr.GetTexture(L"default.png");
+        mTexture = gResourceMgr.GetTexture("default.png");
         mMesh = NULL;
     }
 
-    Sprite::Sprite(const std::wstring& image):
+    Sprite::Sprite(const std::string& image):
         Drawable(ProjectionOrthographic)
     {
         mTexture = gResourceMgr.GetTexture(image);
         mMesh = NULL;
     }
 
-    void Sprite::SetImage(const std::wstring& image)
+    void Sprite::SetImage(const std::string& image)
     {
         gResourceMgr.FreeTexture(mTexture);
         mTexture = gResourceMgr.GetTexture(image);

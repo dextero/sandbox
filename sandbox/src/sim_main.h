@@ -47,7 +47,7 @@ int main()
     Sim::Simulation sim(Sim::Simulation::SimSingleThrow);
     sim.SetThrowStart(Vec3d(0., 1., 0.), Vec3d(30., 30., 0.));
 
-    sb::Sprite crosshair(L"dot.png");
+    sb::Sprite crosshair("dot.png");
     crosshair.SetPosition(0.f, 0.f, 0.f);
     crosshair.SetScale(0.01f, 0.01f * 1.33f, 1.f);
 
@@ -55,10 +55,10 @@ int main()
          yaxis(Vec3(0.f, 1000.f, 0.f), sb::Color(1.f, 0.f, 0.f)),
          zaxis(Vec3(0.f, 0.f, 1000.f), sb::Color(0.f, 1.f, 0.f));
 
-    sb::Model skybox(L"skybox.obj");
+    sb::Model skybox("skybox.obj");
     skybox.SetScale(1000.f);
 
-    sb::Terrain terrain(L"hmap_flat.jpg", L"ground.jpg");
+    sb::Terrain terrain("hmap_flat.jpg", "ground.jpg");
     terrain.SetScale(10.f, 1.f, 10.f);
     terrain.SetPosition(-640.f, 0.f, -640.f);
 
@@ -332,18 +332,23 @@ int main()
                         break;
                     case sb::Key::PrintScreen:
                         {
-                            std::wstringstream filename;
 #ifdef PLATFORM_WIN32
                             SYSTEMTIME systime;
                             ::GetSystemTime(&systime);
-                            filename << systime.wHour << "." << systime.wMinute << "." << systime.wSecond << "." << systime.wMilliseconds << ".png";
+                            std::string filename =
+                                    makeString(systime.wHour, ".",
+                                               systime.wMinute, ".",
+                                               systime.wSecond, ".",
+                                               systime.wMilliseconds, ".png");
 #else // PLATFORM_LINUX
                             timeval current;
                             gettimeofday(&current, NULL);
-                            filename << current.tv_sec << "." << (current.tv_usec / 1000) << ".png";
+                            std::string filename =
+                                    makeString(current.tv_sec, ".",
+                                               (current.tv_usec / 1000), ".png");
 #endif // PLATFORM_WIN32
 
-                            wnd.SaveScreenshot(filename.str().c_str());
+                            wnd.SaveScreenshot(filename);
                             break;
                         }
                     default:

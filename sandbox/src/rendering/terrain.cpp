@@ -3,7 +3,8 @@
 
 namespace sb
 {
-    Terrain::Terrain(const std::wstring& heightmap, const std::wstring& texture):
+    Terrain::Terrain(const std::string& heightmap,
+                     const std::string& texture):
         Drawable(ProjectionPerspective)
     {
         mMesh = gResourceMgr.GetTerrain(heightmap);

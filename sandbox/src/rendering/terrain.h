@@ -8,7 +8,8 @@ namespace sb
     class Terrain: public Drawable
     {
     public:
-        Terrain(const std::wstring& heightmap, const std::wstring& texture);
+        Terrain(const std::string& heightmap,
+                const std::string& texture);
     };
 } // namespace sb
 

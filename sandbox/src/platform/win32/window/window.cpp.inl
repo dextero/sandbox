@@ -292,14 +292,12 @@ namespace sb
 
     void Window::SetTitle(const std::string& str)
     {
-        ::SetWindowText(mWnd, (LPCTSTR)str.c_str());
+#ifdef UNICODE
+        ::SetWindowText(mWnd, StringUtils::toWString(str).c_str());
+#else // !UNICODE
+        ::SetWindowText(mWnd, str.c_str());
+#endif // UNICODE
     }
-
-    void Window::SetTitle(const std::wstring& str)
-    {
-        ::SetWindowText(mWnd, (LPCTSTR)StringUtils::ToWString(str).c_str());
-    }
-
 
     void Window::Clear(const Color& c)
     {
@@ -328,10 +326,10 @@ namespace sb
         mLockCursor = lock;
     }
 
-    void Window::SaveScreenshot(const wchar_t* filename)
+    void Window::SaveScreenshot(const char* filename)
     {
         Vec2i size = GetSize();
-        mRenderer.SaveScreenshot(filename, size[0], size[1]);
+        mRenderer.SaveScreenshot(filename, size.x, size.y);
     }
 
 

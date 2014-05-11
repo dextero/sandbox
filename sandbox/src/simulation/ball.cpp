@@ -37,7 +37,7 @@ namespace Sim
         mDeltaDistance(0.0),
         mTime(0.0),
         mPos(pos),
-        mModel(L"sphere.obj"),
+        mModel("sphere.obj"),
         mTimeToLive(5u)
     {
         mPath.push_back(pos);

@@ -37,14 +37,13 @@ namespace sb
         bool IsOpened();
         bool HasFocus();
         void SetTitle(const std::string& str);
-        void SetTitle(const std::wstring& str);
 
         void Clear(const Color& c);
         void Draw(Drawable& d);
         void Display();
         void HideCursor(bool hide = true);
         void LockCursor(bool lock = true);
-        void SaveScreenshot(const wchar_t* filename);
+        void SaveScreenshot(const std::string& filename);
 
         Renderer& GetRenderer();
         Camera& GetCamera();

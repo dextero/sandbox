@@ -10,9 +10,9 @@ namespace sb
     {
     public:
         Sprite();
-        Sprite(const std::wstring& image);
+        Sprite(const std::string& image);
 
-        void SetImage(const std::wstring& image);
+        void SetImage(const std::string& image);
     };
 } // namespace sb
 

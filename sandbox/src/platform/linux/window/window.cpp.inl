@@ -215,11 +215,6 @@ namespace sb
         XStoreName(mDisplay, mWindow, str.c_str());
     }
 
-    void Window::SetTitle(const std::wstring& str)
-    {
-        XStoreName(mDisplay, mWindow, StringUtils::toString(str).c_str());
-    }
-
 
     void Window::Clear(const Color& c)
     {
@@ -262,10 +257,10 @@ namespace sb
         mLockCursor = lock;
     }
 
-    void Window::SaveScreenshot(const wchar_t* filename)
+    void Window::SaveScreenshot(const std::string& filename)
     {
         Vec2i size = GetSize();
-        mRenderer.SaveScreenshot(filename, size[0], size[1]);
+        mRenderer.SaveScreenshot(filename, size.x, size.y);
     }
 
 

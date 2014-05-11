@@ -10,9 +10,9 @@ namespace sb
     {
     public:
         Model();
-        Model(const std::wstring& path);
+        Model(const std::string& path);
 
-        bool LoadFromFile(const std::wstring& path);
+        bool LoadFromFile(const std::string& path);
     };
 } // namespace sb
 

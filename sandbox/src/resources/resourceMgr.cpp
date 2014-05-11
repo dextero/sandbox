@@ -38,21 +38,21 @@ namespace sb
 
     TextureId ResourceMgr::GetDefaultTexture()
     {
-        return GetTexture(L"default.png");
+        return GetTexture("default.png");
     }
 
     ResourceMgr::ResourceMgr():
-        mBasePath(L"data/")
+        mBasePath("data/")
     {
         GLint maxTexSize;
         GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize));
         gLog.Info("max texture size: %d\n", maxTexSize);
 
         mTypePath.resize(ResourceCount);
-        mTypePath[ResourceTexture] = L"texture/";
-        mTypePath[ResourceMesh] = L"mesh/";
-        mTypePath[ResourceImage] = L"image/";
-        mTypePath[ResourceShader] = L"shader/";
+        mTypePath[ResourceTexture] = "texture/";
+        mTypePath[ResourceMesh] = "mesh/";
+        mTypePath[ResourceImage] = "image/";
+        mTypePath[ResourceShader] = "shader/";
 
         ilInit();
 
@@ -89,8 +89,8 @@ namespace sb
         line->Create(Mesh::ShapeLine, lineVertices, NULL, NULL, 2, lineIndices, 2, 0);
         quad->Create(Mesh::ShapeQuad, quadVertices, quadTexcoords, NULL, 4, quadIndices, 4, GetDefaultTexture());
 
-        mResources[ResourceMesh].insert(std::make_pair(L"*line", ResourceRefCounter((ResourceHandle)line)));
-        mResources[ResourceMesh].insert(std::make_pair(L"*quad", ResourceRefCounter((ResourceHandle)quad)));
+        mResources[ResourceMesh].insert(std::make_pair("*line", ResourceRefCounter((ResourceHandle)line)));
+        mResources[ResourceMesh].insert(std::make_pair("*quad", ResourceRefCounter((ResourceHandle)quad)));
     }
 
     ResourceMgr::~ResourceMgr()
@@ -103,11 +103,11 @@ namespace sb
 
     void ResourceMgr::FreeAllResources()
     {
-        for (std::map<EResourceType, std::map<std::wstring, ResourceRefCounter> >::iterator it = mResources.begin(); it != mResources.end(); ++it)
+        for (auto &typeMapPair: mResources)
         {
-            std::map<std::wstring, ResourceRefCounter>& res = it->second;
-            for (std::map<std::wstring, ResourceRefCounter>::iterator it2 = res.begin(); it2 != res.end(); ++it2)
-                DeleteResource(it->first, it2->second.handle);
+            for (auto &pathRefCountPair: typeMapPair.second)
+                DeleteResource(typeMapPair.first,
+                               pathRefCountPair.second.handle);
         }
         mResources.clear();
 
@@ -115,7 +115,8 @@ namespace sb
     }
 
 
-    bool ResourceMgr::LoadResource(EResourceType type, const std::wstring& name)
+    bool ResourceMgr::LoadResource(EResourceType type,
+                                   const std::string& name)
     {
         switch (type)
         {
@@ -140,11 +141,11 @@ namespace sb
         return false;
     }
 
-    bool ResourceMgr::LoadTexture(const std::wstring& name)
+    bool ResourceMgr::LoadTexture(const std::string& name)
     {
         gLog.Info("loading texture %ls\n", name.c_str());
 
-        std::map<std::wstring, ResourceRefCounter>& textures = mResources[ResourceTexture];
+        std::map<std::string, ResourceRefCounter>& textures = mResources[ResourceTexture];
 
         if (textures.find(name) != textures.end())
         {
@@ -203,11 +204,11 @@ namespace sb
         return true;
     }
 
-    bool ResourceMgr::LoadMesh(const std::wstring& name)
+    bool ResourceMgr::LoadMesh(const std::string& name)
     {
         gLog.Info("loading mesh %ls\n", name.c_str());
 
-        std::map<std::wstring, ResourceRefCounter>& meshs = mResources[ResourceMesh];
+        std::map<std::string, ResourceRefCounter>& meshs = mResources[ResourceMesh];
 
         // TODO: wiele tekstur
         Assimp::Importer importer;
@@ -238,7 +239,7 @@ namespace sb
             aiReturn result = scene->mMaterials[mesh->mMaterialIndex]->GetTexture(aiTextureType_DIFFUSE, 0, &filename);
             if (result == AI_SUCCESS)
             {
-                texture = GetTexture(StringUtils::toWString(filename.data));
+                texture = GetTexture(filename.data);
 
                 texcoords = new Vec2[mesh->mNumVertices];
                 for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
@@ -274,11 +275,11 @@ namespace sb
         return true;
     }
 
-    bool ResourceMgr::LoadTerrain(const std::wstring& heightmap)
+    bool ResourceMgr::LoadTerrain(const std::string& heightmap)
     {
         gLog.Info("loading terrain %ls\n", heightmap.c_str());
 
-        std::map<std::wstring, ResourceRefCounter>& meshs = mResources[ResourceTerrain];
+        std::map<std::string, ResourceRefCounter>& meshs = mResources[ResourceTerrain];
 
         /*
         FILE* f = _wfopen(heightmap.c_str(), L"r");
@@ -380,9 +381,9 @@ namespace sb
         }
     }
 
-    ResourceHandle ResourceMgr::GetResource(EResourceType type, const std::wstring& name)
+    ResourceHandle ResourceMgr::GetResource(EResourceType type, const std::string& name)
     {
-        std::map<std::wstring, ResourceRefCounter>& resources = mResources[type];
+        std::map<std::string, ResourceRefCounter>& resources = mResources[type];
 
         if (resources.find(name) != resources.end())
             return resources[name].Attach();
@@ -397,9 +398,9 @@ namespace sb
 
     bool ResourceMgr::AddReference(EResourceType type, ResourceHandle handle)
     {
-        std::map<std::wstring, ResourceRefCounter>& resources = mResources[type];
+        std::map<std::string, ResourceRefCounter>& resources = mResources[type];
 
-        for (std::map<std::wstring, ResourceRefCounter>::iterator it = resources.begin(); it != resources.end(); ++it)
+        for (std::map<std::string, ResourceRefCounter>::iterator it = resources.begin(); it != resources.end(); ++it)
             if (it->second.handle == handle)
             {
                 it->second.Attach();
@@ -411,9 +412,9 @@ namespace sb
 
     void ResourceMgr::FreeResource(EResourceType type, ResourceHandle handle)
     {
-        std::map<std::wstring, ResourceRefCounter>& resources = mResources[type];
+        std::map<std::string, ResourceRefCounter>& resources = mResources[type];
 
-        for (std::map<std::wstring, ResourceRefCounter>::iterator it = resources.begin(); it != resources.end(); ++it)
+        for (std::map<std::string, ResourceRefCounter>::iterator it = resources.begin(); it != resources.end(); ++it)
             if (it->second.handle == handle)
             {
                 if (it->second.Detach())
@@ -433,7 +434,7 @@ namespace sb
     }
 
     // there should be 1 Free* for every Get* call!
-    TextureId ResourceMgr::GetTexture(const std::wstring& name)
+    TextureId ResourceMgr::GetTexture(const std::string& name)
     {
         return (TextureId)GetResource(ResourceTexture, name);
     }
@@ -448,7 +449,7 @@ namespace sb
         FreeResource(ResourceTexture, (ResourceHandle)id);
     }
 
-    Image* ResourceMgr::GetImage(const std::wstring& name)
+    Image* ResourceMgr::GetImage(const std::string& name)
     {
         return (Image*)GetResource(ResourceImage, name);
     }
@@ -463,7 +464,7 @@ namespace sb
         FreeResource(ResourceImage, (ResourceHandle)img);
     }
 
-    Mesh* ResourceMgr::GetMesh(const std::wstring& name)
+    Mesh* ResourceMgr::GetMesh(const std::string& name)
     {
         return (Mesh*)GetResource(ResourceMesh, name);
     }
@@ -478,7 +479,7 @@ namespace sb
         FreeResource(ResourceMesh, (ResourceHandle)mesh);
     }
 
-    Mesh* ResourceMgr::GetTerrain(const std::wstring& heightmap)
+    Mesh* ResourceMgr::GetTerrain(const std::string& heightmap)
     {
         return (Mesh*)GetResource(ResourceTerrain, heightmap);
     }
@@ -495,12 +496,12 @@ namespace sb
 
     Mesh* ResourceMgr::GetLine()
     {
-        return GetMesh(L"*line");
+        return GetMesh("*line");
     }
 
     Mesh* ResourceMgr::GetSprite(TextureId texture)
     {
-        Mesh* ret = GetMesh(L"*quad");
+        Mesh* ret = GetMesh("*quad");
         if (ret)
             ret->mTexture = texture;
         return ret;

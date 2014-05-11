@@ -5,6 +5,7 @@
 #include <Windows.h>
 
 #include <queue>
+#include <string>
 
 #include "rendering/renderer.h"
 #include "rendering/color.h"
@@ -46,7 +47,7 @@ namespace sb
         void Display();
         void HideCursor(bool hide = true);
         void LockCursor(bool lock = true);
-        void SaveScreenshot(const wchar_t* filename);
+        void SaveScreenshot(const std::string& filename);
 
         Renderer& GetRenderer();
         Camera& GetCamera();
