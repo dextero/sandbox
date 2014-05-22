@@ -11,12 +11,15 @@ namespace sb
     Image::Image(const std::string& file):
         mId(0u)
     {
-        if (!LoadFromFile(file))
-            gLog.Err("couldn't load image %ls\n", file.c_str());
+        if (!LoadFromFile(file)) {
+            gLog.Err("couldn't load image %s\n", file.c_str());
+        }
     }
 
     bool Image::LoadFromFile(const std::string& file)
     {
+        gLog.Info("loading image %s\n", file.c_str());
+
         IL_CHECK(mId = ilGenImage());
         IL_CHECK_RET(ilBindImage(mId), false);
 

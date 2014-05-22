@@ -8,7 +8,6 @@ solution 'sandbox'
         includedirs { 'src' }
         targetdir 'bin'
         links { 'GL', 'GLU', 'GLEW', 'IL', 'ILU', 'assimp', 'X11' }
-        defines { 'uint=dupadupadupa' }
         buildoptions { '-Wall -Wextra -std=c++11 -DGLM_FORCE_RADIANS' }
 
         configuration 'debug'

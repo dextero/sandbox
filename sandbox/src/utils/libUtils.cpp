@@ -32,7 +32,7 @@ namespace sb
         {
             ILuint err = ilGetError();
             if (err != IL_NO_ERROR)
-                gLog.Err("DevIL error: \"%ls\" at file %s, line %d\n>> %s\n", iluErrorString(err), file, line, call);
+                gLog.Err("DevIL error: \"%s\" at file %s, line %d\n>> %s\n", iluErrorString(err), file, line, call);
 
             return !!err;
         }

@@ -30,7 +30,7 @@ namespace sb
         mTextures(mBasePath + "texture/"),
         mImages(mBasePath + "image/"),
         mMeshes(mBasePath + "mesh/"),
-        mTerrains(mBasePath + "terrain/")
+        mTerrains(mBasePath + "image/")
     {
         GLint maxTexSize;
         GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize));
@@ -94,18 +94,18 @@ namespace sb
 
     std::shared_ptr<Image> ResourceMgr::loadImage(const std::string& name)
     {
-        gLog.Info("loading image %ls\n", name.c_str());
-
         std::shared_ptr<Image> img = std::make_shared<Image>();
         if (img->LoadFromFile(name)) {
             return img;
         }
-        return std::shared_ptr<Image>();
+
+        gLog.Err("cannot load image %s\n", name.c_str());
+        return std::make_shared<Image>();
     }
 
     std::shared_ptr<TextureId> ResourceMgr::loadTexture(const std::string& name)
     {
-        gLog.Info("loading texture %ls\n", name.c_str());
+        gLog.Info("loading texture %s\n", name.c_str());
 
         ILuint image = ilGenImage();
         IL_CHECK_RET(ilBindImage(image), false);
@@ -162,7 +162,7 @@ namespace sb
 
     std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
     {
-        gLog.Info("loading mesh %ls\n", name.c_str());
+        gLog.Info("loading mesh %s\n", name.c_str());
 
         // TODO: wiele tekstur
         Assimp::Importer importer;
@@ -207,7 +207,7 @@ namespace sb
                                                 mesh->mTextureCoords[0][i].y));
                 }
             } else {
-                gLog.Err("%ls: texture not loaded\n", name.c_str());
+                gLog.Err("%s: texture not loaded\n", name.c_str());
             }
 
             // indices
@@ -240,14 +240,14 @@ namespace sb
 
     std::shared_ptr<Mesh> ResourceMgr::loadTerrain(const std::string& heightmap)
     {
-        gLog.Info("loading terrain %ls\n", heightmap.c_str());
+        gLog.Info("loading terrain %s\n", heightmap.c_str());
 
         std::shared_ptr<Image> img = gResourceMgr.getImage(heightmap);
         uint32_t w = img->GetWidth();
         uint32_t h = img->GetHeight();
         uint32_t* data = (uint32_t*)img->GetData();
 
-        gLog.Info("loading terrain %ls: %ux%u vertices\n",
+        gLog.Info("loading terrain %s: %ux%u vertices\n",
                   heightmap.c_str(), w, h);
 
 #define RGBA_TO_HEIGHT(rgba) \

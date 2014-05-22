@@ -47,7 +47,7 @@ namespace sb
                 return it->second;
             }
 
-            std::shared_ptr<T> resource = LoadFunc(name);
+            std::shared_ptr<T> resource = LoadFunc(mBasePath + name);
             if (resource) {
                 mResources.insert(std::make_pair(name, resource));
             }
