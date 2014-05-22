@@ -68,8 +68,8 @@ namespace sb
 
         std::vector<uint32_t> quadIndices { 0, 1, 2, 3 };
 
-        line->Create(Mesh::ShapeLine, lineVertices, {}, {}, lineIndices, 0);
-        quad->Create(Mesh::ShapeQuad, quadVertices, quadTexcoords, {}, quadIndices, getDefaultTexture());
+        line->create(Mesh::ShapeLine, lineVertices, {}, {}, lineIndices, 0);
+        quad->create(Mesh::ShapeQuad, quadVertices, quadTexcoords, {}, quadIndices, getDefaultTexture());
 
         mMeshes.addSpecial("line", line);
         mMeshes.addSpecial("quad", quad);
@@ -95,7 +95,7 @@ namespace sb
     std::shared_ptr<Image> ResourceMgr::loadImage(const std::string& name)
     {
         std::shared_ptr<Image> img = std::make_shared<Image>();
-        if (img->LoadFromFile(name)) {
+        if (img->loadFromFile(name)) {
             return img;
         }
 
@@ -226,7 +226,7 @@ namespace sb
 
             // mesh
             std::shared_ptr<Mesh> loadedMesh = std::make_shared<Mesh>();
-            if (!loadedMesh->Create(Mesh::ShapeTriangle,
+            if (!loadedMesh->create(Mesh::ShapeTriangle,
                                     vertices, texcoords,
                                     {}, indices, texture)) {
                 return {};
@@ -243,9 +243,9 @@ namespace sb
         gLog.Info("loading terrain %s\n", heightmap.c_str());
 
         std::shared_ptr<Image> img = gResourceMgr.getImage(heightmap);
-        uint32_t w = img->GetWidth();
-        uint32_t h = img->GetHeight();
-        uint32_t* data = (uint32_t*)img->GetData();
+        uint32_t w = img->getWidth();
+        uint32_t h = img->getHeight();
+        uint32_t* data = (uint32_t*)img->getData();
 
         gLog.Info("loading terrain %s: %ux%u vertices\n",
                   heightmap.c_str(), w, h);
@@ -304,7 +304,7 @@ namespace sb
 
         // mesh
         std::shared_ptr<Mesh> terrain = std::make_shared<Mesh>();
-        if (terrain->Create(Mesh::ShapeTriangle,
+        if (terrain->create(Mesh::ShapeTriangle,
                             vertices, texcoords, {}, indices, 0)) {
             return terrain;
         }
@@ -349,7 +349,7 @@ namespace sb
             return {};
         }
 
-        mesh->SetTexture(texture);
+        mesh->setTexture(texture);
         return mesh;
    }
 } // namespace sb

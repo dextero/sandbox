@@ -70,10 +70,10 @@ namespace sb
 
     Shader::EShader Drawable::GetShader() const
     {
-        if (mTexture || (mMesh && mMesh->GetTexture()))
+        if (mTexture || (mMesh && mMesh->getTexture())) {
             return Shader::ShaderTexture;
-        else
-            return Shader::ShaderColor;
+        }
+        return Shader::ShaderColor;
     }
 
     void Drawable::SetPosition(const Vec3& pos)

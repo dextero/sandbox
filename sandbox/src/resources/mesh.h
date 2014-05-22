@@ -33,7 +33,7 @@ namespace sb
         EShape mShape;
         std::shared_ptr<TextureId> mTexture;
 
-        bool Create(EShape shape,
+        bool create(EShape shape,
                     const std::vector<Vec3>& vertices,
                     const std::vector<Vec2>& texcoords,
                     const std::vector<Color>& colors,
@@ -44,20 +44,20 @@ namespace sb
         Mesh();
         ~Mesh();
 
-        static SharedVertexBuffer& GetVertexBuffer()
+        static SharedVertexBuffer& getVertexBuffer()
         {
             assert(msBuffer);
             return *msBuffer;
         }
 
-        uint32_t GetVertexBufferOffset() { return mBufferOffset; }
-        BufferId GetIndexBuffer() { return mIndexBuffer; }
-        uint32_t GetIndexBufferSize() { return mIndexBufferSize; }
+        uint32_t getVertexBufferOffset() { return mBufferOffset; }
+        BufferId getIndexBuffer() { return mIndexBuffer; }
+        uint32_t getIndexBufferSize() { return mIndexBufferSize; }
 
-        EShape GetShape() { return mShape; }
-        const std::shared_ptr<TextureId>& GetTexture() { return mTexture; }
+        EShape getShape() { return mShape; }
+        const std::shared_ptr<TextureId>& getTexture() { return mTexture; }
 
-        void SetTexture(const std::shared_ptr<TextureId>& texture)
+        void setTexture(const std::shared_ptr<TextureId>& texture)
         {
             mTexture = texture;
         }

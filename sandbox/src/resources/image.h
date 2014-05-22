@@ -15,11 +15,11 @@ namespace sb
         Image();
         Image(const std::string& file);
 
-        bool LoadFromFile(const std::string& file);
+        bool loadFromFile(const std::string& file);
 
-        uint32_t GetWidth();
-        uint32_t GetHeight();
-        void* GetData();
+        uint32_t getWidth();
+        uint32_t getHeight();
+        void* getData();
     };
 } // namespace sb
 

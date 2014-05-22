@@ -28,7 +28,7 @@ namespace sb
             GL_CHECK(glDeleteBuffers(1, &mIndexBuffer));
     }
 
-    bool Mesh::Create(EShape shape,
+    bool Mesh::create(EShape shape,
                       const std::vector<Vec3>& vertices,
                       const std::vector<Vec2>& texcoords,
                       const std::vector<Color>& colors,

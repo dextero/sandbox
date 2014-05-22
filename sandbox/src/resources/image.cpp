@@ -11,12 +11,12 @@ namespace sb
     Image::Image(const std::string& file):
         mId(0u)
     {
-        if (!LoadFromFile(file)) {
+        if (!loadFromFile(file)) {
             gLog.Err("couldn't load image %s\n", file.c_str());
         }
     }
 
-    bool Image::LoadFromFile(const std::string& file)
+    bool Image::loadFromFile(const std::string& file)
     {
         gLog.Info("loading image %s\n", file.c_str());
 
@@ -34,19 +34,19 @@ namespace sb
         return true;
     }
 
-    uint32_t Image::GetWidth()
+    uint32_t Image::getWidth()
     {
         IL_CHECK(ilBindImage(mId));
         return ilGetInteger(IL_IMAGE_WIDTH);
     }
 
-    uint32_t Image::GetHeight()
+    uint32_t Image::getHeight()
     {
         IL_CHECK(ilBindImage(mId));
         return ilGetInteger(IL_IMAGE_HEIGHT);
     }
 
-    void* Image::GetData()
+    void* Image::getData()
     {
         IL_CHECK(ilBindImage(mId));
         return ilGetData();

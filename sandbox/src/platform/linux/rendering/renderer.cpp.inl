@@ -272,11 +272,11 @@ namespace sb
             if (!mesh) {
                 mesh = gResourceMgr.getSprite(texture);
             } else if (!texture) {
-                texture = mesh->GetTexture();
+                texture = mesh->getTexture();
             }
 
             // should be before Shader::Use to ensure that glBindAttribLocation calls are correct
-            mesh->GetVertexBuffer().Bind();
+            mesh->getVertexBuffer().Bind();
 
             if (texture) {
                 Shader::Use(Shader::ShaderTexture);
@@ -302,12 +302,12 @@ namespace sb
             shader.SetUniform("u_matModel", d.GetTransformationMatrix());
 
             GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
-                                  mesh->GetIndexBuffer()));
-            GL_CHECK(glDrawElements(mesh->GetShape(),
-                                    mesh->GetIndexBufferSize(),
+                                  mesh->getIndexBuffer()));
+            GL_CHECK(glDrawElements(mesh->getShape(),
+                                    mesh->getIndexBufferSize(),
                                     GL_UNSIGNED_INT, 0));
 
-            mesh->GetVertexBuffer().Unbind();
+            mesh->getVertexBuffer().Unbind();
         }
     }
 
@@ -325,7 +325,7 @@ namespace sb
         if (shaderType == Shader::ShaderTexture)
             shader->SetUniform("u_texture", (int)Shader::SamplerImage);
 
-        std::shared_ptr<TextureId> texture = (mDrawablesBuffer[0].mTexture ? mDrawablesBuffer[0].mTexture : mDrawablesBuffer[0].mMesh->GetTexture());
+        std::shared_ptr<TextureId> texture = (mDrawablesBuffer[0].mTexture ? mDrawablesBuffer[0].mTexture : mDrawablesBuffer[0].mMesh->getTexture());
         GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
         GL_CHECK(glBindTexture(GL_TEXTURE_2D, *texture));
 
@@ -334,7 +334,7 @@ namespace sb
             mCamera.GetOrthographicProjectionMatrix() :
             Mat44(mCamera.GetPerspectiveProjectionMatrix() * mCamera.GetViewMatrix()));
 
-        Mesh::GetVertexBuffer().Bind();
+        Mesh::getVertexBuffer().Bind();
 
         for (std::vector<Drawable>::iterator it = mDrawablesBuffer.begin(); it != mDrawablesBuffer.end(); ++it)
         {
@@ -351,7 +351,7 @@ namespace sb
                     Mat44(mCamera.GetPerspectiveProjectionMatrix() * mCamera.GetViewMatrix()));
             }
 
-            std::shared_ptr<TextureId> tex = (it->mTexture ? it->mTexture : it->mMesh->GetTexture());
+            std::shared_ptr<TextureId> tex = (it->mTexture ? it->mTexture : it->mMesh->getTexture());
             if (tex != texture)
             {
                 texture = tex;
@@ -371,20 +371,21 @@ namespace sb
             shader->SetUniform("u_color", it->mColor);
 
             std::shared_ptr<Mesh> mesh = (it->mMesh ? it->mMesh : gResourceMgr.getSprite(it->mTexture));
-            GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetIndexBuffer()));
-            GL_CHECK(glDrawElements(mesh->GetShape(), mesh->GetIndexBufferSize(), GL_UNSIGNED_INT, NULL));
+            GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->getIndexBuffer()));
+            GL_CHECK(glDrawElements(mesh->getShape(), mesh->getIndexBufferSize(), GL_UNSIGNED_INT, NULL));
         }
 
         mDrawablesBuffer.clear();
-        Mesh::GetVertexBuffer().Unbind();
+        Mesh::getVertexBuffer().Unbind();
     }
 
     void Renderer::EnableFeature(EFeature feature, bool enable)
     {
-        if (enable)
+        if (enable) {
             GL_CHECK(glEnable((GLenum)feature));
-        else
+        } else {
             GL_CHECK(glDisable((GLenum)feature));
+        }
     }
 
     void Renderer::SaveScreenshot(const std::string& filename, int width, int height)
