@@ -87,7 +87,7 @@ namespace sb
             for (auto it = mResources.begin(); it != mResources.end();) {
                 if (it->second.use_count() == 1
                         && !isSpecial(it->first)) {
-                    gLog.Info("ResourceMgr: removing %s\n", (mBasePath + it->first).c_str());
+                    gLog.info("ResourceMgr: removing %s\n", (mBasePath + it->first).c_str());
                     ReleaseFunc(it->second);
                     it = mResources.erase(it);
                 } else {
@@ -159,6 +159,6 @@ namespace sb
     };
 } // namespace sb
 
-#define gResourceMgr sb::ResourceMgr::Get()
+#define gResourceMgr sb::ResourceMgr::get()
 
 #endif //RESOURCEMGR_H

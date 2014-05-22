@@ -9,7 +9,7 @@
 
 namespace sb
 {
-    namespace StringUtils
+    namespace utils
     {
         template<typename T>
         std::string toString(const T& elem)
@@ -57,7 +57,7 @@ namespace sb
         std::wstring toWString(const std::string& str);
 
         std::vector<std::string> split(const std::string& str, char c);
-    } // namespace StringUtils
+    } // namespace utils
 } // namespace sb
 
 #endif //STRINGUTILS_H

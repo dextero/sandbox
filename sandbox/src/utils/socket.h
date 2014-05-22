@@ -15,7 +15,7 @@ class IPAddr
     uint32_t mAddress;
     uint16_t mPort;
 
-    template<typename T> bool Parse(const T* str, const T* format, int (*sscanf)(const T*, const T*, ...), bool hasPort)
+    template<typename T> bool parse(const T* str, const T* format, int (*sscanf)(const T*, const T*, ...), bool hasPort)
     {
         char buffer[512];
         int read = sscanf(str, format, buffer, &mPort);
@@ -48,9 +48,9 @@ public:
     IPAddr(const char* addr, uint16_t port);
     IPAddr(const wchar_t* addr, uint16_t port);
 
-    const char* GetIPString() const;
-    const char* GetFullString() const;
-    uint16_t GetPort() const;
+    const char* getIPString() const;
+    const char* getFullString() const;
+    uint16_t getPort() const;
 };
 
 IPAddr::IPAddr()
@@ -60,19 +60,19 @@ IPAddr::IPAddr()
 
 IPAddr::IPAddr(const char* addr)
 {
-    if (!Parse(addr, "%[^:]:%u", sscanf, true))
+    if (!parse(addr, "%[^:]:%u", sscanf, true))
         memset(this, 0, sizeof(*this));
 }
 
 IPAddr::IPAddr(const wchar_t* addr)
 {
-    if (!Parse(addr, L"%[^:]:%u", swscanf, true))
+    if (!parse(addr, L"%[^:]:%u", swscanf, true))
         memset(this, 0, sizeof(*this));
 }
 
 IPAddr::IPAddr(const char* addr, uint16_t port)
 {
-    if (Parse(addr, "%s", sscanf, false))
+    if (parse(addr, "%s", sscanf, false))
         mPort = port;
     else
         memset(this, 0, sizeof(*this));
@@ -80,25 +80,25 @@ IPAddr::IPAddr(const char* addr, uint16_t port)
 
 IPAddr::IPAddr(const wchar_t* addr, uint16_t port)
 {
-    if (Parse(addr, L"%s", swscanf, false))
+    if (parse(addr, L"%s", swscanf, false))
         mPort = port;
     else
         memset(this, 0, sizeof(*this));
 }
 
-const char* IPAddr::GetIPString() const
+const char* IPAddr::getIPString() const
 {
     return inet_ntoa(*(in_addr*)&mAddress);
 }
 
-const char* IPAddr::GetFullString() const
+const char* IPAddr::getFullString() const
 {
     static char buffer[22]; // 3*255., 1*255:, 1*65536, 1*zero
     sprintf(buffer, "%s:%u", inet_ntoa(*(in_addr*)&mAddress), (uint32_t)mPort);
     return buffer;
 }
 
-uint16_t IPAddr::GetPort() const
+uint16_t IPAddr::getPort() const
 {
     return mPort;
 }
@@ -111,7 +111,7 @@ protected:
     IPAddr mAddress;
     bool mBlocking;
 
-    static void HandleError(const char* from = NULL, int error = 0);
+    static void handleError(const char* from = NULL, int error = 0);
     Socket();
     ~Socket();
 public:
@@ -134,11 +134,11 @@ public:
         ICMPv6 = IPPROTO_ICMPV6
     };
 
-    uint32_t Read(void* buf, uint32_t bufSize);
-    bool Write(const void* buf, uint32_t bufSize);
+    uint32_t read(void* buf, uint32_t bufSize);
+    bool write(const void* buf, uint32_t bufSize);
 
-    const IPAddr& GetAddress();
-    bool SetBlocking(bool blocking);
+    const IPAddr& getAddress();
+    bool setBlocking(bool blocking);
 };
 
 class ServerSocket;
@@ -147,8 +147,8 @@ class ClientSocket: public Socket
 {
 private:
 public:
-    bool Connect(const IPAddr& address, Protocol proto = TCP, AddressFamily af = IPv4, Type type = Stream);
-    bool Close();
+    bool connect(const IPAddr& address, Protocol proto = TCP, AddressFamily af = IPv4, Type type = Stream);
+    bool close();
 };
 
 class AcceptSocket: public Socket
@@ -160,8 +160,8 @@ private:
     ~AcceptSocket() {}
 public:
 
-    bool IsValid();
-    bool Close();
+    bool isValid();
+    bool close();
 
 friend class ServerSocket;
 };
@@ -178,26 +178,26 @@ private:
     HANDLE mListenThread;
     std::queue<AcceptSocket*> mAccepted;
 
-    static unsigned int __stdcall ListenThreadFunc(void* thisPtr);
-    void ResetThread();
-    void OnClientClose(AcceptSocket* socket);
-    void Accept(SOCKET sock, const IPAddr& address);
+    static unsigned int __stdcall listenThreadFunc(void* thisPtr);
+    void resetThread();
+    void onClientClose(AcceptSocket* socket);
+    void accept(SOCKET sock, const IPAddr& address);
 public:
     ServerSocket();
     ~ServerSocket();
 
-    bool Listen(uint16_t port, uint32_t maxConnections, Protocol proto = TCP, AddressFamily af = IPv4, Type type = Stream);
-    bool Close();
-    bool ClientsPending();
-    AcceptSocket* GetNewClient();
+    bool listen(uint16_t port, uint32_t maxConnections, Protocol proto = TCP, AddressFamily af = IPv4, Type type = Stream);
+    bool close();
+    bool clientsPending();
+    AcceptSocket* getNewClient();
 
-friend bool AcceptSocket::Close();
+friend bool AcceptSocket::close();
 };
 
 
 bool Socket::mWSAInitialised;
 
-void Socket::HandleError(const char* from, int error)
+void Socket::handleError(const char* from, int error)
 {
     char* message = NULL;
     if (error == 0)
@@ -225,7 +225,7 @@ Socket::~Socket()
 {
 }
 
-uint32_t Socket::Read(void* buf, uint32_t bufSize)
+uint32_t Socket::read(void* buf, uint32_t bufSize)
 {
     if (!mSock)
         return 0;
@@ -237,30 +237,30 @@ uint32_t Socket::Read(void* buf, uint32_t bufSize)
         if (error == WSAEWOULDBLOCK)
             return 0;
 
-        HandleError("Socket::Read", error);
+        handleError("Socket::Read", error);
     }
 
     return (ret >= 0 ? ret : 0);
 }
 
-bool Socket::Write(const void* buf, uint32_t bufSize)
+bool Socket::write(const void* buf, uint32_t bufSize)
 {
     if (!mSock)
         return false;
 
     int ret = ::send(mSock, (const char*)buf, (int)bufSize, 0);
     if (ret == SOCKET_ERROR)
-        HandleError("Socket::Write");
+        handleError("Socket::Write");
 
     return ret == bufSize;
 }
 
-const IPAddr& Socket::GetAddress()
+const IPAddr& Socket::getAddress()
 {
     return mAddress;
 }
 
-bool Socket::SetBlocking(bool blocking)
+bool Socket::setBlocking(bool blocking)
 {
     mBlocking = blocking;
 
@@ -269,7 +269,7 @@ bool Socket::SetBlocking(bool blocking)
         u_long block = (int)blocking;
         if (::ioctlsocket(mSock, FIOASYNC, &block) == SOCKET_ERROR)
         {
-            HandleError("Socket::SetBlocking");
+            HandleError("Socket::setBlocking");
             return false;
         }
     }
@@ -279,18 +279,18 @@ bool Socket::SetBlocking(bool blocking)
 
 // ClientSocket ------------------------------------------------------------ //
 
-bool ClientSocket::Connect(const IPAddr& address, Protocol proto, AddressFamily af, Type type)
+bool ClientSocket::connect(const IPAddr& address, Protocol proto, AddressFamily af, Type type)
 {
     if (mSock)
-        Close();
+        close();
 
     mSock = ::socket((int)af, (int)type, (int)proto);
     if (mSock == INVALID_SOCKET)
-        HandleError("ClientSocket::Connect@socket");
+        handleError("ClientSocket::Connect@socket");
     else
     {
         // set async mode if needed
-        SetBlocking(mBlocking);
+        setBlocking(mBlocking);
 
         switch (af)
         {
@@ -299,17 +299,17 @@ bool ClientSocket::Connect(const IPAddr& address, Protocol proto, AddressFamily 
                 sockaddr_in addr;
                 memset(&addr, 0, sizeof(addr));
                 addr.sin_family = af;
-                addr.sin_port = htons(address.GetPort());
-                fprintf(stderr, "using address %s\n", address.GetIPString());
-                addr.sin_addr.s_addr = inet_addr(address.GetIPString());
+                addr.sin_port = htons(address.getPort());
+                fprintf(stderr, "using address %s\n", address.getIPString());
+                addr.sin_addr.s_addr = inet_addr(address.getIPString());
 
                 int ret = ::connect(mSock, (const sockaddr*)&addr, sizeof(addr));
                 if (ret == SOCKET_ERROR)
-                    HandleError("ClientSocket::Connect@connect");
+                    handleError("ClientSocket::connect@connect");
                 else
                 {
                     mAddress = address;
-                    fprintf(stderr, "connected to %s\n", mAddress.GetFullString());
+                    fprintf(stderr, "connected to %s\n", mAddress.getFullString());
                 }
 
                 break;
@@ -325,11 +325,11 @@ bool ClientSocket::Connect(const IPAddr& address, Protocol proto, AddressFamily 
     return mSock != INVALID_SOCKET;
 }
 
-bool ClientSocket::Close()
+bool ClientSocket::close()
 {
     int ret = ::closesocket(mSock);
     if (ret == SOCKET_ERROR)
-        HandleError("ClientSocket::Close");
+        handleError("ClientSocket::close");
     else
         mSock = 0;
 
@@ -347,28 +347,28 @@ AcceptSocket::AcceptSocket(SOCKET sock, const IPAddr& address, ServerSocket* par
     mSock = sock;
     mAddress = address;
 
-    fprintf(stderr, "AcceptSocket: %s\n", mAddress.GetIPString());
+    fprintf(stderr, "AcceptSocket: %s\n", mAddress.getIPString());
 }
 
 AcceptSocket::~AcceptSocket()
 {
-    Close();
+    close();
 }
 
-bool AcceptSocket::IsValid()
+bool AcceptSocket::isValid()
 {
     return mSocket != NULL;
 }
 
-bool AcceptSocket::Close()
+bool AcceptSocket::close()
 {
     int ret = ::closesocket(mSock);
     if (ret == SOCKET_ERROR)
-        HandleError("AcceptSocket::Close");
+        handleError("AcceptSocket::close");
     else
         mSock = 0;
 
-    mParent->OnClientClose(this);
+    mParent->onClientClose(this);
     mAddress = IPAddr();
 
     return mSock == 0;
@@ -376,7 +376,7 @@ bool AcceptSocket::Close()
 
 // ServerSocket ------------------------------------------------------------ //
 
-unsigned int ServerSocket::ListenThreadFunc(void* thisPtr)
+unsigned int ServerSocket::listenThreadFunc(void* thisPtr)
 {
     ServerSocket* _this = (ServerSocket*) thisPtr;
 
@@ -395,24 +395,24 @@ unsigned int ServerSocket::ListenThreadFunc(void* thisPtr)
             if (error == WSAEWOULDBLOCK)
                 ::Sleep(0);
             else
-                HandleError("ServerSocket::ListenThreadFunc", error);
+                handleError("ServerSocket::ListenThreadFunc", error);
         }
         else
-            _this->Accept(ret, IPAddr(inet_ntoa(addr.sin_addr), addr.sin_port));
+            _this->accept(ret, IPAddr(inet_ntoa(addr.sin_addr), addr.sin_port));
     }
 
     return 0;
 }
 
-void ServerSocket::OnClientClose(AcceptSocket* sock)
+void ServerSocket::onClientClose(AcceptSocket* sock)
 {
     sock->~AcceptSocket();
 }
 
-void ServerSocket::Accept(SOCKET sock, const IPAddr& address)
+void ServerSocket::accept(SOCKET sock, const IPAddr& address)
 {
     AcceptSocket* socket = mClients;
-    while (socket->IsValid() && socket < &mClients[mMaxClients])
+    while (socket->isValid() && socket < &mClients[mMaxClients])
         ++socket;
 
     if (socket < &mClients[mMaxClients])
@@ -428,11 +428,11 @@ void ServerSocket::Accept(SOCKET sock, const IPAddr& address)
     else
     {
         fprintf(stderr, "something went terribly wrong, this shouldn't be accepted");
-        AcceptSocket(sock, address, this).Close();
+        acceptSocket(sock, address, this).close();
     }
 }
 
-void ServerSocket::ResetThread()
+void ServerSocket::resetThread()
 {
     if (mListenThread)
     {
@@ -466,15 +466,15 @@ ServerSocket::~ServerSocket()
     Close();
 }
 
-bool ServerSocket::Close()
+bool ServerSocket::close()
 {
-    ResetThread();
+    resetThread();
 
     if (mClients)
     {
         for (uint32_t i = 0; i < mMaxClients; ++i)
-            if (mClients[i].IsValid())
-                mClients[i].Close();
+            if (mClients[i].isValid())
+                mClients[i].close();
 
         free(mClients);
         mClients = NULL;
@@ -483,14 +483,14 @@ bool ServerSocket::Close()
 
     int ret = ::closesocket(mSock);
     if (ret == SOCKET_ERROR)
-        HandleError("ServerSocket::Close");
+        handleError("ServerSocket::Close");
     else
         mSock = 0;
 
     return mSock == 0;
 }
 
-bool ServerSocket::Listen(uint16_t port, uint32_t maxClients, Protocol proto, AddressFamily af, Type type)
+bool ServerSocket::listen(uint16_t port, uint32_t maxClients, Protocol proto, AddressFamily af, Type type)
 {
     if (mClients)
         return false;
@@ -500,7 +500,7 @@ bool ServerSocket::Listen(uint16_t port, uint32_t maxClients, Protocol proto, Ad
         mSock = ::socket(af, type, proto);
         if (mSock == INVALID_SOCKET)
         {
-            HandleError("ServerSocket::Listen@socket");
+            handleError("ServerSocket::listen@socket");
             return false;
         }
     }
@@ -516,25 +516,25 @@ bool ServerSocket::Listen(uint16_t port, uint32_t maxClients, Protocol proto, Ad
 
     int ret = ::bind(mSock, (const sockaddr*)&addr, sizeof(addr));
     if (ret == SOCKET_ERROR)
-        HandleError("ServerSocket::Listen@bind");
+        handleError("ServerSocket::listen@bind");
 
     ret = ::listen(mSock, maxClients);
     if (ret == SOCKET_ERROR)
-        HandleError("ServerSocket::Listen@listen");
+        handleError("ServerSocket::listen@listen");
 
-    ResetThread();
-    mListenThread = ::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&ServerSocket::ListenThreadFunc, this, NULL, NULL);
+    resetThread();
+    mListenThread = ::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&ServerSocket::listenThreadFunc, this, NULL, NULL);
     mMutex = ::CreateMutexA(NULL, FALSE, mMutexName);
 
     return ret != SOCKET_ERROR;
 }
 
-bool ServerSocket::ClientsPending()
+bool ServerSocket::clientsPending()
 {
     return mAccepted.size() > 0;
 }
 
-AcceptSocket* ServerSocket::GetNewClient()
+AcceptSocket* ServerSocket::getNewClient()
 {
     AcceptSocket* ret = mAccepted.front();
 

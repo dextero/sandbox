@@ -24,7 +24,7 @@ namespace Sim
     {
         std::list<Vec3d> mPath;
 
-        void AttachLines();
+        void attachLines();
 
     public:
         typedef std::pair<Vec3d, sb::Line> ColVec;
@@ -54,10 +54,10 @@ namespace Sim
         Ball(const Vec3d& pos, const Vec3d& velocity, double mass, double radius);
         Ball(const Ball& copy);
 
-        void Set(ColVec& what, const Vec3d& value, bool scaleToForce = false);
+        void set(ColVec& what, const Vec3d& value, bool scaleToForce = false);
         // 1.204 - mass density of air at 1 atm, 20*C
-        bool Update(double dt, const Vec3d& gravity, const Vec3d& wind, double fluidDensity = 1.204, double maxPathLength = 10.0, bool forces = false); // forces - should it draw forces or accelerations?
-        void DrawAll(sb::Renderer& r);
+        bool update(double dt, const Vec3d& gravity, const Vec3d& wind, double fluidDensity = 1.204, double maxPathLength = 10.0, bool forces = false); // forces - should it draw forces or accelerations?
+        void drawAll(sb::Renderer& r);
     };
 }
 

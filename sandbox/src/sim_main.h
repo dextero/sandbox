@@ -27,44 +27,44 @@ class Accumulator
 
 public:
     Accumulator(float base, float step = 1.f): mAccumulator(0.f), mBase(base), mStep(step), mRunning(false) {}
-    void Reset() { mRunning = true; mAccumulator = mBase; }
-    void Stop() { mRunning = false; }
-    void Update() { if (mRunning) mAccumulator += mStep; }
-    void Update(float dt) { if (mRunning) mAccumulator += dt; }
-    float GetValue() const { return mAccumulator; }
-    bool Running() const { return mRunning; }
+    void reset() { mRunning = true; mAccumulator = mBase; }
+    void stop() { mRunning = false; }
+    void update() { if (mRunning) mAccumulator += mStep; }
+    void update(float dt) { if (mRunning) mAccumulator += dt; }
+    float getValue() const { return mAccumulator; }
+    bool running() const { return mRunning; }
 };
 
 int main()
 {
-    using sb::StringUtils::makeString;
+    using sb::utils::makeString;
 
     sb::Window wnd(1200, 900);
-    wnd.SetTitle("Sandbox");
-    wnd.LockCursor();
-    wnd.HideCursor();
+    wnd.setTitle("Sandbox");
+    wnd.lockCursor();
+    wnd.hideCursor();
 
     Sim::Simulation sim(Sim::Simulation::SimSingleThrow);
-    sim.SetThrowStart(Vec3d(0., 1., 0.), Vec3d(30., 30., 0.));
+    sim.setThrowStart(Vec3d(0., 1., 0.), Vec3d(30., 30., 0.));
 
     sb::Sprite crosshair("dot.png");
-    crosshair.SetPosition(0.f, 0.f, 0.f);
-    crosshair.SetScale(0.01f, 0.01f * 1.33f, 1.f);
+    crosshair.setPosition(0.f, 0.f, 0.f);
+    crosshair.setScale(0.01f, 0.01f * 1.33f, 1.f);
 
     sb::Line xaxis(Vec3(1000.f, 0.f, 0.f), sb::Color(0.f, 0.f, 1.f)),
          yaxis(Vec3(0.f, 1000.f, 0.f), sb::Color(1.f, 0.f, 0.f)),
          zaxis(Vec3(0.f, 0.f, 1000.f), sb::Color(0.f, 1.f, 0.f));
 
     sb::Model skybox("skybox.obj");
-    skybox.SetScale(1000.f);
+    skybox.setScale(1000.f);
 
     sb::Terrain terrain("hmap_flat.jpg", "ground.jpg");
-    terrain.SetScale(10.f, 1.f, 10.f);
-    terrain.SetPosition(-640.f, 0.f, -640.f);
+    terrain.setScale(10.f, 1.f, 10.f);
+    terrain.setPosition(-640.f, 0.f, -640.f);
 
-    gLog.Info("all data loaded!\n");
+    gLog.info("all data loaded!\n");
 
-    wnd.GetCamera().LookAt(Vec3(5.f, 5.f, 20.f), Vec3(5.f, 5.f, 0.f));
+    wnd.getCamera().lookAt(Vec3(5.f, 5.f, 20.f), Vec3(5.f, 5.f, 0.f));
 
     float moveSpeed = 0.f, strafeSpeed = 0.f, ascendSpeed = 0.f;
     const float SPEED = 0.5f;
@@ -80,8 +80,8 @@ int main()
                 fpsDeltaTime(0.f, 0.f),
                 throwVelocity(10.f, 0.5f),
                 windVelocity(0.5f, 0.5f);
-    deltaTime.Reset();
-    fpsDeltaTime.Reset();
+    deltaTime.reset();
+    fpsDeltaTime.reset();
 
     std::string fpsString;
 
@@ -116,29 +116,29 @@ int main()
         "** doesn't affect existing balls";
     const uint32_t helpStringLines = 27u;
 
-    gLog.Info("entering main loop\n");
+    gLog.info("entering main loop\n");
 
     // main loop
-    while(wnd.IsOpened())
+    while(wnd.isOpened())
     {
-        float delta = clock.GetSecsElapsed() - lastFrameTime;
-        deltaTime.Update(delta);
-        fpsDeltaTime.Update(delta);
+        float delta = clock.getSecsElapsed() - lastFrameTime;
+        deltaTime.update(delta);
+        fpsDeltaTime.update(delta);
         ++fpsCounter;
-        lastFrameTime = clock.GetSecsElapsed();
+        lastFrameTime = clock.getSecsElapsed();
 
         // FPS update
-        if (fpsDeltaTime.GetValue() >= fpsUpdateStep)
+        if (fpsDeltaTime.getValue() >= fpsUpdateStep)
         {
             fpsCurrValue = fpsCounter / fpsUpdateStep;
-            fpsString = "FPS = " + sb::StringUtils::toString(fpsCurrValue);
-            fpsDeltaTime.Update(-fpsUpdateStep);
+            fpsString = "FPS = " + sb::utils::toString(fpsCurrValue);
+            fpsDeltaTime.update(-fpsUpdateStep);
             fpsCounter = 0.f;
         }
 
         // event handling
         sb::Event e;
-        while (wnd.GetEvent(e))
+        while (wnd.getEvent(e))
         {
             switch (e.type)
             {
@@ -147,12 +147,12 @@ int main()
                     switch (e.data.mouse.button)
                     {
                     case sb::Mouse::ButtonLeft:
-                        if (!throwVelocity.Running())
-                            throwVelocity.Reset();
+                        if (!throwVelocity.running())
+                            throwVelocity.reset();
                         break;
                     case sb::Mouse::ButtonRight:
-                        if (!windVelocity.Running())
-                            windVelocity.Reset();
+                        if (!windVelocity.running())
+                            windVelocity.reset();
                         break;
                     default:
                         break;
@@ -165,20 +165,20 @@ int main()
                     {
                     case sb::Mouse::ButtonLeft:
                         {
-                            Vec3 pos = wnd.GetCamera().GetEye();
+                            Vec3 pos = wnd.getCamera().getEye();
                             if (pos[1] < sim.mBallRadius)
                                 pos[1] = (float)sim.mBallRadius;
 
-                            Vec3 v = glm::normalize(wnd.GetCamera().GetFront()) * throwVelocity.GetValue();
-                            sim.SetThrowStart(Vec3d(pos[0], pos[1], pos[2]), Vec3d(v[0], v[1], v[2]));
-                            sim.Reset();
-                            throwVelocity.Stop();
+                            Vec3 v = glm::normalize(wnd.getCamera().getFront()) * throwVelocity.getValue();
+                            sim.setThrowStart(Vec3d(pos[0], pos[1], pos[2]), Vec3d(v[0], v[1], v[2]));
+                            sim.reset();
+                            throwVelocity.stop();
                             break;
                         }
                         break;
                     case sb::Mouse::ButtonRight:
-                        sim.SetWind(Vec3d(glm::normalize(wnd.GetCamera().GetFront()) * windVelocity.GetValue()));
-                        windVelocity.Stop();
+                        sim.setWind(Vec3d(glm::normalize(wnd.getCamera().getFront()) * windVelocity.getValue()));
+                        windVelocity.stop();
                         break;
                     default:
                         break;
@@ -191,33 +191,33 @@ int main()
                     {
                     case sb::Key::Num1:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.GetCamera().LookAt(Vec3(50.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(50.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::Num2:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.GetCamera().LookAt(Vec3(-50.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(-50.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::Num3:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.GetCamera().LookAt(Vec3(0.0001f, 50.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(0.0001f, 50.f, 0.f), Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::Num4:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.GetCamera().LookAt(Vec3(0.0001f, -50.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(0.0001f, -50.f, 0.f), Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::Num5:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.GetCamera().LookAt(Vec3(0.f, 0.f, 50.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(0.f, 0.f, 50.f), Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::Num6:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.GetCamera().LookAt(Vec3(0.f, 0.f, -50.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(0.f, 0.f, -50.f), Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::N:
-                        sim.mBallPathLength = sb::Math::Clamp(sim.mBallPathLength - 1.0, 0.0, 1000.0);
+                        sim.mBallPathLength = sb::math::clamp(sim.mBallPathLength - 1.0, 0.0, 1000.0);
                         break;
                     case sb::Key::J:
-                        sim.mBallPathLength = sb::Math::Clamp(sim.mBallPathLength + 1.0, 0.0, 1000.0);
+                        sim.mBallPathLength = sb::math::clamp(sim.mBallPathLength + 1.0, 0.0, 1000.0);
                         break;
                     case sb::Key::M:
                         sim.mBallThrowDelay -= 0.1f;
@@ -264,7 +264,7 @@ int main()
                         sim.mBallMass += 0.1f;
                         break;
                     case sb::Key::Esc:
-                        wnd.Close();
+                        wnd.close();
                         break;
                     default:
                         break;
@@ -288,7 +288,7 @@ int main()
                         ascendSpeed = 0.f;
                         break;
                     case sb::Key::P:
-                        sim.TogglePause();
+                        sim.togglePause();
                         break;
                     case sb::Key::O:
                         sim.mVectorDisplayType = (sim.mVectorDisplayType == Sim::Simulation::DisplayForce ? Sim::Simulation::DisplayAcceleration : Sim::Simulation::DisplayForce);
@@ -348,7 +348,7 @@ int main()
                                                (current.tv_usec / 1000), ".png");
 #endif // PLATFORM_WIN32
 
-                            wnd.SaveScreenshot(filename);
+                            wnd.saveScreenshot(filename);
                             break;
                         }
                     default:
@@ -358,35 +358,35 @@ int main()
                 }
             case sb::Event::MouseMoved:
                 {
-                    if (wnd.HasFocus())
+                    if (wnd.hasFocus())
                     {
-                        Degrees dtX = Degrees(((int)e.data.mouse.x - wnd.GetSize().x / 2)
-                                              / (float)(wnd.GetSize().x / 2));
-                        Degrees dtY = Degrees(((int)e.data.mouse.y - wnd.GetSize().y / 2)
-                                              / (float)(wnd.GetSize().y / 2));
+                        Degrees dtX = Degrees(((int)e.data.mouse.x - wnd.getSize().x / 2)
+                                              / (float)(wnd.getSize().x / 2));
+                        Degrees dtY = Degrees(((int)e.data.mouse.y - wnd.getSize().y / 2)
+                                              / (float)(wnd.getSize().y / 2));
 
-                        wnd.GetCamera().MouseLook(dtX, dtY);
+                        wnd.getCamera().mouseLook(dtX, dtY);
                     }
                     break;
                 }
             case sb::Event::WindowFocus:
                 if (e.data.focus)
                 {
-                    wnd.HideCursor();
-                    wnd.LockCursor();
+                    wnd.hideCursor();
+                    wnd.lockCursor();
                 }
                 else
                 {
-                    wnd.HideCursor(false);
-                    wnd.LockCursor(false);
+                    wnd.hideCursor(false);
+                    wnd.lockCursor(false);
                     moveSpeed = strafeSpeed = 0.f;
                 }
                 break;
             case sb::Event::WindowResized:
-                crosshair.SetScale(0.01f, 0.01f * ((float)e.data.wndResize.width / (float)e.data.wndResize.height), 0.01f);
+                crosshair.setScale(0.01f, 0.01f * ((float)e.data.wndResize.width / (float)e.data.wndResize.height), 0.01f);
                 break;
             case sb::Event::WindowClosed:
-                wnd.Close();
+                wnd.close();
                 break;
             default:
                 break;
@@ -395,82 +395,82 @@ int main()
 
         // physics update
         uint32_t guard = 3u;
-        while ((deltaTime.GetValue() >= physicsUpdateStep) && guard--)
+        while ((deltaTime.getValue() >= physicsUpdateStep) && guard--)
         {
-            sim.Update(physicsUpdateStep);
-            deltaTime.Update(-physicsUpdateStep);
+            sim.update(physicsUpdateStep);
+            deltaTime.update(-physicsUpdateStep);
 
-            throwVelocity.Update();
-            windVelocity.Update();
+            throwVelocity.update();
+            windVelocity.update();
         }
 
         // drawing
-        wnd.GetCamera().MoveRelative(Vec3(strafeSpeed, ascendSpeed, moveSpeed));
+        wnd.getCamera().moveRelative(Vec3(strafeSpeed, ascendSpeed, moveSpeed));
 
         // move skybox, so player won't go out of it
-        skybox.SetPosition(wnd.GetCamera().GetEye());
+        skybox.setPosition(wnd.getCamera().getEye());
 
-        wnd.Clear(sb::Color(0.f, 0.f, 0.5f));
+        wnd.clear(sb::Color(0.f, 0.f, 0.5f));
 
         // environment
-        wnd.Draw(skybox);
-        wnd.Draw(terrain);
+        wnd.draw(skybox);
+        wnd.draw(terrain);
 
         // axes - disable edpth test to prevent blinking
-        wnd.GetRenderer().EnableFeature(sb::Renderer::FeatureDepthTest, false);
-        wnd.Draw(xaxis);
-        wnd.Draw(yaxis);
-        wnd.Draw(zaxis);
-        wnd.GetRenderer().EnableFeature(sb::Renderer::FeatureDepthTest);
+        wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest, false);
+        wnd.draw(xaxis);
+        wnd.draw(yaxis);
+        wnd.draw(zaxis);
+        wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest);
 
         // balls & forces
-        sim.DrawAll(wnd.GetRenderer());
+        sim.drawAll(wnd.getRenderer());
 
         // crosshair
-        wnd.Draw(crosshair);
+        wnd.draw(crosshair);
 
         // info strings
         uint32_t nextLine = 0u;
-        sb::String::Print(fpsString, 0.f, 0.f,
+        sb::String::print(fpsString, 0.f, 0.f,
                           (fpsCurrValue > 30.f
                               ? sb::Color::Green
                               : (fpsCurrValue > 20.f ? sb::Color::Yellow
                                                      : sb::Color::Red)),
                           nextLine++);
-        sb::String::Print(
-                makeString("pos = ", wnd.GetCamera().GetEye(),
-                           "\nfront = ", wnd.GetCamera().GetFront(),
+        sb::String::print(
+                makeString("pos = ", wnd.getCamera().getEye(),
+                           "\nfront = ", wnd.getCamera().getFront(),
                            "\nphi = ",
-                           Degrees(wnd.GetCamera().GetHorizontalAngle()),
+                           Degrees(wnd.getCamera().getHorizontalAngle()),
                            "\ntheta = ",
-                           Degrees(wnd.GetCamera().GetVerticalAngle())),
+                           Degrees(wnd.getCamera().getVerticalAngle())),
                 0.f, 0.f, sb::Color::White, nextLine);
         nextLine += 4;
 
-        sb::String::Print(makeString("throw velocity = ",
-                                     throwVelocity.GetValue()),
+        sb::String::print(makeString("throw velocity = ",
+                                     throwVelocity.getValue()),
                            0.f, 0.f, Sim::ColorThrow, nextLine++);
-        sb::String::Print(makeString("wind velocity = ",
-                                     windVelocity.GetValue()),
+        sb::String::print(makeString("wind velocity = ",
+                                     windVelocity.getValue()),
                           0.f, 0.f, Sim::ColorWind, nextLine++);
 
         if (displayHelp)
         {
-            sb::String::Print(helpString,
+            sb::String::print(helpString,
                               0.f, 0.0f, sb::Color::White, ++nextLine);
             nextLine += helpStringLines;
         }
         if (displaySimInfo)
-            nextLine = sim.PrintParametersToScreen(0.f, 0.f, ++nextLine);
+            nextLine = sim.printParametersToScreen(0.f, 0.f, ++nextLine);
         if (displayBallInfo)
-            nextLine = sim.PrintBallParametersToScreen(
-                    sim.Raycast(wnd.GetCamera().GetEye(),
-                                glm::normalize(wnd.GetCamera().GetFront())),
+            nextLine = sim.printBallParametersToScreen(
+                    sim.raycast(wnd.getCamera().getEye(),
+                                glm::normalize(wnd.getCamera().getFront())),
                     0.f, 0.0f, nextLine);
 
-        wnd.Display();
+        wnd.display();
     }
 
-    gLog.Info("window closed\n");
+    gLog.info("window closed\n");
     return 0;
 }

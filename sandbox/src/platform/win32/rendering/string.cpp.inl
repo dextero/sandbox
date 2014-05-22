@@ -12,7 +12,7 @@ namespace sb
     float String::mLineHeight = 0.f;
 
 
-    void String::PrintLine(const std::string& str, float x, float y, const Color& color)
+    void String::printLine(const std::string& str, float x, float y, const Color& color)
     {
         Vec3 pos(x, y, 0.f);
         GL_CHECK(glRasterPos3fv((GLfloat*)&pos));
@@ -23,9 +23,9 @@ namespace sb
         GL_CHECK(glPopAttrib());
     }
 
-    void String::Init(HDC dc)
+    void String::init(HDC dc)
     {
-        gLog.Info("initializing font bitmaps...\n");
+        gLog.info("initializing font bitmaps...\n");
 
         HFONT font, oldfont;
         mDC = dc;
@@ -37,12 +37,12 @@ namespace sb
         DeleteObject(font);
     }
 
-    void String::Release()
+    void String::release()
     {
         GL_CHECK(glDeleteLists(mBase, 96));
     }
 
-    void String::RecalculateLineHeight()
+    void String::recalculateLineHeight()
     {
         HWND wnd = ::WindowFromDC(mDC);
         RECT rect;
@@ -52,26 +52,26 @@ namespace sb
     }
 
     // (0,0) - top-left corner, (1,1) - bottom-right corner
-    void String::Print(const std::string& str, float x, float y, const Color& color, uint32_t line)
+    void String::print(const std::string& str, float x, float y, const Color& color, uint32_t line)
     {
         GL_CHECK(glDisable(GL_TEXTURE_2D));
 
         x = (x - 0.5f) * 2.f;
         y = (y - 0.5f) * -2.f - 0.03f;
 
-        Shader::Use(Shader::ShaderNone);
+        Shader::use(Shader::ShaderNone);
 
         GL_CHECK(glColor4fv((GLfloat*)&color));
 
-        std::vector<std::string> lines = StringUtils::Split(str, '\n');
+        std::vector<std::string> lines = utils::split(str, '\n');
         if (lines.size() > 1)
         {
             RecalculateLineHeight();
 
             for (size_t i = 0; i < lines.size(); ++i)
-                PrintLine(lines[i], x, y - (float)(i + line) * mLineHeight, color);
+                printLine(lines[i], x, y - (float)(i + line) * mLineHeight, color);
         }
         else
-            PrintLine(lines[0], x, y - (float)line * mLineHeight, color);
+            printLine(lines[0], x, y - (float)line * mLineHeight, color);
     }
 } // namespace sb

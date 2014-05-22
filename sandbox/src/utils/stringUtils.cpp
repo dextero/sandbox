@@ -2,7 +2,7 @@
 
 namespace sb
 {
-    namespace StringUtils
+    namespace utils
     {
         std::string toString(const std::wstring& wstr)
         {
@@ -28,5 +28,5 @@ namespace sb
 
             return ret;
         }
-    } // namespace StringUtils
+    } // namespace utils
 } // namespace sb

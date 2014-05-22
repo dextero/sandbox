@@ -16,7 +16,7 @@ namespace sb
     float String::mLineHeight = 0.f;
 
 
-    void String::PrintLine(const std::string& str,
+    void String::printLine(const std::string& str,
                            float x,
                            float y,
                            const Color& /*color*/)
@@ -30,9 +30,9 @@ namespace sb
         GL_CHECK(glPopAttrib());
     }
 
-    void String::Init(::Display* display)
+    void String::init(::Display* display)
     {
-        gLog.Info("initializing font bitmaps...\n");
+        gLog.info("initializing font bitmaps...\n");
 
         mDisplay = display;
 
@@ -41,23 +41,23 @@ namespace sb
         font = XLoadQueryFont(mDisplay, "-*-courier new-bold-r-normal--14-*-*-*-p-*-iso8895-2");
         if (font == NULL)
         {
-            gLog.Warn("using fixed font\n");
+            gLog.warn("using fixed font\n");
             font = XLoadQueryFont(mDisplay, "fixed");
 
             if (font == NULL)
-                gLog.Err("couldn't load bitmap font!\n");
+                gLog.err("couldn't load bitmap font!\n");
         }
 
         glXUseXFont(font->fid, 32, 96, mBase);
         XFreeFont(mDisplay, font);
     }
 
-    void String::Release()
+    void String::release()
     {
         GL_CHECK(glDeleteLists(mBase, 96));
     }
 
-    void String::RecalculateLineHeight()
+    void String::recalculateLineHeight()
     {
         ::Window window;
         int focusState;
@@ -70,26 +70,26 @@ namespace sb
     }
 
     // (0,0) - top-left corner, (1,1) - bottom-right corner
-    void String::Print(const std::string& str, float x, float y, const Color& color, uint32_t line)
+    void String::print(const std::string& str, float x, float y, const Color& color, uint32_t line)
     {
         GL_CHECK(glDisable(GL_TEXTURE_2D));
 
         x = (x - 0.5f) * 2.f;
         y = (y - 0.5f) * -2.f - 0.03f;
 
-        Shader::Use(Shader::ShaderNone);
+        Shader::use(Shader::ShaderNone);
 
         GL_CHECK(glColor4fv((GLfloat*)&color));
 
-        std::vector<std::string> lines = StringUtils::split(str, '\n');
+        std::vector<std::string> lines = utils::split(str, '\n');
         if (lines.size() > 1)
         {
-            RecalculateLineHeight();
+            recalculateLineHeight();
 
             for (size_t i = 0; i < lines.size(); ++i)
-                PrintLine(lines[i], x, y - (float)(i + line) * mLineHeight, color);
+                printLine(lines[i], x, y - (float)(i + line) * mLineHeight, color);
         }
         else
-            PrintLine(lines[0], x, y - (float)line * mLineHeight, color);
+            printLine(lines[0], x, y - (float)line * mLineHeight, color);
     }
 } // namespace sb

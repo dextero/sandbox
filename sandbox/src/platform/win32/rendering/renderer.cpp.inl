@@ -11,12 +11,12 @@
 
 namespace sb
 {
-    bool Renderer::InitGLEW()
+    bool Renderer::initGLEW()
     {
-        gLog.Info("initializing GLEW...\n");
+        gLog.info("initializing GLEW...\n");
         glewInit();
 
-        gLog.Info("checking GL functions availability\n");
+        gLog.info("checking GL functions availability\n");
         static struct GLFunc {
             const void* func;
             const char* name;
@@ -70,35 +70,35 @@ namespace sb
         for (size_t i = 0; i < sizeof(functions) / sizeof(functions[0]); ++i)
         {
             if (functions[i].func != NULL)
-                gLog.Info("%s \tOK\n", functions[i].name);
+                gLog.info("%s \tOK\n", functions[i].name);
             else
             {
                 if (functions[i].severity == GLFunc::SevOptional)
-                    gLog.Warn("%s \tNOT AVAILABLE\n", functions[i].name);
+                    gLog.warn("%s \tNOT AVAILABLE\n", functions[i].name);
                 else
                 {
-                    gLog.Err("%s \tNOT AVAILABLE\n", functions[i].name);
+                    gLog.err("%s \tNOT AVAILABLE\n", functions[i].name);
                     ++requiredFunctionsMissing;
                 }
 
                 if (functions[i].errMsg != NULL)
-                    gLog.Info(functions[i].errMsg);
+                    gLog.info(functions[i].errMsg);
             }
         }
 
         if (requiredFunctionsMissing > 0)
-            gLog.Err("some critical GL functions missing, app will most likely crash\n");
+            gLog.err("some critical GL functions missing, app will most likely crash\n");
 
         return requiredFunctionsMissing == 0;
     }
 
-    void Renderer::FilterDrawables(EFilterType filter)
+    void Renderer::filterDrawables(EFilterType filter)
     {
         switch(filter)
         {
         case FilterShader:
             std::sort(mDrawablesBuffer.begin(), mDrawablesBuffer.end(), [](const Drawable& first, const Drawable& second) -> bool {
-                return first.GetShader() < second.GetShader();
+                return first.getShader() < second.getShader();
             });
             break;
         case FilterTexture:
@@ -108,11 +108,11 @@ namespace sb
             break;
         case FilterDepth:
             std::sort(mDrawablesBuffer.begin(), mDrawablesBuffer.end(), [](const Drawable& first, const Drawable& second) -> bool {
-                Vec4 f(first.GetPosition()[0], first.GetPosition()[1], first.GetPosition()[2], 1.f),
-                     s(second.GetPosition()[0], second.GetPosition()[1], second.GetPosition()[2], 1.f);
-                f = const_cast<Drawable&>(first).GetTransformationMatrix() * f;
-                s = const_cast<Drawable&>(second).GetTransformationMatrix() * f;
-                return f[2] < s[2];
+                Vec4 f(first.getPosition().x, first.getPosition().y, first.getPosition().z, 1.f),
+                     s(second.getPosition().x, second.getPosition().y, second.getPosition().z, 1.f);
+                f = const_cast<Drawable&>(first).getTransformationMatrix() * f;
+                s = const_cast<Drawable&>(second).getTransformationMatrix() * f;
+                return f.z < s.z;
             });
             break;
         case FilterProjection:
@@ -122,17 +122,17 @@ namespace sb
             break;
         case FilterShaderTextureProjectionDepth:
             std::sort(mDrawablesBuffer.begin(), mDrawablesBuffer.end(), [](const Drawable& first, const Drawable& second) -> bool {
-                if (first.GetShader() == second.GetShader())
+                if (first.getShader() == second.getShader())
                 {
                     if (first.mTexture == second.mTexture)
                     {
                         if (first.mProjectionType == second.mProjectionType)
                         {
-                            Vec4 f(first.GetPosition()[0], first.GetPosition()[1], first.GetPosition()[2], 1.f),
-                                 s(second.GetPosition()[0], second.GetPosition()[1], second.GetPosition()[2], 1.f);
-                            f = const_cast<Drawable&>(first).GetTransformationMatrix() * f;
-                            s = const_cast<Drawable&>(second).GetTransformationMatrix() * f;
-                            return f[2] < s[2];
+                            Vec4 f(first.getPosition().x, first.getPosition().y, first.getPosition().z, 1.f),
+                                 s(second.getPosition().x, second.getPosition().y, second.getPosition().z, 1.f);
+                            f = const_cast<Drawable&>(first).getTransformationMatrix() * f;
+                            s = const_cast<Drawable&>(second).getTransformationMatrix() * f;
+                            return f.z < s.z;
                         }
                         else
                             return first.mProjectionType < second.mProjectionType;
@@ -141,7 +141,7 @@ namespace sb
                         return first.mTexture < second.mTexture;
                 }
                 else
-                    return first.GetShader() < second.GetShader();
+                    return first.getShader() < second.getShader();
             });
             break;
         }
@@ -157,8 +157,8 @@ namespace sb
     Renderer::~Renderer()
     {
         // let's free everything before deleting gl context
-        Shader::FreeShaders();
-        gResourceMgr.FreeAllResources();
+        Shader::freeShaders();
+        gResourceMgr.freeAllResources();
 
         wglMakeCurrent(NULL, NULL);
         if (mGLContext)
@@ -166,20 +166,20 @@ namespace sb
             wglDeleteContext(mGLContext);
             mGLContext = NULL;
 
-            gLog.Info("GL context deleted\n");
+            gLog.info("GL context deleted\n");
         }
     }
 
-    bool Renderer::Init(HWND wnd)
+    bool Renderer::init(HWND wnd)
     {
         assert(wnd);
 
-        gLog.Info("creating GL context...\n");
+        gLog.info("creating GL context...\n");
         HDC hdc = ::GetDC(wnd);
         mGLContext = wglCreateContext(hdc);
         wglMakeCurrent(hdc, mGLContext);
 
-        if (!InitGLEW())
+        if (!initGLEW())
             return false;
 
         GL_CHECK(glEnable(GL_DEPTH_TEST));
@@ -193,39 +193,39 @@ namespace sb
 
         GL_CHECK(glEnable(GL_TEXTURE_2D));
 
-        Shader::InitShaders();
-        String::Init(hdc);
+        Shader::initShaders();
+        String::init(hdc);
 
-        mCamera.SetPerspectiveMatrix();
-        mCamera.SetOrthographicMatrix();
+        mCamera.setPerspectiveMatrix();
+        mCamera.setOrthographicMatrix();
 
         return true;
     }
 
-    void Renderer::SetClearColor(const Color& c)
+    void Renderer::setClearColor(const Color& c)
     {
         glClearColor(c.r, c.g, c.b, c.a);
     }
 
-    void Renderer::Clear()
+    void Renderer::clear()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::SetViewport(unsigned x, unsigned y, unsigned cx, unsigned cy)
+    void Renderer::setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy)
     {
         glViewport(x, y, cx, cy);
 
         // adjust aspect ratio
-        mCamera.SetPerspectiveMatrix(PI_3, (float)cx / (float)cy);
+        mCamera.setPerspectiveMatrix(PI_3, (float)cx / (float)cy);
     }
 
-    void Renderer::Draw(Drawable& d)
+    void Renderer::draw(Drawable& d)
     {
         if (!d.mMesh && !d.mTexture)
         {
-            gLog.Err("Renderer::Draw: invalid call, mMesh == NULL\n");
-            assert(!"Renderer::Draw: invalid call");
+            gLog.err("Renderer::draw: invalid call, mMesh == NULL\n");
+            assert(!"Renderer::draw: invalid call");
             return;
         }
 
@@ -233,85 +233,85 @@ namespace sb
             mDrawablesBuffer.push_back(d);
         else
         {
-            Mesh& mesh = *(d.mMesh ? d.mMesh : gResourceMgr.GetSprite(d.mTexture));
+            Mesh& mesh = *(d.mMesh ? d.mMesh : gResourceMgr.getSprite(d.mTexture));
             TextureId texture = d.mTexture;
             if (!texture)
-                texture = mesh.GetTexture();
+                texture = mesh.getTexture();
 
-            // should be before Shader::Use to ensure that glBindAttribLocation calls are correct
-            mesh.GetVertexBuffer().Bind();
+            // should be before Shader::use to ensure that glBindAttribLocation calls are correct
+            mesh.GetVertexBuffer().bind();
 
             if (texture)
             {
-                Shader::Use(Shader::ShaderTexture);
-                Shader::GetCurrent().SetUniform("u_texture", (int)Shader::SamplerImage);
+                Shader::use(Shader::ShaderTexture);
+                Shader::getCurrent().setUniform("u_texture", (int)Shader::SamplerImage);
                 GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
                 GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture));
             }
             else
             {
-                Shader::Use(Shader::ShaderColor);
+                Shader::use(Shader::ShaderColor);
             }
 
-            Shader& shader = Shader::GetCurrent();
-            shader.SetUniform("u_color", d.mColor);
+            Shader& shader = Shader::getCurrent();
+            shader.setUniform("u_color", d.mColor);
 
             if (d.mProjectionType == Drawable::ProjectionOrthographic)
-                shader.SetUniform("u_matViewProjection", mCamera.GetOrthographicProjectionMatrix());
+                shader.setUniform("u_matViewProjection", mCamera.getOrthographicProjectionMatrix());
             else
-                shader.SetUniform("u_matViewProjection", Mat44(
-                    mCamera.GetPerspectiveProjectionMatrix() * mCamera.GetViewMatrix()));
+                shader.setUniform("u_matViewProjection", Mat44(
+                    mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
 
-            shader.SetUniform("u_matModel", d.GetTransformationMatrix());
+            shader.setUniform("u_matModel", d.getTransformationMatrix());
 
             GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.GetIndexBuffer()));
-            GL_CHECK(glDrawElements(mesh.GetShape(), mesh.GetIndexBufferSize(), GL_UNSIGNED_INT, 0));
+            GL_CHECK(glDrawElements(mesh.getShape(), mesh.getIndexBufferSize(), GL_UNSIGNED_INT, 0));
 
-            mesh.GetVertexBuffer().Unbind();
+            mesh.getVertexBuffer().unbind();
         }
     }
 
-    void Renderer::DrawAll()
+    void Renderer::drawAll()
     {
         if (mDrawablesBuffer.size() == 0)
             return;
 
-        FilterDrawables(FilterShaderTextureProjectionDepth);
+        filterDrawables(FilterShaderTextureProjectionDepth);
 
-        Shader::EShader shaderType = mDrawablesBuffer[0].GetShader();
-        Shader::Use(shaderType);
+        Shader::EShader shaderType = mDrawablesBuffer[0].getShader();
+        Shader::use(shaderType);
 
-        Shader* shader = &Shader::GetCurrent();
+        Shader* shader = &Shader::getCurrent();
         if (shaderType == Shader::ShaderTexture)
-            shader->SetUniform("u_texture", (int)Shader::SamplerImage);
+            shader->setUniform("u_texture", (int)Shader::SamplerImage);
 
-        TextureId texture = (mDrawablesBuffer[0].mTexture ? mDrawablesBuffer[0].mTexture : mDrawablesBuffer[0].mMesh->GetTexture());
+        TextureId texture = (mDrawablesBuffer[0].mTexture ? mDrawablesBuffer[0].mTexture : mDrawablesBuffer[0].mMesh->getTexture());
         GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
         GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture));
 
         Drawable::EProjectionType projType = mDrawablesBuffer[0].mProjectionType;
-        shader->SetUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
-            mCamera.GetOrthographicProjectionMatrix() :
-            Mat44(mCamera.GetPerspectiveProjectionMatrix() * mCamera.GetViewMatrix()));
+        shader->setUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
+            mCamera.getOrthographicProjectionMatrix() :
+            Mat44(mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
 
-        Mesh::GetVertexBuffer().Bind();
+        Mesh::getVertexBuffer().bind();
 
         for (std::vector<Drawable>::iterator it = mDrawablesBuffer.begin(); it != mDrawablesBuffer.end(); ++it)
         {
-            if (it->GetShader() != shaderType)
+            if (it->getShader() != shaderType)
             {
-                shaderType = it->GetShader();
-                Shader::Use(shaderType);
-                shader = &Shader::GetCurrent();
+                shaderType = it->getShader();
+                Shader::use(shaderType);
+                shader = &Shader::getCurrent();
 
                 if (shaderType == Shader::ShaderTexture)
-                    shader->SetUniform("u_texture", Shader::SamplerImage);
-                shader->SetUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
-                    mCamera.GetOrthographicProjectionMatrix() :
-                    Mat44(mCamera.GetPerspectiveProjectionMatrix() * mCamera.GetViewMatrix()));
+                    shader->setUniform("u_texture", Shader::SamplerImage);
+                shader->setUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
+                    mCamera.getOrthographicProjectionMatrix() :
+                    Mat44(mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
             }
 
-            TextureId tex = (it->mTexture ? it->mTexture : it->mMesh->GetTexture());
+            TextureId tex = (it->mTexture ? it->mTexture : it->mMesh->getTexture());
             if (tex != texture)
             {
                 texture = tex;
@@ -322,24 +322,24 @@ namespace sb
             if (it->mProjectionType != projType)
             {
                 projType = it->mProjectionType;
-                shader->SetUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
-                    mCamera.GetOrthographicProjectionMatrix() :
-                    Mat44(mCamera.GetPerspectiveProjectionMatrix() * mCamera.GetViewMatrix()));
+                shader->setUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
+                    mCamera.getOrthographicProjectionMatrix() :
+                    Mat44(mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
             }
 
-            shader->SetUniform("u_matModel", it->GetTransformationMatrix());
-            shader->SetUniform("u_color", it->mColor);
+            shader->setUniform("u_matModel", it->getTransformationMatrix());
+            shader->setUniform("u_color", it->mColor);
 
-            Mesh* mesh = (it->mMesh ? it->mMesh : gResourceMgr.GetSprite(it->mTexture));
-            GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetIndexBuffer()));
-            GL_CHECK(glDrawElements(mesh->GetShape(), mesh->GetIndexBufferSize(), GL_UNSIGNED_INT, NULL));
+            Mesh* mesh = (it->mMesh ? it->mMesh : gResourceMgr.getSprite(it->mTexture));
+            GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->getIndexBuffer()));
+            GL_CHECK(glDrawElements(mesh->getShape(), mesh->getIndexBufferSize(), GL_UNSIGNED_INT, NULL));
         }
 
         mDrawablesBuffer.clear();
-        Mesh::GetVertexBuffer().Unbind();
+        Mesh::getVertexBuffer().unbind();
     }
 
-    void Renderer::EnableFeature(EFeature feature, bool enable)
+    void Renderer::enableFeature(EFeature feature, bool enable)
     {
         if (enable)
             GL_CHECK(glEnable((GLenum)feature));
@@ -347,7 +347,7 @@ namespace sb
             GL_CHECK(glDisable((GLenum)feature));
     }
 
-    void Renderer::SaveScreenshot(const std::string& filename, int width, int height)
+    void Renderer::saveScreenshot(const std::string& filename, int width, int height)
     {
         ILuint tex;
         tex = IL_CHECK(ilGenImage());
@@ -358,7 +358,7 @@ namespace sb
         ilTexImage(width, height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, data);
         free(data);
 
-        IL_CHECK(ilSaveImage(StringUtils::toWString(filename).c_str()));
+        IL_CHECK(ilSaveImage(utils::toWString(filename).c_str()));
         IL_CHECK(ilDeleteImage(tex));
     }
 } // namespace sb

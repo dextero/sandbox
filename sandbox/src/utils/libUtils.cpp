@@ -15,14 +15,15 @@
 
 namespace sb
 {
-    namespace Utils
+    namespace utils
     {
         // returns true on error
         bool GLCheck(const char* file, int line, const char* call)
         {
             GLuint err = glGetError();
-            if (err != GL_NO_ERROR)
-                gLog.Err("GL error: \"%s\" at file %s, line %d\n>> %s\n", gluErrorString(err), file, line, call);
+            if (err != GL_NO_ERROR) {
+                gLog.err("GL error: \"%s\" at file %s, line %d\n>> %s\n", gluErrorString(err), file, line, call);
+            }
 
             return !!err;
         }
@@ -31,8 +32,9 @@ namespace sb
         bool ILCheck(const char* file, int line, const char* call)
         {
             ILuint err = ilGetError();
-            if (err != IL_NO_ERROR)
-                gLog.Err("DevIL error: \"%s\" at file %s, line %d\n>> %s\n", iluErrorString(err), file, line, call);
+            if (err != IL_NO_ERROR) {
+                gLog.err("DevIL error: \"%s\" at file %s, line %d\n>> %s\n", iluErrorString(err), file, line, call);
+            }
 
             return !!err;
         }

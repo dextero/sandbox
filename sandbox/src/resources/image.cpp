@@ -12,19 +12,19 @@ namespace sb
         mId(0u)
     {
         if (!loadFromFile(file)) {
-            gLog.Err("couldn't load image %s\n", file.c_str());
+            gLog.err("couldn't load image %s\n", file.c_str());
         }
     }
 
     bool Image::loadFromFile(const std::string& file)
     {
-        gLog.Info("loading image %s\n", file.c_str());
+        gLog.info("loading image %s\n", file.c_str());
 
         IL_CHECK(mId = ilGenImage());
         IL_CHECK_RET(ilBindImage(mId), false);
 
 #ifdef PLATFORM_WIN32
-        IL_CHECK_RET(ilLoadImage(StringUtils::toWString(file).c_str()), false);
+        IL_CHECK_RET(ilLoadImage(utils::toWString(file).c_str()), false);
 #else //PLATFORM_LINUX
         IL_CHECK_RET(ilLoadImage(file.c_str()), false);
 #endif // PLATFORM_WIN32

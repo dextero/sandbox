@@ -14,13 +14,13 @@ namespace sb
         Logger(FILE* f = stderr);
         ~Logger();
 
-        void Printf(const char* msg, ...);
-        void Info(const char* msg, ...);
-        void Warn(const char* msg, ...);
-        void Err(const char* msg, ...);
+        void printf(const char* msg, ...);
+        void info(const char* msg, ...);
+        void warn(const char* msg, ...);
+        void err(const char* msg, ...);
     };
 } // namespace sb
 
-#define gLog sb::Logger::Get()
+#define gLog sb::Logger::get()
 
 #endif // LOGGER_H

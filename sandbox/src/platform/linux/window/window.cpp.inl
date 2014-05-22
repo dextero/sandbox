@@ -14,17 +14,17 @@ namespace sb
         mLockCursor(false),
         mFullscreen(false)
     {
-        Create(width, height);
-        mRenderer.SetViewport(0, 0, width, height);
+        create(width, height);
+        mRenderer.setViewport(0, 0, width, height);
     }
 
     Window::~Window()
     {
-        Close();
+        close();
     }
 
 
-    bool Window::Create(unsigned width, unsigned height)
+    bool Window::create(unsigned width, unsigned height)
     {
         mDisplay = XOpenDisplay(0);
         if (!mDisplay)
@@ -45,7 +45,7 @@ namespace sb
             None
         };
 
-        gLog.Info("getting framebuffer config\n");
+        gLog.info("getting framebuffer config\n");
         int fbCount;
         GLXFBConfig* fbc = glXChooseFBConfig(mDisplay, DefaultScreen(mDisplay), visualAttribs, &fbCount);
 
@@ -59,7 +59,7 @@ namespace sb
                 glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLE_BUFFERS, &sampBuf);
                 glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLES, &samples);
 
-                gLog.Info("matching fbconfig %d, visual id 0x%2x: SAMPLE_BUFFERS = %d, SAMPLES = %d\n", i, vi->visualid, sampBuf, samples);
+                gLog.info("matching fbconfig %d, visual id 0x%2x: SAMPLE_BUFFERS = %d, SAMPLES = %d\n", i, vi->visualid, sampBuf, samples);
 
                 if (bestFbcId < 0 || (sampBuf && samples > bestNumSamp))
                     bestFbcId = i, bestNumSamp = samples;
@@ -73,9 +73,9 @@ namespace sb
 
         XFree(fbc);
         XVisualInfo* vi = glXGetVisualFromFBConfig(mDisplay, bestFbc);
-        gLog.Info("chosen visual id = 0x%x\n", vi->visualid);
+        gLog.info("chosen visual id = 0x%x\n", vi->visualid);
 
-        gLog.Info("creating colormap\n");
+        gLog.info("creating colormap\n");
         XSetWindowAttributes swa;
         Colormap cmap;
         swa.colormap = cmap = XCreateColormap(mDisplay, RootWindow(mDisplay, vi->screen), vi->visual, AllocNone);
@@ -83,42 +83,42 @@ namespace sb
         swa.border_pixel = 0;
         swa.event_mask = StructureNotifyMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
 
-        gLog.Info("creating mask\n");
+        gLog.info("creating mask\n");
         mWindow = XCreateWindow(mDisplay, RootWindow(mDisplay, vi->screen), 0, 0, width, height, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &swa);
 
         if (!mWindow)
         {
-            gLog.Info("failed to create window\n");
+            gLog.info("failed to create window\n");
             return false;
         }
 
         XFree(vi);
         XStoreName(mDisplay, mWindow, "Window");
 
-        gLog.Info("mapping window\n");
+        gLog.info("mapping window\n");
         XMapWindow(mDisplay, mWindow);
 
-        mRenderer.Init(mDisplay, mWindow, bestFbc);
+        mRenderer.init(mDisplay, mWindow, bestFbc);
 
         return true;
     }
 
-    void Window::Resize(unsigned width, unsigned height)
+    void Window::resize(unsigned width, unsigned height)
     {
         (void)width;
         (void)height;
         assert(0);
     }
 
-    bool Window::SetFullscreen(bool fullscreen)
+    bool Window::setFullscreen(bool fullscreen)
     {
         (void)fullscreen;
-        assert(!"Window::SetFullscreen not implemented!");
+        assert(!"Window::setFullscreen not implemented!");
 
         return true;
     }
 
-    const Vec2i Window::GetSize()
+    const Vec2i Window::getSize()
     {
         XWindowAttributes attribs;
         XGetWindowAttributes(mDisplay, mWindow, &attribs);
@@ -126,7 +126,7 @@ namespace sb
         return Vec2i(attribs.width, attribs.height);
     }
 
-    void Window::Close()
+    void Window::close()
     {
         if (mDisplay && mWindow)
         {
@@ -135,7 +135,7 @@ namespace sb
         }
     }
 
-    bool Window::GetEvent(Event& e)
+    bool Window::getEvent(Event& e)
     {
         while (XPending(mDisplay))
         {
@@ -145,42 +145,42 @@ namespace sb
             switch (event.type)
             {
             case KeyPress:
-                mEvents.push(Event::KeyPressedEvent((Key::Code)XLookupKeysym((XKeyEvent*)&event, 0)));
+                mEvents.push(Event::keyPressedEvent((Key::Code)XLookupKeysym((XKeyEvent*)&event, 0)));
                 break;
             case KeyRelease:
-                mEvents.push(Event::KeyReleasedEvent((Key::Code)XLookupKeysym((XKeyEvent*)&event, 0)));
+                mEvents.push(Event::keyReleasedEvent((Key::Code)XLookupKeysym((XKeyEvent*)&event, 0)));
                 break;
             case ButtonPress:
                 if (event.xbutton.button < Button4)
-                    mEvents.push(Event::MousePressedEvent(event.xbutton.x, event.xbutton.y, (Mouse::Button)event.xbutton.button));
+                    mEvents.push(Event::mousePressedEvent(event.xbutton.x, event.xbutton.y, (Mouse::Button)event.xbutton.button));
                 else
-                    mEvents.push(Event::MouseWheelEvent(event.xbutton.x, event.xbutton.y, (Mouse::Button)event.xbutton.button == Button4 ? -1 : 1));
+                    mEvents.push(Event::mouseWheelEvent(event.xbutton.x, event.xbutton.y, (Mouse::Button)event.xbutton.button == Button4 ? -1 : 1));
                 break;
             case ButtonRelease:
-                mEvents.push(Event::MousePressedEvent(event.xbutton.x, event.xbutton.y, (Mouse::Button)event.xbutton.button));
+                mEvents.push(Event::mousePressedEvent(event.xbutton.x, event.xbutton.y, (Mouse::Button)event.xbutton.button));
                 break;
             case MotionNotify:
-                mEvents.push(Event::MouseMovedEvent(event.xmotion.x, event.xmotion.y));
+                mEvents.push(Event::mouseMovedEvent(event.xmotion.x, event.xmotion.y));
 
                 if (mLockCursor)
                 {
                     static bool ignore = false;
                     if (!ignore)
                     {
-                        Vec2i wndSize = GetSize();
+                        Vec2i wndSize = getSize();
                         XWarpPointer(mDisplay, None, mWindow, 0, 0, 0, 0, wndSize[0] / 2, wndSize[1] / 2);
                     }
                     ignore = !ignore;
                 }
                 break;
             case FocusIn:
-                mEvents.push(Event::WindowFocusEvent(true));
+                mEvents.push(Event::windowFocusEvent(true));
                 break;
             case FocusOut:
-                mEvents.push(Event::WindowFocusEvent(false));
+                mEvents.push(Event::windowFocusEvent(false));
                 break;
             case DestroyNotify:
-                mEvents.push(Event::WindowClosedEvent());
+                mEvents.push(Event::windowClosedEvent());
                 break;
             default:
                 break;
@@ -197,12 +197,12 @@ namespace sb
             return false;
     }
 
-    bool Window::IsOpened()
+    bool Window::isOpened()
     {
         return mWindow != 0;
     }
 
-    bool Window::HasFocus()
+    bool Window::hasFocus()
     {
         ::Window focused;
         int focusState;
@@ -210,30 +210,30 @@ namespace sb
         return mWindow == focused;
     }
 
-    void Window::SetTitle(const std::string& str)
+    void Window::setTitle(const std::string& str)
     {
         XStoreName(mDisplay, mWindow, str.c_str());
     }
 
 
-    void Window::Clear(const Color& c)
+    void Window::clear(const Color& c)
     {
-        mRenderer.SetClearColor(c);
-        mRenderer.Clear();
+        mRenderer.setClearColor(c);
+        mRenderer.clear();
     }
 
-    void Window::Draw(Drawable& d)
+    void Window::draw(Drawable& d)
     {
-        mRenderer.Draw(d);
+        mRenderer.draw(d);
     }
 
-    void Window::Display()
+    void Window::display()
     {
-        mRenderer.DrawAll();
+        mRenderer.drawAll();
         glXSwapBuffers(mDisplay, mWindow);
     }
 
-    void Window::HideCursor(bool hide)
+    void Window::hideCursor(bool hide)
     {
         if (hide)
         {
@@ -252,24 +252,24 @@ namespace sb
             XDefineCursor(mDisplay, mWindow, 0);
     }
 
-    void Window::LockCursor(bool lock)
+    void Window::lockCursor(bool lock)
     {
         mLockCursor = lock;
     }
 
-    void Window::SaveScreenshot(const std::string& filename)
+    void Window::saveScreenshot(const std::string& filename)
     {
-        Vec2i size = GetSize();
-        mRenderer.SaveScreenshot(filename, size.x, size.y);
+        Vec2i size = getSize();
+        mRenderer.saveScreenshot(filename, size.x, size.y);
     }
 
 
-    Renderer& Window::GetRenderer()
+    Renderer& Window::getRenderer()
     {
         return mRenderer;
     }
 
-    Camera& Window::GetCamera()
+    Camera& Window::getCamera()
     {
         return mRenderer.mCamera;
     }

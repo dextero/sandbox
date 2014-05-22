@@ -40,29 +40,29 @@ namespace sb
 
         Drawable(EProjectionType projType);
 
-        void RecalculateMatrices();
+        void recalculateMatrices();
 
     public:
         Drawable();
 
-        const Vec3& GetPosition() const;
-        const Vec3 GetRotationAxis() const;
-        Radians GetRotationAngle() const;
-        void GetRotationAxisAngle(Vec3& axis, Radians& angle) const;
-        const Quat& GetRotationQuaternion() const;
-        const Vec3& GetScale() const;
-        Shader::EShader GetShader() const;
+        const Vec3& getPosition() const;
+        const Vec3 getRotationAxis() const;
+        Radians getRotationAngle() const;
+        void getRotationAxisAngle(Vec3& axis, Radians& angle) const;
+        const Quat& getRotationQuaternion() const;
+        const Vec3& getScale() const;
+        Shader::EShader getShader() const;
 
-        void SetPosition(const Vec3& pos);
-        void SetPosition(float x, float y, float z);
-        void SetRotation(const Vec3& axis, Radians angle);
-        void SetRotation(Radians x, Radians y, Radians z);
-        void SetScale(const Vec3& scale);
-        void SetScale(float x, float y, float z);
-        void SetScale(float uniform);
-        void Rotate(Radians angle);
-        void Rotate(const Vec3& axis, Radians angle);
-        const Mat44& GetTransformationMatrix();
+        void setPosition(const Vec3& pos);
+        void setPosition(float x, float y, float z);
+        void setRotation(const Vec3& axis, Radians angle);
+        void setRotation(Radians x, Radians y, Radians z);
+        void setScale(const Vec3& scale);
+        void setScale(float x, float y, float z);
+        void setScale(float uniform);
+        void rotate(Radians angle);
+        void rotate(const Vec3& axis, Radians angle);
+        const Mat44& getTransformationMatrix();
 
     friend class Renderer;
     };

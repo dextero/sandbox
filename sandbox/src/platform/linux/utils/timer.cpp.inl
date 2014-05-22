@@ -5,15 +5,15 @@ namespace sb
 {
     Timer::Timer()
     {
-        Reset();
+        reset();
     }
 
-    void Timer::Reset()
+    void Timer::reset()
     {
         gettimeofday(&mTimeStart, NULL);
     }
 
-    float Timer::GetSecsElapsed()
+    float Timer::getSecsElapsed()
     {
         timeval current;
         gettimeofday(&current, NULL);
@@ -21,7 +21,7 @@ namespace sb
         return (float)((double)(current.tv_usec - mTimeStart.tv_usec) / (double)1000000.);
     }
 
-    unsigned long long Timer::GetMillisecsElapsed()
+    unsigned long long Timer::getMillisecsElapsed()
     {
         timeval current;
         gettimeofday(&current, NULL);

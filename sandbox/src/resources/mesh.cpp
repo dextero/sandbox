@@ -23,7 +23,7 @@ namespace sb
         assert(msBuffer);
 
         if (mBufferSize)
-            msBuffer->ReleaseVertices(mBufferOffset);
+            msBuffer->releaseVertices(mBufferOffset);
         if (mIndexBuffer)
             GL_CHECK(glDeleteBuffers(1, &mIndexBuffer));
     }
@@ -41,7 +41,7 @@ namespace sb
         mTexture = texture;
 
         // vertices
-        mBufferOffset = msBuffer->AddVertices(&vertices[0],
+        mBufferOffset = msBuffer->addVertices(&vertices[0],
                                               texcoords.size() ? &texcoords[0] : NULL,
                                               colors.size() ? &colors[0] : NULL,
                                               vertices.size());
@@ -49,7 +49,7 @@ namespace sb
 
         // indices
         if (mBufferSize == 0) {
-            gLog.Warn("invalid mesh vertex data\n");
+            gLog.warn("invalid mesh vertex data\n");
             return false;
         } else {
             std::vector<uint32_t> adjustedIndices = indices;

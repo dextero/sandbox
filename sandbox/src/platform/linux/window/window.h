@@ -28,25 +28,25 @@ namespace sb
         Window(unsigned width, unsigned height);
         ~Window();
 
-        bool Create(unsigned width, unsigned height);
-        void Resize(unsigned width, unsigned height);
-        bool SetFullscreen(bool fullscreen = true);
-        const Vec2i GetSize();
-        void Close();
-        bool GetEvent(Event& e);
-        bool IsOpened();
-        bool HasFocus();
-        void SetTitle(const std::string& str);
+        bool create(unsigned width, unsigned height);
+        void resize(unsigned width, unsigned height);
+        bool setFullscreen(bool fullscreen = true);
+        const Vec2i getSize();
+        void close();
+        bool getEvent(Event& e);
+        bool isOpened();
+        bool hasFocus();
+        void setTitle(const std::string& str);
 
-        void Clear(const Color& c);
-        void Draw(Drawable& d);
-        void Display();
-        void HideCursor(bool hide = true);
-        void LockCursor(bool lock = true);
-        void SaveScreenshot(const std::string& filename);
+        void clear(const Color& c);
+        void draw(Drawable& d);
+        void display();
+        void hideCursor(bool hide = true);
+        void lockCursor(bool lock = true);
+        void saveScreenshot(const std::string& filename);
 
-        Renderer& GetRenderer();
-        Camera& GetCamera();
+        Renderer& getRenderer();
+        Camera& getCamera();
     };
 } // namespace sb
 

@@ -5,7 +5,7 @@
 
 namespace sb
 {
-    LRESULT __stdcall Window::WndProc(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
+    LRESULT __stdcall Window::wndProc(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
     {
         Window* wndPtr = (Window*)::GetWindowLongPtrA(hwnd, 0);
 
@@ -14,51 +14,51 @@ namespace sb
         case WM_KEYDOWN:
             if (wndPtr)
             {
-                wndPtr->mEvents.push(Event::KeyPressedEvent((Key::Code)w));
+                wndPtr->mEvents.push(Event::keyPressedEvent((Key::Code)w));
                 if (w == Key::Shift)
                     // stupid windows
-                    wndPtr->mEvents.push(Event::KeyPressedEvent((::GetKeyState(Key::LShift) >> 4) ? Key::LShift : Key::RShift));
+                    wndPtr->mEvents.push(Event::keyPressedEvent((::GetKeyState(Key::LShift) >> 4) ? Key::LShift : Key::RShift));
             }
             break;
         case WM_KEYUP:
             if (wndPtr)
-                wndPtr->mEvents.push(Event::KeyReleasedEvent((Key::Code)w));
+                wndPtr->mEvents.push(Event::keyReleasedEvent((Key::Code)w));
             break;
         case WM_LBUTTONDOWN:
             if (wndPtr)
-                wndPtr->mEvents.push(Event::MousePressedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonLeft));
+                wndPtr->mEvents.push(Event::mousePressedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonLeft));
             break;
         case WM_LBUTTONUP:
             if (wndPtr)
-                wndPtr->mEvents.push(Event::MouseReleasedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonLeft));
+                wndPtr->mEvents.push(Event::mouseReleasedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonLeft));
             break;
         case WM_RBUTTONDOWN:
             if (wndPtr)
-                wndPtr->mEvents.push(Event::MousePressedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonRight));
+                wndPtr->mEvents.push(Event::mousePressedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonRight));
             break;
         case WM_RBUTTONUP:
             if (wndPtr)
-                wndPtr->mEvents.push(Event::MouseReleasedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonRight));
+                wndPtr->mEvents.push(Event::mouseReleasedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonRight));
             break;
         case WM_MBUTTONDOWN:
             if (wndPtr)
-                wndPtr->mEvents.push(Event::MousePressedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonMiddle));
+                wndPtr->mEvents.push(Event::mousePressedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonMiddle));
             break;
         case WM_MBUTTONUP:
             if (wndPtr)
-                wndPtr->mEvents.push(Event::MouseReleasedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonMiddle));
+                wndPtr->mEvents.push(Event::mouseReleasedEvent(LOWORD(l), HIWORD(l), Mouse::ButtonMiddle));
             break;
         case WM_XBUTTONDOWN:
             if (wndPtr && (w & 0x60))
-                wndPtr->mEvents.push(Event::MousePressedEvent(LOWORD(l), HIWORD(l), w & 0x20 ? Mouse::ButtonX1 : Mouse::ButtonX2));
+                wndPtr->mEvents.push(Event::mousePressedEvent(LOWORD(l), HIWORD(l), w & 0x20 ? Mouse::ButtonX1 : Mouse::ButtonX2));
             break;
         case WM_XBUTTONUP:
             if (wndPtr && (w & 0x60))
-                wndPtr->mEvents.push(Event::MouseReleasedEvent(LOWORD(l), HIWORD(l), w & 0x20 ? Mouse::ButtonX1 : Mouse::ButtonX2));
+                wndPtr->mEvents.push(Event::mouseReleasedEvent(LOWORD(l), HIWORD(l), w & 0x20 ? Mouse::ButtonX1 : Mouse::ButtonX2));
             break;
         case WM_MOUSEWHEEL:
             if (wndPtr)
-                wndPtr->mEvents.push(Event::MouseWheelEvent(LOWORD(l), HIWORD(l), HIWORD(w) * WHEEL_DELTA));
+                wndPtr->mEvents.push(Event::mouseWheelEvent(LOWORD(l), HIWORD(l), HIWORD(w) * WHEEL_DELTA));
             break;
         case WM_MOUSEMOVE:
             {
@@ -67,7 +67,7 @@ namespace sb
                     ignore = false;
                 else if (wndPtr)
                 {
-                    wndPtr->mEvents.push(Event::MouseMovedEvent(LOWORD(l), HIWORD(l)));
+                    wndPtr->mEvents.push(Event::mouseMovedEvent(LOWORD(l), HIWORD(l)));
                     if (wndPtr->mLockCursor)
                     {
                         RECT rect;
@@ -84,14 +84,14 @@ namespace sb
             }
         case WM_ACTIVATEAPP:
             if (wndPtr)
-                wndPtr->mEvents.push(Event::WindowFocusEvent(!!w));
+                wndPtr->mEvents.push(Event::windowFocusEvent(!!w));
             break;
         case WM_SIZE:
             if ((w == SIZE_RESTORED || w == SIZE_MAXIMIZED) && wndPtr)
             {
-                Vec2i size = wndPtr->GetSize();
-                wndPtr->mEvents.push(Event::WindowResizedEvent(size[0], size[1]));
-                wndPtr->mRenderer.SetViewport(0, 0, size[0], size[1]);
+                Vec2i size = wndPtr->getSize();
+                wndPtr->mEvents.push(Event::windowResizedEvent(size[0], size[1]));
+                wndPtr->mRenderer.setViewport(0, 0, size[0], size[1]);
             }
             break;
         case WM_CREATE:
@@ -99,7 +99,7 @@ namespace sb
             break;
         case WM_CLOSE:
             if (wndPtr)
-                wndPtr->mEvents.push(Event::WindowClosedEvent());
+                wndPtr->mEvents.push(Event::windowClosedEvent());
             break;
         case WM_DESTROY:
             ::PostQuitMessage(0);
@@ -119,13 +119,13 @@ namespace sb
     {
         mInstance = ::GetModuleHandleA(0);
 
-        Create(width, height);
-        mRenderer.Init(mWnd);
-        mRenderer.SetViewport(0, 0, width, height);
+        create(width, height);
+        mRenderer.init(mWnd);
+        mRenderer.setViewport(0, 0, width, height);
     }
 
 
-    bool Window::Create(unsigned width, unsigned height)
+    bool Window::create(unsigned width, unsigned height)
     {
         static bool classRegistered = false;
         static LPCTSTR className = _T("ILikeTrains8@3");
@@ -183,7 +183,7 @@ namespace sb
         return true;
     }
 
-    void Window::Resize(unsigned width, unsigned height)
+    void Window::resize(unsigned width, unsigned height)
     {
         assert(mWnd);
 
@@ -193,18 +193,18 @@ namespace sb
         rect.bottom = height;
         ::AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, FALSE, NULL);
         ::SetWindowPos(mWnd, NULL, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE | SWP_NOZORDER);
-        mRenderer.SetViewport(0, 0, width, height);
+        mRenderer.setViewport(0, 0, width, height);
     }
 
-    bool Window::SetFullscreen(bool fullscreen)
+    bool Window::setFullscreen(bool fullscreen)
     {
-        assert(!"Window::SetFullscreen not implemented!");
+        assert(!"Window::setFullscreen not implemented!");
 
         if (fullscreen != mFullscreen)
         {
             if (fullscreen)
             {
-                Vec2i size = GetSize();
+                Vec2i size = getSize();
 
                 DEVMODE settings;
                 ::EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &settings);
@@ -235,7 +235,7 @@ namespace sb
                     error = "unknown error"; break;
                 }
 
-                gLog.Err("couldn't set fullscreen mode (%s)\n", error);
+                gLog.err("couldn't set fullscreen mode (%s)\n", error);
                 return false;
             }
             else
@@ -247,7 +247,7 @@ namespace sb
         return true;
     }
 
-    const Vec2i Window::GetSize()
+    const Vec2i Window::getSize()
     {
         RECT rect;
         ::GetClientRect(mWnd, &rect);
@@ -255,13 +255,13 @@ namespace sb
         return Vec2i(rect.right - rect.left, rect.bottom - rect.top);
     }
 
-    void Window::Close()
+    void Window::close()
     {
         ::DestroyWindow(mWnd);
         mWnd = NULL;
     }
 
-    bool Window::GetEvent(Event& e)
+    bool Window::getEvent(Event& e)
     {
         MSG msg;
         while (PeekMessage(&msg, mWnd, 0, 0, PM_REMOVE))
@@ -280,65 +280,65 @@ namespace sb
         return eventsPending > 0;
     }
 
-    bool Window::IsOpened()
+    bool Window::isOpened()
     {
         return mWnd != NULL;
     }
 
-    bool Window::HasFocus()
+    bool Window::hasFocus()
     {
         return ::GetActiveWindow() == mWnd;
     }
 
-    void Window::SetTitle(const std::string& str)
+    void Window::setTitle(const std::string& str)
     {
 #ifdef UNICODE
-        ::SetWindowText(mWnd, StringUtils::toWString(str).c_str());
+        ::SetWindowText(mWnd, utils::toWString(str).c_str());
 #else // !UNICODE
         ::SetWindowText(mWnd, str.c_str());
 #endif // UNICODE
     }
 
-    void Window::Clear(const Color& c)
+    void Window::clear(const Color& c)
     {
-        mRenderer.SetClearColor(c);
-        mRenderer.Clear();
+        mRenderer.setClearColor(c);
+        mRenderer.clear();
     }
 
-    void Window::Draw(Drawable& d)
+    void Window::draw(Drawable& d)
     {
-        mRenderer.Draw(d);
+        mRenderer.draw(d);
     }
 
-    void Window::Display()
+    void Window::display()
     {
-        mRenderer.DrawAll();
+        mRenderer.drawAll();
         ::SwapBuffers(::GetDC(mWnd));
     }
 
-    void Window::HideCursor(bool hide)
+    void Window::hideCursor(bool hide)
     {
         ::ShowCursor(!hide);
     }
 
-    void Window::LockCursor(bool lock)
+    void Window::lockCursor(bool lock)
     {
         mLockCursor = lock;
     }
 
-    void Window::SaveScreenshot(const char* filename)
+    void Window::saveScreenshot(const char* filename)
     {
-        Vec2i size = GetSize();
-        mRenderer.SaveScreenshot(filename, size.x, size.y);
+        Vec2i size = getSize();
+        mRenderer.saveScreenshot(filename, size.x, size.y);
     }
 
 
-    Renderer& Window::GetRenderer()
+    Renderer& Window::getRenderer()
     {
         return mRenderer;
     }
 
-    Camera& Window::GetCamera()
+    Camera& Window::getCamera()
     {
         return mRenderer.mCamera;
     }

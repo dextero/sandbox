@@ -3,7 +3,7 @@
 
 namespace sb
 {
-    namespace Utils
+    namespace utils
     {
         // returns true on error
         bool GLCheck(const char* file, int line, const char* call);

@@ -27,7 +27,7 @@ namespace sb
         std::vector<Drawable> mDrawablesBuffer;
         bool mUseDrawableBuffering;
 
-        bool InitGLEW();
+        bool initGLEW();
 
         enum EFilterType {
             FilterShader,
@@ -36,7 +36,7 @@ namespace sb
             FilterProjection,
             FilterShaderTextureProjectionDepth
         };
-        void FilterDrawables(EFilterType filter);
+        void filterDrawables(EFilterType filter);
 
     public:
         Camera mCamera;
@@ -44,13 +44,13 @@ namespace sb
         Renderer();
         ~Renderer();
 
-        bool Init(::Display* display, ::Window window, GLXFBConfig& fbc);
-        void SetClearColor(const Color& c);
-        void Clear();
-        void SetViewport(unsigned x, unsigned y, unsigned cx, unsigned cy);
+        bool init(::Display* display, ::Window window, GLXFBConfig& fbc);
+        void setClearColor(const Color& c);
+        void clear();
+        void setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy);
 
-        void Draw(Drawable& d);
-        void DrawAll();
+        void draw(Drawable& d);
+        void drawAll();
 
         enum EFeature {
             FeatureBackfaceCulling = RENDERER_BACKFACE_CULLING,
@@ -58,8 +58,8 @@ namespace sb
             FeatureAlphaBlending = RENDERER_ALPHA_BLENDING
         };
 
-        void EnableFeature(EFeature feature, bool enable = true);
-        void SaveScreenshot(const std::string& filename, int width, int height);
+        void enableFeature(EFeature feature, bool enable = true);
+        void saveScreenshot(const std::string& filename, int width, int height);
     };
 } // namespace sb
 

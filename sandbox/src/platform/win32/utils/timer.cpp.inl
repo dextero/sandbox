@@ -8,15 +8,15 @@ namespace sb
 
         assert(mFrequency.QuadPart && "hi-res performance counter not supported");
 
-        Reset();
+        reset();
     }
 
-    void Timer::Reset()
+    void Timer::reset()
     {
         ::QueryPerformanceCounter(&mTimeStart);
     }
 
-    float Timer::GetSecsElapsed()
+    float Timer::getSecsElapsed()
     {
         LARGE_INTEGER current;
         ::QueryPerformanceCounter(&current);
@@ -24,7 +24,7 @@ namespace sb
         return (float)((double)(current.QuadPart - mTimeStart.QuadPart) / (double)mFrequency.QuadPart);
     }
 
-    unsigned long long Timer::GetMillisecsElapsed()
+    unsigned long long Timer::getMillisecsElapsed()
     {
         LARGE_INTEGER current;
         ::QueryPerformanceCounter(&current);

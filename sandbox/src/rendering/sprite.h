@@ -12,7 +12,7 @@ namespace sb
         Sprite();
         Sprite(const std::string& image);
 
-        void SetImage(const std::string& image);
+        void setImage(const std::string& image);
     };
 } // namespace sb
 

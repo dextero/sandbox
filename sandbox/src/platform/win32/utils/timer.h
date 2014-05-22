@@ -16,9 +16,9 @@ namespace sb
     public:
         Timer();
 
-        void Reset();
-        float GetSecsElapsed();
-        unsigned long long GetMillisecsElapsed();
+        void reset();
+        float getSecsElapsed();
+        unsigned long long getMillisecsElapsed();
     };
 } // namespace sb
 

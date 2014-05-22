@@ -14,7 +14,7 @@ const char* suff[] = { "", "ów", "y", "y", "y", "ów", "ów", "ów", "ów", "ó
 
 const int maxGroups = 2 + sizeof(wiecej) / sizeof(const char*);    // jedna grupa w zapasie
 
-void PrintNum(unsigned long long int num, FILE* file)
+void printNum(unsigned long long int num, FILE* file)
 {
     if (!num) {
         fprintf(file, "zero\n");
@@ -68,7 +68,7 @@ void PrintNum(unsigned long long int num, FILE* file)
 int main()
 {
     for (unsigned long long i = 0; i < 100; ++i)
-        PrintNum(i, stdout);
+        printNum(i, stdout);
     system("pause");
 }
 

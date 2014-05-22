@@ -20,7 +20,7 @@ namespace sb
         }
 
     public:
-        static T& Get()
+        static T& get()
         {
             if (mPtr) return *mPtr;
             else
@@ -30,7 +30,7 @@ namespace sb
             }
         }
 
-        static void Reset()
+        static void reset()
         {
             if (mPtr)
             {
@@ -39,7 +39,7 @@ namespace sb
             }
         }
 
-        static void Release()
+        static void release()
         {
             if (mPtr)
                 delete mPtr;

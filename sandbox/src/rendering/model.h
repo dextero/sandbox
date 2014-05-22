@@ -12,7 +12,7 @@ namespace sb
         Model();
         Model(const std::string& path);
 
-        bool LoadFromFile(const std::string& path);
+        bool loadFromFile(const std::string& path);
     };
 } // namespace sb
 

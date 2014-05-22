@@ -17,7 +17,7 @@ namespace sb
         mMesh = NULL;
     }
 
-    void Sprite::SetImage(const std::string& image)
+    void Sprite::setImage(const std::string& image)
     {
         mTexture = gResourceMgr.getTexture(image);
     }

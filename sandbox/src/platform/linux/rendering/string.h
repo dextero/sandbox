@@ -17,14 +17,14 @@ namespace sb
         static int mFontHeight;
         static float mLineHeight;
 
-        static void PrintLine(const std::string& str, float x, float y, const Color& color);
+        static void printLine(const std::string& str, float x, float y, const Color& color);
     public:
-        static void Init(::Display* display);
-        static void Release();
-        static void RecalculateLineHeight();
+        static void init(::Display* display);
+        static void release();
+        static void recalculateLineHeight();
 
         // (0,0) - top-left corner, (1,1) - bottom-right corner
-        static void Print(const std::string& str, float x, float y, const Color& color = Color(1.f, 1.f, 1.f), uint32_t line = 0u);
+        static void print(const std::string& str, float x, float y, const Color& color = Color(1.f, 1.f, 1.f), uint32_t line = 0u);
     };
 } // namespace sb
 

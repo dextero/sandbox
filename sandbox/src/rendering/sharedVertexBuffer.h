@@ -37,24 +37,24 @@ namespace sb
         std::list<SChunk> mEmptyChunks;
         std::map<uint32_t, uint32_t> mUsedChunks;
 
-        void CopyBufferData(BufferId from, BufferId to, uint32_t bytes);
-        void ExpandBuffers(uint32_t elemsNeeded);
+        void copyBufferData(BufferId from, BufferId to, uint32_t bytes);
+        void expandBuffers(uint32_t elemsNeeded);
 
     public:
         SharedVertexBuffer(EBufferType activeBuffers = BufferVertex, uint32_t initialSizeElems = 1024);
         SharedVertexBuffer(const SharedVertexBuffer& copy);
         ~SharedVertexBuffer();
 
-        void AddElements(EBufferType buffer, const void* data, uint32_t elements, uint32_t offset);
-        uint32_t AddVertices(const void* vertices, const void* texcoords, const void* colors, uint32_t elements);
-        void ReleaseVertices(uint32_t offset);
+        void addElements(EBufferType buffer, const void* data, uint32_t elements, uint32_t offset);
+        uint32_t addVertices(const void* vertices, const void* texcoords, const void* colors, uint32_t elements);
+        void releaseVertices(uint32_t offset);
 
-        void Bind() const;
-        void Unbind() const;
-        bool Empty() const;
-        bool HasBuffer(EBufferType type) const;
+        void bind() const;
+        void unbind() const;
+        bool empty() const;
+        bool hasBuffer(EBufferType type) const;
 
-        void Debug();
+        void debug();
     };
 } // namespace sb
 

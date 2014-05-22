@@ -38,19 +38,19 @@ public:
 
     ParticleManager();
 
-    void Remove(ParticleType type, size_t id);
-    void Update(float dt);
-    void Spawn(const Vec2& pos, ParticleType type);
-    void DrawAll(sb::Window& wnd);
+    void remove(ParticleType type, size_t id);
+    void update(float dt);
+    void spawn(const Vec2& pos, ParticleType type);
+    void drawAll(sb::Window& wnd);
 };
 
 ParticleManager::ParticleManager()
 {
     mTextures.resize(ParticleTypesCount);
 
-    mTextures[ParticleInvalid] = gResourceMgr.GetTexture(L"error.png");
-    mTextures[ParticleFire] = gResourceMgr.GetTexture(L"fire.png");
-    mTextures[ParticleWater] = gResourceMgr.GetTexture(L"water.png");
+    mTextures[ParticleInvalid] = gResourceMgr.getTexture(L"error.png");
+    mTextures[ParticleFire] = gResourceMgr.getTexture(L"fire.png");
+    mTextures[ParticleWater] = gResourceMgr.getTexture(L"water.png");
 
     for (int type = ParticleTypeFirst; type < ParticleTypesCount; ++type)
     {
@@ -63,7 +63,7 @@ ParticleManager::ParticleManager()
     }
 }
 
-void ParticleManager::Remove(ParticleType type, size_t id)
+void ParticleManager::remove(ParticleType type, size_t id)
 {
     ParticleBatch& batch = mParticles[type];
 
@@ -85,7 +85,7 @@ void ParticleManager::Remove(ParticleType type, size_t id)
     }
 }
 
-void ParticleManager::Update(float dt)
+void ParticleManager::update(float dt)
 {
     for (std::map<ParticleType, ParticleBatch>::iterator it = mParticles.begin(); it != mParticles.end(); ++it)
     {
@@ -94,7 +94,7 @@ void ParticleManager::Update(float dt)
         for (size_t i = 0; i < std::min(batch.position.size(), (size_t)100);)
         {
             if (batch.timeToLive[i] <= 0.f)
-                Remove(it->first, i);
+                remove(it->first, i);
             else
             {
                 batch.position[i] += batch.velocity[i] * dt;
@@ -105,7 +105,7 @@ void ParticleManager::Update(float dt)
     }
 }
 
-void ParticleManager::Spawn(const Vec2& pos, ParticleType type)
+void ParticleManager::spawn(const Vec2& pos, ParticleType type)
 {
     ParticleBatch& batch = mParticles[type];
 
@@ -118,7 +118,7 @@ void ParticleManager::Spawn(const Vec2& pos, ParticleType type)
     }
 }
 
-void ParticleManager::DrawAll(sb::Window& wnd)
+void ParticleManager::drawAll(sb::Window& wnd)
 {
     GL_CHECK(glEnable(GL_TEXTURE_2D));
     glPointSize(5.f);
@@ -129,17 +129,17 @@ void ParticleManager::DrawAll(sb::Window& wnd)
 
         if (batch.position.size() > 0)
         {
-            uint32_t offset = mSharedVertexBuffer.AddVertices(&batch.position[0], NULL, NULL, batch.position.size());
-            mSharedVertexBuffer.Bind();
+            uint32_t offset = mSharedVertexBuffer.addVertices(&batch.position[0], NULL, NULL, batch.position.size());
+            mSharedVertexBuffer.bind();
 
-            sb::Shader::Use(sb::Shader::ShaderPointSprite);
-            sb::Shader& shader = sb::Shader::GetCurrent();
+            sb::Shader::use(sb::Shader::ShaderPointSprite);
+            sb::Shader& shader = sb::Shader::getCurrent();
             static Mat44 identity = Mat44();
 
-            shader.SetUniform("u_matViewProjection", wnd.GetCamera().GetOrthographicProjectionMatrix());
-            shader.SetUniform("u_matModel", identity);
-            shader.SetUniform("u_color", sb::Color::White);
-            shader.SetUniform("u_texture", (int)sb::Shader::SamplerImage);
+            shader.setUniform("u_matViewProjection", wnd.getCamera().getOrthographicProjectionMatrix());
+            shader.setUniform("u_matModel", identity);
+            shader.setUniform("u_color", sb::Color::White);
+            shader.setUniform("u_texture", (int)sb::Shader::SamplerImage);
 
             GL_CHECK(glActiveTexture(GL_TEXTURE0));
             GL_CHECK(glBindTexture(GL_TEXTURE_2D, mTextures[it->first]));
@@ -147,8 +147,8 @@ void ParticleManager::DrawAll(sb::Window& wnd)
             GL_CHECK(glVertexPointer(2, GL_FLOAT, 0, (void*)offset));
             GL_CHECK(glDrawArrays(GL_POINTS, 0, batch.position.size()));
 
-            mSharedVertexBuffer.Unbind();
-            mSharedVertexBuffer.ReleaseVertices(offset);
+            mSharedVertexBuffer.unbind();
+            mSharedVertexBuffer.releaseVertices(offset);
         }
     }
 }
@@ -157,28 +157,28 @@ void ParticleManager::DrawAll(sb::Window& wnd)
 int main()
 {
     sb::Window window(800, 600);
-    window.GetRenderer().EnableFeature(sb::Renderer::FeatureBackfaceCulling, false);
+    window.getRenderer().enableFeature(sb::Renderer::FeatureBackfaceCulling, false);
 
-    Vec2 halfWndSize = Vec2(window.GetSize()) / 2.f;
+    Vec2 halfWndSize = Vec2(window.getSize()) / 2.f;
     sb::Timer timer;
 
     ParticleManager particles;
 
     sb::Event event;
-    while (window.IsOpened())
+    while (window.isOpened())
     {
-        while (window.GetEvent(event))
+        while (window.getEvent(event))
         {
             switch (event.type)
             {
             case sb::Event::WindowClosed:
-                window.Close();
+                window.close();
                 break;
             case sb::Event::KeyPressed:
                 switch (event.data.key)
                 {
                 case sb::Key::Esc:
-                    window.Close();
+                    window.close();
                     break;
                 default:
                     break;
@@ -201,7 +201,7 @@ int main()
                     }
 
                     if (type != ParticleManager::ParticleInvalid)
-                        particles.Spawn(Vec2((float)event.data.mouse.x / halfWndSize[0] - 1.f, -((float)event.data.mouse.y / halfWndSize[1] - 1.f)), type);
+                        particles.spawn(Vec2((float)event.data.mouse.x / halfWndSize[0] - 1.f, -((float)event.data.mouse.y / halfWndSize[1] - 1.f)), type);
                     break;
                 }
             default:
@@ -209,12 +209,12 @@ int main()
             }
         }
 
-        particles.Update(timer.GetSecsElapsed());
-        timer.Reset();
+        particles.update(timer.getSecsElapsed());
+        timer.reset();
 
-        window.Clear(sb::Color::Black);
-            particles.DrawAll(window);
-        window.Display();
+        window.clear(sb::Color::Black);
+            particles.drawAll(window);
+        window.display();
     }
 
     return 0;

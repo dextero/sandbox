@@ -25,25 +25,25 @@ namespace sb
         };
         ShaderId mShaders[ShaderTypesCount];
 
-        static GLenum TranslateShaderType(EShaderType type);
-        static bool CheckCompilationStatus(ShaderId shader);
-        static bool CheckLinkStatus(ProgramId program);
+        static GLenum translateShaderType(EShaderType type);
+        static bool checkCompilationStatus(ShaderId shader);
+        static bool checkLinkStatus(ProgramId program);
     public:
         Shader();
         ~Shader();
 
-        bool LoadShader(EShaderType type, const char* file);
-        bool Load(const char* vertex, const char* fragment, const char* geometry = NULL);
+        bool loadShader(EShaderType type, const char* file);
+        bool load(const char* vertex, const char* fragment, const char* geometry = NULL);
 
-        bool CompileAndLink();
-        void Free();
+        bool compileAndLink();
+        void free();
 
-        template<typename T> bool SetUniform(const char* name, const T& value)
+        template<typename T> bool setUniform(const char* name, const T& value)
         {
-            return SetUniform(name, &value, 1);
+            return setUniform(name, &value, 1);
         }
 
-        template<typename T> bool SetUniform(const char* name, const T* value_array, uint32_t elements)
+        template<typename T> bool setUniform(const char* name, const T* value_array, uint32_t elements)
         {
             (void)name;
             (void)value_array;
@@ -52,12 +52,12 @@ namespace sb
             return false;
         }
 
-        bool SetUniform(const char* name, const float* value_array, uint32_t elements);
-        bool SetUniform(const char* name, const Vec2* value_array, uint32_t elements);
-        bool SetUniform(const char* name, const Vec3* value_array, uint32_t elements);
-        bool SetUniform(const char* name, const Color* value_array, uint32_t elements);
-        bool SetUniform(const char* name, const Mat44* value_array, uint32_t elements);
-        bool SetUniform(const char* name, const int* value_array, uint32_t elements);
+        bool setUniform(const char* name, const float* value_array, uint32_t elements);
+        bool setUniform(const char* name, const Vec2* value_array, uint32_t elements);
+        bool setUniform(const char* name, const Vec3* value_array, uint32_t elements);
+        bool setUniform(const char* name, const Color* value_array, uint32_t elements);
+        bool setUniform(const char* name, const Mat44* value_array, uint32_t elements);
+        bool setUniform(const char* name, const int* value_array, uint32_t elements);
 
         enum ESamplerType {
             SamplerImage = 0,
@@ -65,7 +65,7 @@ namespace sb
             SamplerShadowmap = 2
         };
 
-        ProgramId GetProgram() { return mProgram; }
+        ProgramId getProgram() { return mProgram; }
 
         // --------------------------------
         enum EShader {
@@ -80,15 +80,15 @@ namespace sb
         static std::vector<std::vector<std::pair<uint32_t, std::string> > > msAttribs;
         static EShader msCurrent;
 
-        static void InitShaders();
-        static void FreeShaders();
-        static Shader& Get(EShader shader);
-        static Shader& GetCurrent();
+        static void initShaders();
+        static void freeShaders();
+        static Shader& get(EShader shader);
+        static Shader& getCurrent();
 
-        static void Use(EShader shader);
+        static void use(EShader shader);
     };
 
-    #define    CurrShader    Shader::GetCurrent()
+    #define    CurrShader    Shader::getCurrent()
 } // namespace sb
 
 #endif //SHADER_H

@@ -13,7 +13,7 @@ namespace sb
     std::vector<std::vector<std::pair<uint32_t, std::string> > > Shader::msAttribs;
     Shader::EShader    Shader::msCurrent = Shader::ShaderCount;
 
-    GLenum Shader::TranslateShaderType(EShaderType type)
+    GLenum Shader::translateShaderType(EShaderType type)
     {
         switch (type)
         {
@@ -22,12 +22,12 @@ namespace sb
         case ShaderTypeGeometry: return GL_GEOMETRY_SHADER;
         default:
             assert(!"Invalid shader type!");
-            gLog.Err("Invalid shader type: %d. Assuming it's a vertex shader\n");
+            gLog.err("Invalid shader type: %d. Assuming it's a vertex shader\n");
             return GL_VERTEX_SHADER;
         }
     }
 
-    bool Shader::CheckCompilationStatus(ShaderId shader)
+    bool Shader::checkCompilationStatus(ShaderId shader)
     {
         GLint retval;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &retval);
@@ -36,13 +36,13 @@ namespace sb
             // compilation failed!
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &retval);
 
-            gLog.Err("Compilation failed! Log:\n");
+            gLog.err("Compilation failed! Log:\n");
             if (retval > 0)
             {
                 char* buffer = new char[retval];
 
                 glGetShaderInfoLog(shader, retval - 1, &retval, buffer);
-                gLog.Info("%s\n", buffer);
+                gLog.info("%s\n", buffer);
 
                 delete[] buffer;
             }
@@ -53,7 +53,7 @@ namespace sb
         return true;
     }
 
-    bool Shader::CheckLinkStatus(ProgramId program)
+    bool Shader::checkLinkStatus(ProgramId program)
     {
         GLint retval;
         glGetProgramiv(program, GL_LINK_STATUS, &retval);
@@ -62,13 +62,13 @@ namespace sb
             // link failed!
             glGetProgramiv(program, GL_INFO_LOG_LENGTH, &retval);
 
-            gLog.Err("Linking failed! Log:\n");
+            gLog.err("Linking failed! Log:\n");
             if (retval > 0)
             {
                 char* buffer = new char[retval];
 
                 glGetProgramInfoLog(program, retval - 1, &retval, buffer);
-                gLog.Info("%s\n", buffer);
+                gLog.info("%s\n", buffer);
 
                 delete[] buffer;
             }
@@ -88,10 +88,10 @@ namespace sb
 
     Shader::~Shader()
     {
-        Free();
+        free();
     }
 
-    bool Shader::LoadShader(EShaderType type, const char* file)
+    bool Shader::loadShader(EShaderType type, const char* file)
     {
         std::string path = gResourceMgr.getShaderPath() + file;
 
@@ -115,35 +115,35 @@ namespace sb
         if (mShaders[type])
             GL_CHECK(glDeleteShader(mShaders[type]));
 
-        GL_CHECK(mShaders[type] = glCreateShader(TranslateShaderType(type)));
+        GL_CHECK(mShaders[type] = glCreateShader(translateShaderType(type)));
         GL_CHECK(glShaderSource(mShaders[type], 1, (const GLchar**)&buffer, NULL));
 
         static const char* shaders[] = { "vertex", "fragment", "geometry" };
-        gLog.Info("compiling %s shader: %s...\n", shaders[type], file);
+        gLog.info("compiling %s shader: %s...\n", shaders[type], file);
         GL_CHECK(glCompileShader(mShaders[type]));
-        if (!CheckCompilationStatus(mShaders[type]))
+        if (!checkCompilationStatus(mShaders[type]))
             return false;
 
         delete[] buffer;
         return true;
     }
 
-    bool Shader::Load(const char* vertex, const char* fragment, const char* geometry)
+    bool Shader::load(const char* vertex, const char* fragment, const char* geometry)
     {
-        gLog.Info("loading shader: %s, %s, %s\n", vertex, fragment, geometry ? geometry : "(no geometry shader)");
+        gLog.info("loading shader: %s, %s, %s\n", vertex, fragment, geometry ? geometry : "(no geometry shader)");
 
-        bool ret = LoadShader(ShaderTypeVertex, vertex);
-        ret &= LoadShader(ShaderTypeFragment, fragment);
-        if (geometry) ret &= LoadShader(ShaderTypeGeometry, geometry);
+        bool ret = loadShader(ShaderTypeVertex, vertex);
+        ret &= loadShader(ShaderTypeFragment, fragment);
+        if (geometry) ret &= loadShader(ShaderTypeGeometry, geometry);
 
         if (ret) {
-            ret = CompileAndLink();
+            ret = compileAndLink();
         }
 
         return ret;
     }
 
-    bool Shader::CompileAndLink()
+    bool Shader::compileAndLink()
     {
         if (mProgram)
             GL_CHECK(glDeleteProgram(mProgram));
@@ -153,13 +153,13 @@ namespace sb
             if (mShaders[i])
                 GL_CHECK(glAttachShader(mProgram, mShaders[i]));
 
-        gLog.Info("linking shader program...\n");
+        gLog.info("linking shader program...\n");
         GL_CHECK(glLinkProgram(mProgram));
 
-        return CheckLinkStatus(mProgram);
+        return checkLinkStatus(mProgram);
     }
 
-    void Shader::Free()
+    void Shader::free()
     {
         for (int i = ShaderTypeVertex; i != ShaderTypesCount; ++i)
             if (mShaders[i])
@@ -182,46 +182,46 @@ namespace sb
         GL_CHECK(funccall); \
         return true
 
-    bool Shader::SetUniform(const char* name, const float* value_array, uint32_t elements)
+    bool Shader::setUniform(const char* name, const float* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniform1fv(loc, elements, (const GLfloat*)value_array));
     }
 
-    bool Shader::SetUniform(const char* name, const Vec2* value_array, uint32_t elements)
+    bool Shader::setUniform(const char* name, const Vec2* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniform2fv(loc, elements, (const GLfloat*)value_array));
     }
 
-    bool Shader::SetUniform(const char* name, const Vec3* value_array, uint32_t elements)
+    bool Shader::setUniform(const char* name, const Vec3* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniform3fv(loc, elements, (const GLfloat*)value_array));
     }
 
-    bool Shader::SetUniform(const char* name, const Color* value_array, uint32_t elements)
+    bool Shader::setUniform(const char* name, const Color* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniform4fv(loc, elements, (const GLfloat*)value_array));
     }
 
-    bool Shader::SetUniform(const char* name, const Mat44* value_array, uint32_t elements)
+    bool Shader::setUniform(const char* name, const Mat44* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniformMatrix4fv(loc, elements, GL_FALSE, (const GLfloat*)value_array));
     }
 
-    bool Shader::SetUniform(const char* name, const int* value_array, uint32_t elements)
+    bool Shader::setUniform(const char* name, const int* value_array, uint32_t elements)
     {
         SET_UNIFORM(glUniform1iv(loc, elements, (const GLint*)value_array));
     }
 
-    void Shader::InitShaders()
+    void Shader::initShaders()
     {
-        gLog.Info("initializing shaders...\n");
+        gLog.info("initializing shaders...\n");
 
         msShaders.resize(ShaderCount);
         msAttribs.resize(ShaderCount);
 
-        msShaders[ShaderTexture].Load("proj_texture.vert", "texture.frag");
-        msShaders[ShaderColor].Load("proj_color.vert", "color.frag");
-        msShaders[ShaderPointSprite].Load("proj_texture.vert", "color.frag", "point_sprite.geom");
+        msShaders[ShaderTexture].load("proj_texture.vert", "texture.frag");
+        msShaders[ShaderColor].load("proj_color.vert", "color.frag");
+        msShaders[ShaderPointSprite].load("proj_texture.vert", "color.frag", "point_sprite.geom");
 
         msAttribs[ShaderTexture].push_back(std::make_pair(SharedVertexBuffer::BufferVertex, "a_vertex"));
         msAttribs[ShaderTexture].push_back(std::make_pair(SharedVertexBuffer::BufferColor, "a_color"));
@@ -233,25 +233,25 @@ namespace sb
         msAttribs[ShaderPointSprite].push_back(std::make_pair(SharedVertexBuffer::BufferVertex, "a_vertex"));
     }
 
-    void Shader::FreeShaders()
+    void Shader::freeShaders()
     {
         msShaders.clear();
         msAttribs.clear();
 
-        gLog.Info("all shaders freed\n");
+        gLog.info("all shaders freed\n");
     }
 
-    Shader& Shader::Get(EShader shader)
+    Shader& Shader::get(EShader shader)
     {
         return msShaders[shader];
     }
 
-    Shader& Shader::GetCurrent()
+    Shader& Shader::getCurrent()
     {
         return msShaders[msCurrent];
     }
 
-    void Shader::Use(EShader shader)
+    void Shader::use(EShader shader)
     {
         if (msCurrent < ShaderCount)
             for (std::vector<std::pair<uint32_t, std::string> >::iterator it = msAttribs[msCurrent].begin(); it != msAttribs[msCurrent].end(); ++it)
@@ -262,7 +262,7 @@ namespace sb
             if (shader == ShaderNone)
                 GL_CHECK(glUseProgram(0));
             else
-                GL_CHECK(glUseProgram(msShaders[shader].GetProgram()));
+                GL_CHECK(glUseProgram(msShaders[shader].getProgram()));
             msCurrent = shader;
         }
 
@@ -270,7 +270,7 @@ namespace sb
             for (std::vector<std::pair<uint32_t, std::string> >::iterator it = msAttribs[msCurrent].begin(); it != msAttribs[msCurrent].end(); ++it)
             {
                 GL_CHECK(glEnableVertexAttribArray(it->first));
-                GL_CHECK(glBindAttribLocation(msShaders[msCurrent].GetProgram(), it->first, it->second.c_str()));
+                GL_CHECK(glBindAttribLocation(msShaders[msCurrent].getProgram(), it->first, it->second.c_str()));
             }
     }
 } // namespace sb

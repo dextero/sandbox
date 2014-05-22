@@ -15,13 +15,13 @@ namespace sb
         mAngleY(0.f),
         mMatrixUpdateFlags(0)
     {
-        SetOrthographicMatrix();
-        SetPerspectiveMatrix();
+        setOrthographicMatrix();
+        setPerspectiveMatrix();
 
-        LookAt(mEye, mAt, mUp);
+        lookAt(mEye, mAt, mUp);
     }
 
-    void Camera::SetOrthographicMatrix(float left,
+    void Camera::setOrthographicMatrix(float left,
                                        float right,
                                        float bottom,
                                        float top,
@@ -29,19 +29,19 @@ namespace sb
                                        float far)
     {
         mOrthographicProjectionMatrix =
-                Math::MatrixOrthographic(left, right, bottom, top, near, far);
+                math::matrixOrthographic(left, right, bottom, top, near, far);
     }
 
-    void Camera::SetPerspectiveMatrix(float fov,
+    void Camera::setPerspectiveMatrix(float fov,
                                       float aspectRatio,
                                       float near,
                                       float far)
     {
         mPerspectiveProjectionMatrix =
-                Math::MatrixPerspective(fov, aspectRatio, near, far);
+                math::matrixPerspective(fov, aspectRatio, near, far);
     }
 
-    void Camera::UpdateViewMatrix()
+    void Camera::updateViewMatrix()
     {
         if (mMatrixUpdateFlags & MatrixRotationUpdated)
             mRotationMatrix = Mat44(
@@ -58,15 +58,15 @@ namespace sb
     }
 
     // updates only if needed
-    Mat44& Camera::GetViewMatrix()
+    Mat44& Camera::getViewMatrix()
     {
         if (mMatrixUpdateFlags)
-            UpdateViewMatrix();
+            updateViewMatrix();
 
         return mViewMatrix;
     }
 
-    void Camera::LookAt(Vec3 pos, Vec3 at, Vec3 up)
+    void Camera::lookAt(Vec3 pos, Vec3 at, Vec3 up)
     {
         mEye = pos;
         mAt = at;
@@ -79,7 +79,7 @@ namespace sb
         mMatrixUpdateFlags |= MatrixTranslationUpdated | MatrixRotationUpdated;
     }
 
-    void Camera::Rotate(Radians angle)
+    void Camera::rotate(Radians angle)
     {
         Quat rot = glm::angleAxis(angle.value(), mUpReal);
 
@@ -89,19 +89,19 @@ namespace sb
         mMatrixUpdateFlags |= MatrixRotationUpdated;
     }
 
-    void Camera::Rotate(const Vec3& axis, Radians angle)
+    void Camera::rotate(const Vec3& axis, Radians angle)
     {
         Quat rot = glm::angleAxis(angle.value(), glm::normalize(axis));
-        LookAt(mEye, mEye + (rot * (mAt - mEye)), mUp);
+        lookAt(mEye, mEye + (rot * (mAt - mEye)), mUp);
     }
 
-    void Camera::RotateAround(Radians angle)
+    void Camera::rotateAround(Radians angle)
     {
         Quat rot = glm::angleAxis(angle.value(), mUpReal);
-        LookAt(mAt + (rot * (mEye - mAt)), mAt, mUp);
+        lookAt(mAt + (rot * (mEye - mAt)), mAt, mUp);
     }
 
-    void Camera::MouseLook(Radians dtX, Radians dtY)
+    void Camera::mouseLook(Radians dtX, Radians dtY)
     {
         mAngleXZ = Radians(atan2(mFront.z, mFront.x));
         mAngleY = Radians(acos(mFront.y / mFront.length()));
@@ -118,10 +118,10 @@ namespace sb
                               len * cosf(mAngleXZ.value())
                                   * sinf(mAngleY.value()));
 
-        LookAt(mEye, at, mUp);
+        lookAt(mEye, at, mUp);
     }
 
-    void Camera::Move(float distance)
+    void Camera::move(float distance)
     {
         Vec3 delta = glm::normalize(mFront) * distance;
         mEye += delta;
@@ -130,7 +130,7 @@ namespace sb
         mMatrixUpdateFlags |= MatrixTranslationUpdated;
     }
 
-    void Camera::Move(const Vec3& delta)
+    void Camera::move(const Vec3& delta)
     {
         mEye += delta;
         mAt += delta;
@@ -138,7 +138,7 @@ namespace sb
         mMatrixUpdateFlags |= MatrixTranslationUpdated;
     }
 
-    void Camera::Strafe(float distance)
+    void Camera::strafe(float distance)
     {
         Vec3 delta = glm::normalize(mRight) * distance;
         mEye += delta;
@@ -147,7 +147,7 @@ namespace sb
         mMatrixUpdateFlags |= MatrixTranslationUpdated;
     }
 
-    void Camera::Ascend(float distance)
+    void Camera::ascend(float distance)
     {
         Vec3 delta = glm::normalize(mUpReal) * distance;
         mEye += delta;
@@ -157,7 +157,7 @@ namespace sb
     }
 
     // delta = (right, upReal, front) instead of (x, y, z)
-    void Camera::MoveRelative(const Vec3& delta)
+    void Camera::moveRelative(const Vec3& delta)
     {
         Vec3 d = glm::normalize(mRight) * delta.x + glm::normalize(mUpReal) * delta.y + glm::normalize(mFront) * delta.z;
         mEye += d;

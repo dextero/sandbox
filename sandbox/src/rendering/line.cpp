@@ -16,7 +16,7 @@ namespace sb
         mMesh = gResourceMgr.getLine();
         mColor = col;
 
-        SetScale(to);
+        setScale(to);
     }
 
     Line::Line(const Vec3& from, const Vec3& to, const Color& col):
@@ -26,28 +26,28 @@ namespace sb
         mMesh = gResourceMgr.getLine();
         mColor = col;
 
-        SetScale(to - from);
-        SetPosition(from);
+        setScale(to - from);
+        setPosition(from);
     }
 
-    void Line::Set(const Vec3& from, const Vec3& to)
+    void Line::set(const Vec3& from, const Vec3& to)
     {
-        SetScale(to - from);
-        SetPosition(from);
-        SetRotation(0.0_rad, 0.0_rad, 0.0_rad);
+        setScale(to - from);
+        setPosition(from);
+        setRotation(0.0_rad, 0.0_rad, 0.0_rad);
     }
 
-    void Line::AttachTo(const Drawable* drawable)
+    void Line::attachTo(const Drawable* drawable)
     {
         mAttachedTo = drawable;
     }
 
     // synchronize position with attached drawable
-    void Line::Update()
+    void Line::update()
     {
         if (!mAttachedTo)
             return;
 
-        SetPosition(mAttachedTo->GetPosition());
+        setPosition(mAttachedTo->getPosition());
     }
 } // namespace sb

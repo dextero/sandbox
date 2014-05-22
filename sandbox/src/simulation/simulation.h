@@ -50,18 +50,18 @@ namespace Sim
         Simulation(ESimType type);
         ~Simulation();
 
-        void Update(float dt);
-        void SetThrowStart(const Vec3d& pos, const Vec3d& v);
-        void SetGravity(const Vec3d& g);
-        void SetWind(const Vec3d& w);
-        void DrawAll(sb::Renderer& renderer);
-        void TogglePause();
-        void Reset();
+        void update(float dt);
+        void setThrowStart(const Vec3d& pos, const Vec3d& v);
+        void setGravity(const Vec3d& g);
+        void setWind(const Vec3d& w);
+        void drawAll(sb::Renderer& renderer);
+        void togglePause();
+        void reset();
 
         // returns lines displayed
-        uint32_t PrintParametersToScreen(float x = 0.f, float y = 0.f, uint32_t line = 0u);
-        const Ball* Raycast(const Vec3& rayOrig, const Vec3& rayDir);
-        uint32_t PrintBallParametersToScreen(const Ball* ball, float x = 0.f, float y = 0.f, uint32_t line = 0u);
+        uint32_t printParametersToScreen(float x = 0.f, float y = 0.f, uint32_t line = 0u);
+        const Ball* raycast(const Vec3& rayOrig, const Vec3& rayDir);
+        uint32_t printBallParametersToScreen(const Ball* ball, float x = 0.f, float y = 0.f, uint32_t line = 0u);
     };
 }
 

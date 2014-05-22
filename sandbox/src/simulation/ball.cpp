@@ -11,14 +11,14 @@ namespace Sim
     const sb::Color& ColorThrow = sb::Color::Yellow;
     const sb::Color& ColorPath = sb::Color(0.7f, 0.f, 0.7f);
 
-    void Ball::AttachLines()
+    void Ball::attachLines()
     {
-        mVelocity.second.AttachTo(&mModel);
-        mAccGravity.second.AttachTo(&mModel);
-        mAccDrag.second.AttachTo(&mModel);
-        mAccWind.second.AttachTo(&mModel);
-        mAccBuoyancy.second.AttachTo(&mModel);
-        mAccNet.second.AttachTo(&mModel);
+        mVelocity.second.attachTo(&mModel);
+        mAccGravity.second.attachTo(&mModel);
+        mAccDrag.second.attachTo(&mModel);
+        mAccWind.second.attachTo(&mModel);
+        mAccBuoyancy.second.attachTo(&mModel);
+        mAccNet.second.attachTo(&mModel);
     }
 
     Ball::Ball(const Vec3d& pos, const Vec3d& velocity, double mass, double radius):
@@ -42,32 +42,32 @@ namespace Sim
     {
         mPath.push_back(pos);
 
-        mModel.SetPosition(0.f, 0.f, 0.f);
-        mModel.SetScale((float)(mRadius * 2.));
+        mModel.setPosition(0.f, 0.f, 0.f);
+        mModel.setScale((float)(mRadius * 2.));
 
-        Set(mVelocity, velocity);
-        Set(mAccNet, mAccGravity.first + mAccDrag.first + mAccWind.first);
+        set(mVelocity, velocity);
+        set(mAccNet, mAccGravity.first + mAccDrag.first + mAccWind.first);
 
-        AttachLines();
+        attachLines();
     }
 
     Ball::Ball(const Ball& copy)
     {
         *this = copy;
 
-        AttachLines();
+        attachLines();
     }
 
-    void Ball::Set(ColVec& what, const Vec3d& value, bool scaleToForce)
+    void Ball::set(ColVec& what, const Vec3d& value, bool scaleToForce)
     {
         what.first = value;
         if (scaleToForce)
-            what.second.SetScale(Vec3((float)(value[0] * mMass), (float)(value[1] * mMass), (float)(value[2] * mMass)));
+            what.second.setScale(Vec3((float)(value[0] * mMass), (float)(value[1] * mMass), (float)(value[2] * mMass)));
         else
-            what.second.SetScale(Vec3((float)value[0], (float)value[1], (float)value[2]));
+            what.second.setScale(Vec3((float)value[0], (float)value[1], (float)value[2]));
     }
 
-    bool Ball::Update(double dt, const Vec3d& gravity, const Vec3d& windVelocity, double fluidDensity, double maxPathLength, bool force)
+    bool Ball::update(double dt, const Vec3d& gravity, const Vec3d& windVelocity, double fluidDensity, double maxPathLength, bool force)
     {
         mTime += dt;
         if (mTime < 0.0)
@@ -99,13 +99,13 @@ namespace Sim
             mPos[1] = mRadius;
             --mTimeToLive;
             // stop ball when touched ground
-            Set(mVelocity, Vec3d(0., 0., 0.));
+            set(mVelocity, Vec3d(0., 0., 0.));
         }
 
-        mModel.SetPosition((float)mPos[0], (float)mPos[1], (float)mPos[2]);
+        mModel.setPosition((float)mPos[0], (float)mPos[1], (float)mPos[2]);
 
         // updating velocity
-        Set(mVelocity, mVelocity.first + mAccNet.first * dt, force);
+        set(mVelocity, mVelocity.first + mAccNet.first * dt, force);
 
         // updating energy
         if (mPos[1] > mRadius)
@@ -113,7 +113,7 @@ namespace Sim
 
         // accelerations:
         // gravity - constant
-        Set(mAccGravity, gravity, force);
+        set(mAccGravity, gravity, force);
 
         // drag
         // equation (en.wikipedia.org): Fd = 0.5 * (rho) * v^2 * Cd * A
@@ -131,38 +131,38 @@ namespace Sim
         {
             // drag force too big!
             double length = Vec3d(momentum / dt).length();
-            Set(mAccDrag, glm::normalize(newDragForce) * length, force);
+            set(mAccDrag, glm::normalize(newDragForce) * length, force);
         }
         else
-            Set(mAccDrag, newDragForce / mMass, force);
+            set(mAccDrag, newDragForce / mMass, force);
 
         // wind
         Vec3d newWindForce = (windVelocity != Vec3d(0., 0., 0.) ? glm::normalize(windVelocity) * 0.5 * fluidDensity * glm::dot(windVelocity, windVelocity) * dragCoefficient * mArea : Vec3d(0., 0., 0.));
-        Set(mAccWind, newWindForce / mMass, force);
+        set(mAccWind, newWindForce / mMass, force);
 
         // buoyancy
         Vec3d buoyancyForce = fluidDensity * mVolume * -mAccGravity.first;
-        Set(mAccBuoyancy, buoyancyForce / mMass, force);
+        set(mAccBuoyancy, buoyancyForce / mMass, force);
 
         // net
-        Set(mAccNet, mAccGravity.first + mAccDrag.first + mAccWind.first + mAccBuoyancy.first, force);
+        set(mAccNet, mAccGravity.first + mAccDrag.first + mAccWind.first + mAccBuoyancy.first, force);
 
-        mVelocity.second.Update();
-        mAccGravity.second.Update();
-        mAccDrag.second.Update();
-        mAccWind.second.Update();
-        mAccBuoyancy.second.Update();
-        mAccNet.second.Update();
+        mVelocity.second.update();
+        mAccGravity.second.update();
+        mAccDrag.second.update();
+        mAccWind.second.update();
+        mAccBuoyancy.second.update();
+        mAccNet.second.update();
 
         return mTimeToLive == 0u;
     }
 
-    void Ball::DrawAll(sb::Renderer& r)
+    void Ball::drawAll(sb::Renderer& r)
     {
-        r.Draw(mModel);
+        r.draw(mModel);
 
         // temporarily disable depth testing, to make lines fully visible
-        r.EnableFeature(sb::Renderer::FeatureDepthTest, false);
+        r.enableFeature(sb::Renderer::FeatureDepthTest, false);
         if (mPath.size() > 1)
         {
             static sb::Line line(Vec3(1.f, 1.f, 1.f), sb::Color(ColorPath, 0.6f));
@@ -170,20 +170,20 @@ namespace Sim
             std::list<Vec3d>::iterator it, next;
             for (it = mPath.begin(), next = ++it; next != mPath.end(); it = next++)
             {
-                line.SetPosition((float)(*it)[0], (float)(*it)[1], (float)(*it)[2]);
-                line.SetScale((float)((*next)[0] - (*it)[0]), (float)((*next)[1] - (*it)[1]), (float)((*next)[2] - (*it)[2]));
-                r.Draw(line);
+                line.setPosition((float)(*it)[0], (float)(*it)[1], (float)(*it)[2]);
+                line.setScale((float)((*next)[0] - (*it)[0]), (float)((*next)[1] - (*it)[1]), (float)((*next)[2] - (*it)[2]));
+                r.draw(line);
             }
         }
 
-        r.Draw(mVelocity.second);
+        r.draw(mVelocity.second);
 
-        r.Draw(mAccGravity.second);
-        r.Draw(mAccDrag.second);
-        r.Draw(mAccWind.second);
-        r.Draw(mAccBuoyancy.second);
-        r.Draw(mAccNet.second);
+        r.draw(mAccGravity.second);
+        r.draw(mAccDrag.second);
+        r.draw(mAccWind.second);
+        r.draw(mAccBuoyancy.second);
+        r.draw(mAccNet.second);
 
-        r.EnableFeature(sb::Renderer::FeatureDepthTest);
+        r.enableFeature(sb::Renderer::FeatureDepthTest);
     }
 }

@@ -28,7 +28,7 @@ namespace sb
             fflush(mFile);
     }
 
-    void Logger::Printf(const char* msg, ...)
+    void Logger::printf(const char* msg, ...)
     {
         static char buffer[1024];
         va_list list;
@@ -41,7 +41,7 @@ namespace sb
         fflush(mFile);
     }
 
-    void Logger::Info(const char* msg, ...)
+    void Logger::info(const char* msg, ...)
     {
         static char buffer[1024];
         va_list list;
@@ -55,7 +55,7 @@ namespace sb
         fflush(mFile);
     }
 
-    void Logger::Warn(const char* msg, ...)
+    void Logger::warn(const char* msg, ...)
     {
         static char buffer[1024];
         va_list list;
@@ -72,7 +72,7 @@ namespace sb
         fflush(mFile);
     }
 
-    void Logger::Err(const char* msg, ...)
+    void Logger::err(const char* msg, ...)
     {
         static char buffer[1024];
         va_list list;

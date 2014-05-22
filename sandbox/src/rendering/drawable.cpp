@@ -14,7 +14,7 @@ namespace sb
         mProjectionType(projType)
     {}
 
-    void Drawable::RecalculateMatrices()
+    void Drawable::recalculateMatrices()
     {
         if (mFlags & FlagTransformationChanged)
         {
@@ -38,37 +38,37 @@ namespace sb
     {
     }
 
-    const Vec3& Drawable::GetPosition() const
+    const Vec3& Drawable::getPosition() const
     {
         return mPosition;
     }
 
-    const Vec3 Drawable::GetRotationAxis() const
+    const Vec3 Drawable::getRotationAxis() const
     {
         return glm::axis(mRotation);
     }
 
-    Radians Drawable::GetRotationAngle() const
+    Radians Drawable::getRotationAngle() const
     {
         return Radians(glm::angle(mRotation));
     }
-    void Drawable::GetRotationAxisAngle(Vec3& axis, Radians& angle) const
+    void Drawable::getRotationAxisAngle(Vec3& axis, Radians& angle) const
     {
-        axis = GetRotationAxis();
-        angle = GetRotationAngle();
+        axis = getRotationAxis();
+        angle = getRotationAngle();
     }
 
-    const Quat& Drawable::GetRotationQuaternion() const
+    const Quat& Drawable::getRotationQuaternion() const
     {
         return mRotation;
     }
 
-    const Vec3& Drawable::GetScale() const
+    const Vec3& Drawable::getScale() const
     {
         return mScale;
     }
 
-    Shader::EShader Drawable::GetShader() const
+    Shader::EShader Drawable::getShader() const
     {
         if (mTexture || (mMesh && mMesh->getTexture())) {
             return Shader::ShaderTexture;
@@ -76,25 +76,25 @@ namespace sb
         return Shader::ShaderColor;
     }
 
-    void Drawable::SetPosition(const Vec3& pos)
+    void Drawable::setPosition(const Vec3& pos)
     {
         mPosition = pos;
         mFlags |= FlagPositionChanged;
     }
 
-    void Drawable::SetPosition(float x, float y, float z)
+    void Drawable::setPosition(float x, float y, float z)
     {
         mPosition = Vec3(x, y, z);
         mFlags |= FlagPositionChanged;
     }
 
-    void Drawable::SetRotation(const Vec3& axis, Radians angle)
+    void Drawable::setRotation(const Vec3& axis, Radians angle)
     {
         mRotation = glm::angleAxis(angle.value(), glm::normalize(axis));
         mFlags |= FlagRotationChanged;
     }
 
-    void Drawable::SetRotation(Radians x, Radians y, Radians z)
+    void Drawable::setRotation(Radians x, Radians y, Radians z)
     {
         mRotation = glm::toQuat(glm::eulerAngleYXZ(y.value(),
                                                    x.value(),
@@ -102,39 +102,39 @@ namespace sb
         mFlags |= FlagRotationChanged;
     }
 
-    void Drawable::SetScale(const Vec3& scale)
+    void Drawable::setScale(const Vec3& scale)
     {
         mScale = scale;
         mFlags |= FlagScaleChanged;
     }
 
-    void Drawable::SetScale(float x, float y, float z)
+    void Drawable::setScale(float x, float y, float z)
     {
         mScale = Vec3(x, y, z);
         mFlags |= FlagScaleChanged;
     }
 
-    void Drawable::SetScale(float uniform)
+    void Drawable::setScale(float uniform)
     {
         mScale = Vec3(uniform, uniform, uniform);
         mFlags |= FlagScaleChanged;
     }
 
-    void Drawable::Rotate(Radians angle)
+    void Drawable::rotate(Radians angle)
     {
-        mRotation = glm::rotate(mRotation, angle.value(), GetRotationAxis());
+        mRotation = glm::rotate(mRotation, angle.value(), getRotationAxis());
         mFlags |= FlagRotationChanged;
     }
 
-    void Drawable::Rotate(const Vec3& axis, Radians angle)
+    void Drawable::rotate(const Vec3& axis, Radians angle)
     {
         mRotation = glm::rotate(mRotation, angle.value(), axis);
         mFlags |= FlagRotationChanged;
     }
 
-    const Mat44& Drawable::GetTransformationMatrix()
+    const Mat44& Drawable::getTransformationMatrix()
     {
-        RecalculateMatrices();
+        recalculateMatrices();
         return mTransformationMatrix;
     }
 }

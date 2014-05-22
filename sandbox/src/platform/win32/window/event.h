@@ -204,15 +204,15 @@ namespace sb
 
     public:
         Event(): type(Empty) {}
-        static Event MouseMovedEvent(unsigned x, unsigned y) { return Event(MouseMoved, x, y); }
-        static Event MousePressedEvent(unsigned x, unsigned y, Mouse::Button btn) { return Event(MousePressed, x, y, btn); }
-        static Event MouseReleasedEvent(unsigned x, unsigned y, Mouse::Button btn) { return Event(MouseReleased, x, y, btn); }
-        static Event MouseWheelEvent(unsigned x, unsigned y, int delta) { return Event(MouseWheel, x, y, Mouse::ButtonNone, delta); }
-        static Event KeyPressedEvent(Key::Code code) { return Event(code, true); }
-        static Event KeyReleasedEvent(Key::Code code) { return Event(code, false); }
-        static Event WindowResizedEvent(unsigned x, unsigned y) { return Event(WindowResized, x, y); }
-        static Event WindowFocusEvent(bool focus) { return Event(focus); }
-        static Event WindowClosedEvent() { return Event(WindowClosed); }
+        static Event mouseMovedEvent(unsigned x, unsigned y) { return Event(MouseMoved, x, y); }
+        static Event mousePressedEvent(unsigned x, unsigned y, Mouse::Button btn) { return Event(MousePressed, x, y, btn); }
+        static Event mouseReleasedEvent(unsigned x, unsigned y, Mouse::Button btn) { return Event(MouseReleased, x, y, btn); }
+        static Event mouseWheelEvent(unsigned x, unsigned y, int delta) { return Event(MouseWheel, x, y, Mouse::ButtonNone, delta); }
+        static Event keyPressedEvent(Key::Code code) { return Event(code, true); }
+        static Event keyReleasedEvent(Key::Code code) { return Event(code, false); }
+        static Event windowResizedEvent(unsigned x, unsigned y) { return Event(WindowResized, x, y); }
+        static Event windowFocusEvent(bool focus) { return Event(focus); }
+        static Event windowClosedEvent() { return Event(WindowClosed); }
     };
 } // namespace sb
 
