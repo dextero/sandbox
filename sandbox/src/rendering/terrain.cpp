@@ -7,7 +7,7 @@ namespace sb
                      const std::string& texture):
         Drawable(ProjectionPerspective)
     {
-        mMesh = gResourceMgr.GetTerrain(heightmap);
-        mTexture = gResourceMgr.GetTexture(texture);
+        mMesh = gResourceMgr.getTerrain(heightmap);
+        mTexture = gResourceMgr.getTexture(texture);
     }
 } // namespace sb

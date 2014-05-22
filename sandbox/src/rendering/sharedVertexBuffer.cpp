@@ -149,7 +149,7 @@ namespace sb
         }
     }
 
-    void SharedVertexBuffer::AddElements(EBufferType buffer, void* data, uint32_t elements, uint32_t offset)
+    void SharedVertexBuffer::AddElements(EBufferType buffer, const void* data, uint32_t elements, uint32_t offset)
     {
         GLfloat* placeholderBuffer = NULL;
         if (!data)
@@ -164,7 +164,7 @@ namespace sb
         delete[] placeholderBuffer;
     }
 
-    uint32_t SharedVertexBuffer::AddVertices(void* vertices, void* texcoords, void* colors, uint32_t elements)
+    uint32_t SharedVertexBuffer::AddVertices(const void* vertices, const void* texcoords, const void* colors, uint32_t elements)
     {
         gLog.Info("adding %u elements to shared buffer\n", elements);
 

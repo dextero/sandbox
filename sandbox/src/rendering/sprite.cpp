@@ -6,20 +6,19 @@ namespace sb
     Sprite::Sprite():
         Drawable(ProjectionOrthographic)
     {
-        mTexture = gResourceMgr.GetTexture("default.png");
+        mTexture = gResourceMgr.getTexture("default.png");
         mMesh = NULL;
     }
 
     Sprite::Sprite(const std::string& image):
         Drawable(ProjectionOrthographic)
     {
-        mTexture = gResourceMgr.GetTexture(image);
+        mTexture = gResourceMgr.getTexture(image);
         mMesh = NULL;
     }
 
     void Sprite::SetImage(const std::string& image)
     {
-        gResourceMgr.FreeTexture(mTexture);
-        mTexture = gResourceMgr.GetTexture(image);
+        mTexture = gResourceMgr.getTexture(image);
     }
 } // namespace sb

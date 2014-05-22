@@ -19,40 +19,22 @@ namespace sb
 {
     SINGLETON_INSTANCE(ResourceMgr);
 
-
-    ResourceMgr::ResourceRefCounter::ResourceRefCounter(ResourceHandle h):
-        handle(h),
-        references(0)
-    {}
-
-    ResourceHandle ResourceMgr::ResourceRefCounter::Attach()
+    std::shared_ptr<TextureId> ResourceMgr::getDefaultTexture()
     {
-        ++references;
-        return handle;
+        return getTexture("default.png");
     }
 
-    bool ResourceMgr::ResourceRefCounter::Detach()
-    {
-        return --references == 0;
-    }
-
-    TextureId ResourceMgr::GetDefaultTexture()
-    {
-        return GetTexture("default.png");
-    }
-
-    ResourceMgr::ResourceMgr():
-        mBasePath("data/")
+    ResourceMgr::ResourceMgr(const std::string& basePath):
+        mBasePath(basePath),
+        mShaderPath(mBasePath + "shader/"),
+        mTextures(mBasePath + "texture/"),
+        mImages(mBasePath + "image/"),
+        mMeshes(mBasePath + "mesh/"),
+        mTerrains(mBasePath + "terrain/")
     {
         GLint maxTexSize;
         GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize));
         gLog.Info("max texture size: %d\n", maxTexSize);
-
-        mTypePath.resize(ResourceCount);
-        mTypePath[ResourceTexture] = "texture/";
-        mTypePath[ResourceMesh] = "mesh/";
-        mTypePath[ResourceImage] = "image/";
-        mTypePath[ResourceShader] = "shader/";
 
         ilInit();
 
@@ -60,112 +42,88 @@ namespace sb
         Mesh::msBuffer = new SharedVertexBuffer(SharedVertexBuffer::BufferTexcoord);
 
         // released in destructor
-        Mesh* line = new Mesh();
-        Mesh* quad = new Mesh();
+        std::shared_ptr<Mesh> line = std::make_shared<Mesh>();
+        std::shared_ptr<Mesh> quad = std::make_shared<Mesh>();
 
-        Vec3 lineVertices[] = {
-            Vec3(0.f, 0.f, 0.f),
-            Vec3(1.f, 1.f, 1.f)
+        std::vector<Vec3> lineVertices {
+            { 0.f, 0.f, 0.f },
+            { 1.f, 1.f, 1.f }
         };
 
-        uint32_t lineIndices[] = { 0, 1 };
+        std::vector<uint32_t> lineIndices { 0, 1 };
 
-        Vec3 quadVertices[] = {
-            Vec3(-1.f, -1.f, 0.f),
-            Vec3(1.f, -1.f, 0.f),
-            Vec3(1.f, 1.f, 0.f),
-            Vec3(-1.f, 1.f, 0.f)
+        std::vector<Vec3> quadVertices {
+            { -1.f, -1.f, 0.f },
+            {  1.f, -1.f, 0.f },
+            {  1.f,  1.f, 0.f },
+            { -1.f,  1.f, 0.f }
         };
 
-        Vec2 quadTexcoords[] = {
-            Vec2(0.f, 1.f),
-            Vec2(0.f, 0.f),
-            Vec2(1.f, 0.f),
-            Vec2(1.f, 1.f)
+        std::vector<Vec2> quadTexcoords {
+            { 0.f, 1.f },
+            { 0.f, 0.f },
+            { 1.f, 0.f },
+            { 1.f, 1.f }
         };
 
-        uint32_t quadIndices[] = { 0, 1, 2, 3 };
+        std::vector<uint32_t> quadIndices { 0, 1, 2, 3 };
 
-        line->Create(Mesh::ShapeLine, lineVertices, NULL, NULL, 2, lineIndices, 2, 0);
-        quad->Create(Mesh::ShapeQuad, quadVertices, quadTexcoords, NULL, 4, quadIndices, 4, GetDefaultTexture());
+        line->Create(Mesh::ShapeLine, lineVertices, {}, {}, lineIndices, 0);
+        quad->Create(Mesh::ShapeQuad, quadVertices, quadTexcoords, {}, quadIndices, getDefaultTexture());
 
-        mResources[ResourceMesh].insert(std::make_pair("*line", ResourceRefCounter((ResourceHandle)line)));
-        mResources[ResourceMesh].insert(std::make_pair("*quad", ResourceRefCounter((ResourceHandle)quad)));
+        mMeshes.addSpecial("line", line);
+        mMeshes.addSpecial("quad", quad);
     }
 
     ResourceMgr::~ResourceMgr()
     {
-        FreeAllResources();
-
         // releasing meshs' vertex buffer
         SAFE_RELEASE(Mesh::msBuffer);
     }
 
-    void ResourceMgr::FreeAllResources()
+    void ResourceMgr::freeAll()
     {
-        for (auto &typeMapPair: mResources)
-        {
-            for (auto &pathRefCountPair: typeMapPair.second)
-                DeleteResource(typeMapPair.first,
-                               pathRefCountPair.second.handle);
-        }
-        mResources.clear();
+        mTextures.freeAll();
+        mImages.freeAll();
+        mMeshes.freeAll();
+        mTerrains.freeAll();
 
         gLog.Info("all resources freed\n");
     }
 
 
-    bool ResourceMgr::LoadResource(EResourceType type,
-                                   const std::string& name)
+    std::shared_ptr<Image> ResourceMgr::loadImage(const std::string& name)
     {
-        switch (type)
-        {
-        case ResourceTexture:
-            return LoadTexture(name);
-        case ResourceImage:
-            {
-                gLog.Info("loading image %ls\n", name.c_str());
+        gLog.Info("loading image %ls\n", name.c_str());
 
-                Image* img = new Image();
-                mResources[ResourceImage].insert(std::make_pair(name, ResourceRefCounter((ResourceHandle)img)));
-                return img->LoadFromFile(mBasePath + mTypePath[ResourceImage] + name);
-            }
-        case ResourceMesh:
-            return LoadMesh(name);
-        case ResourceTerrain:
-            return LoadTerrain(name);
-        default:
-            gLog.Warn("invalid resource type: %d\n", (int)type);
-            assert(!"Invalid resource type.");
+        std::shared_ptr<Image> img = std::make_shared<Image>();
+        if (img->LoadFromFile(name)) {
+            return img;
         }
-        return false;
+        return std::shared_ptr<Image>();
     }
 
-    bool ResourceMgr::LoadTexture(const std::string& name)
+    std::shared_ptr<TextureId> ResourceMgr::loadTexture(const std::string& name)
     {
         gLog.Info("loading texture %ls\n", name.c_str());
-
-        std::map<std::string, ResourceRefCounter>& textures = mResources[ResourceTexture];
-
-        if (textures.find(name) != textures.end())
-        {
-            gLog.Warn("loading an already loaded texture, wtf\n");
-            return true;
-        }
 
         ILuint image = ilGenImage();
         IL_CHECK_RET(ilBindImage(image), false);
 
 #ifdef PLATFORM_WIN32
-        IL_CHECK_RET(ilLoadImage((mBasePath + mTypePath[ResourceTexture] + name).c_str()), false);
+        IL_CHECK_RET(ilLoadImage(StringUtils::toWString(name).c_str()), false);
 #else //PLATFORM_LINUX
-        IL_CHECK_RET(ilLoadImage(StringUtils::toString(mBasePath + mTypePath[ResourceTexture] + name).c_str()), false);
+        IL_CHECK_RET(ilLoadImage(name.c_str()), false);
 #endif // PLATFORM_WIN32
 
         uint32_t maxTexSize;
         GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, (GLint*)&maxTexSize));
 
-        uint32_t imgWidth = ilGetInteger(IL_IMAGE_WIDTH), imgHeight = ilGetInteger(IL_IMAGE_HEIGHT), potWidth = 1, potHeight = 1;
+        uint32_t imgWidth = ilGetInteger(IL_IMAGE_WIDTH);
+        uint32_t imgHeight = ilGetInteger(IL_IMAGE_HEIGHT);
+        uint32_t potWidth = 1;
+        uint32_t potHeight = 1;
+
         while (potWidth < imgWidth && potWidth < maxTexSize) potWidth *= 2;
         while (potHeight < imgHeight && potHeight < maxTexSize) potHeight *= 2;
 
@@ -181,134 +139,131 @@ namespace sb
         GL_CHECK(glGetIntegerv(GL_TEXTURE_BINDING_2D, (GLint*)&prevTex));
 
         // copy image to opengl
-        GL_CHECK_RET(glGenTextures(1, &texture), false);
-        GL_CHECK_RET(glBindTexture(GL_TEXTURE_2D, texture), false);
+        GL_CHECK_RET(glGenTextures(1, &texture), {});
+        GL_CHECK_RET(glBindTexture(GL_TEXTURE_2D, texture), {});
         GL_CHECK(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 
-        GL_CHECK_RET(glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP), potWidth, potHeight, 0, ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_TYPE), ilGetData()), false);
+        GL_CHECK_RET(glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP), potWidth, potHeight, 0, ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_TYPE), ilGetData()), {});
 
         // generate mipmaps
-        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT), false);
-        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT), false);
-        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR), false);
-        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR), false);
-        GL_CHECK_RET(glGenerateMipmap(GL_TEXTURE_2D), false);
+        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT), {});
+        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT), {});
+        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR), {});
+        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR), {});
+        GL_CHECK_RET(glGenerateMipmap(GL_TEXTURE_2D), {});
 
         // from this line on, a function failure does not mean that texture has not been loaded
         GL_CHECK(glBindTexture(GL_TEXTURE_2D, prevTex));
         // restore previous image
         IL_CHECK(ilDeleteImage(image));
 
-        textures.insert(std::make_pair(name, ResourceRefCounter((ResourceHandle)texture)));
-
-        return true;
+        return std::make_shared<TextureId>(texture);
     }
 
-    bool ResourceMgr::LoadMesh(const std::string& name)
+    std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
     {
         gLog.Info("loading mesh %ls\n", name.c_str());
 
-        std::map<std::string, ResourceRefCounter>& meshs = mResources[ResourceMesh];
-
         // TODO: wiele tekstur
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(StringUtils::toString(mBasePath + mTypePath[ResourceMesh] + name),
-            aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
+        const uint32_t importerFlags = aiProcess_CalcTangentSpace
+                                       | aiProcess_Triangulate
+                                       | aiProcess_JoinIdenticalVertices
+                                       | aiProcess_SortByPType;
+        const aiScene* scene = importer.ReadFile(name, importerFlags);
 
-        if (!scene)
-            return false;
+        if (!scene || !scene->HasMeshes()) {
+            return {};
+        }
 
-        if (!scene->HasMeshes())
-            return false;
-
-        for (uint32_t i = 0; i < scene->mNumMeshes; ++i)
-        {
+        for (uint32_t i = 0; i < scene->mNumMeshes; ++i) {
             aiMesh* mesh = scene->mMeshes[i];
 
-            if (!mesh->HasPositions())
+            if (!mesh->HasPositions()
+                    || !mesh->HasTextureCoords(0)) {
                 continue;
-
-            if (!mesh->HasTextureCoords(0))
-                continue;
+            }
 
             // texcoords
-            Vec2* texcoords = NULL;
+            std::vector<Vec3> vertices(mesh->mNumVertices);
+            memcpy(&vertices[0], mesh->mVertices, mesh->mNumVertices * sizeof(Vec3));
+
+            std::vector<Vec2> texcoords;
+            std::vector<Color> colors;
+            std::vector<uint32_t> indices;
+
             aiString filename;
-            uint32_t texture;
+            std::shared_ptr<TextureId> texture;
 
-            aiReturn result = scene->mMaterials[mesh->mMaterialIndex]->GetTexture(aiTextureType_DIFFUSE, 0, &filename);
-            if (result == AI_SUCCESS)
-            {
-                texture = GetTexture(filename.data);
+            aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+            aiReturn result = material->GetTexture(aiTextureType_DIFFUSE,
+                                                   0, &filename);
+            if (result == AI_SUCCESS) {
+                texture = gResourceMgr.getTexture(filename.data);
 
-                texcoords = new Vec2[mesh->mNumVertices];
-                for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
-                    texcoords[i] = Vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
-            }
-            else
+                texcoords.reserve(mesh->mNumVertices);
+                for (uint32_t i = 0; i < mesh->mNumVertices; ++i) {
+                    texcoords.emplace_back(Vec2(mesh->mTextureCoords[0][i].x,
+                                                mesh->mTextureCoords[0][i].y));
+                }
+            } else {
                 gLog.Err("%ls: texture not loaded\n", name.c_str());
+            }
 
             // indices
             uint32_t numIndices = 0;
             for (uint32_t i = 0; i < mesh->mNumFaces; ++i)
                 numIndices += mesh->mFaces[i].mNumIndices;
 
-            uint32_t* indices = new uint32_t[numIndices];
+            indices.resize(numIndices);
             numIndices = 0;
-            for (uint32_t i = 0; i < mesh->mNumFaces; ++i)
-            {
-                memcpy(indices + numIndices, mesh->mFaces[i].mIndices, mesh->mFaces[i].mNumIndices * sizeof(uint32_t));
+            for (uint32_t i = 0; i < mesh->mNumFaces; ++i) {
+                memcpy(&indices[numIndices],
+                       mesh->mFaces[i].mIndices,
+                       mesh->mFaces[i].mNumIndices * sizeof(uint32_t));
                 numIndices += mesh->mFaces[i].mNumIndices;
             }
 
             // mesh
-            Mesh* terrainMesh = new Mesh();
-            if (!terrainMesh->Create(Mesh::ShapeTriangle, (Vec3*)mesh->mVertices, texcoords, NULL, mesh->mNumVertices, indices, numIndices, texture))
-                return false;
+            std::shared_ptr<Mesh> loadedMesh = std::make_shared<Mesh>();
+            if (!loadedMesh->Create(Mesh::ShapeTriangle,
+                                    vertices, texcoords,
+                                    {}, indices, texture)) {
+                return {};
+            }
 
-            delete[] texcoords;
-            delete[] indices;
-
-            meshs.insert(std::make_pair(name, ResourceRefCounter((ResourceHandle)terrainMesh)));
+            return loadedMesh;
         }
 
-        return true;
+        return {};
     }
 
-    bool ResourceMgr::LoadTerrain(const std::string& heightmap)
+    std::shared_ptr<Mesh> ResourceMgr::loadTerrain(const std::string& heightmap)
     {
         gLog.Info("loading terrain %ls\n", heightmap.c_str());
 
-        std::map<std::string, ResourceRefCounter>& meshs = mResources[ResourceTerrain];
+        std::shared_ptr<Image> img = gResourceMgr.getImage(heightmap);
+        uint32_t w = img->GetWidth();
+        uint32_t h = img->GetHeight();
+        uint32_t* data = (uint32_t*)img->GetData();
 
-        /*
-        FILE* f = _wfopen(heightmap.c_str(), L"r");
-        fseek(f, 0, SEEK_END);
-        uint32_t filesize = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        short* data = new short[filesize / 2];
-        fread(data, 1, filesize, f);
-        fclose(f);
-        uint32_t w = (uint32_t)sqrt((double)(filesize / 2)),
-             h = w;
+        gLog.Info("loading terrain %ls: %ux%u vertices\n",
+                  heightmap.c_str(), w, h);
 
-        Vec3* vertices = new Vec3[w * h];
-        for (uint32_t i = 0; i < w * h; ++i)
-            vertices[i] = Vec3((float)(i % w), (float)data[i], (float)(i / w));
-        */
+#define RGBA_TO_HEIGHT(rgba) \
+    ((float)(((rgba) & 0x00ff0000) \
+           | (((rgba) & 0xff000000) << 8) \
+           | (((rgba) & 0x0000ff00) << 16)) \
+        / 100000.0f)
 
-        Image& img = *GetImage(heightmap);
-        uint32_t w = img.GetWidth(),
-            h = img.GetHeight();
-        unsigned int* data = (unsigned int*)img.GetData();
+        std::vector<Vec3> vertices;
+        for (uint32_t i = 0; i < w * h; ++i) {
+            vertices.emplace_back(Vec3((float)(i % w),
+                                        RGBA_TO_HEIGHT(data[i]),
+                                        (float)(i / w)));
+        }
 
-        gLog.Info("loading terrain %ls: %ux%u vertices\n", heightmap.c_str(), w, h);
-
-        Vec3* vertices = new Vec3[w * h];
-        for (uint32_t i = 0; i < w * h; ++i)
-            vertices[i] = Vec3((float)(i % w), (float)((data[i] & 0x00FF0000) | ((data[i] & 0xFF000000) << 16) | ((data[i] & 0x0000FF00) >> 16)) / 100000.f, (float)(i / w));
-
-        Vec2* texcoords = new Vec2[w * h];
+        std::vector<Vec2> texcoords;
 
         // for now, let's use tiling only
         /*switch (texturingMode)
@@ -318,8 +273,10 @@ namespace sb
                 texcoords[i] = Vec2((float)(i % w) / (float)w, (float)(i / w) / (float)w);
             break;
         case TexturingTile:*/
-            for (uint32_t i = 0; i < w * h; ++i)
-                texcoords[i] = Vec2((i % w) % 2 ? 0.f : 1.f, (i / w) % 2 ? 0.f : 1.f);
+            for (uint32_t i = 0; i < w * h; ++i) {
+                texcoords.emplace_back(Vec2((i % w) % 2 ? 0.f : 1.f,
+                                            (i / w) % 2 ? 0.f : 1.f));
+            }
             /*break;
         default:
             // wtf
@@ -329,10 +286,10 @@ namespace sb
         }*/
 
         uint32_t numIndices = (w - 1) * (h - 1) * 6;
-        uint32_t* indices = new uint32_t[numIndices];
-        for (uint32_t x = 0; x < (w - 2); ++x)
-            for (uint32_t y = 0; y < (h - 1); ++y)
-            {
+        std::vector<uint32_t> indices(numIndices);
+
+        for (uint32_t x = 0; x < (w - 2); ++x) {
+            for (uint32_t y = 0; y < (h - 1); ++y) {
                 uint32_t idx = x * h + y;
                 uint32_t idxTimes6 = idx * 6;
 
@@ -343,167 +300,56 @@ namespace sb
                 indices[idxTimes6 + 2] = indices[idxTimes6 + 3] = idx + 1;
                 indices[idxTimes6 + 5] = idx + w + 1;
             }
+        }
 
         // mesh
-        Mesh* terrain = new Mesh();
-        bool ret = terrain->Create(Mesh::ShapeTriangle, vertices, texcoords, NULL, w * h, indices, numIndices, 0);
-
-        delete[] vertices;
-        delete[] texcoords;
-        delete[] indices;
-
-        meshs.insert(std::make_pair(heightmap, ResourceRefCounter((ResourceHandle)terrain)));
-
-        return ret;
-    }
-
-    void ResourceMgr::DeleteResource(EResourceType type, ResourceHandle& handle)
-    {
-        switch (type)
-        {
-        case ResourceTexture:
-            {
-                // for compatibility in 64bit builds
-                GLuint texture = (GLuint)handle;
-                glDeleteTextures(1, &texture);
-                break;
-            }
-        case ResourceImage:
-            delete (Image*)handle;
-            break;
-        case ResourceMesh:
-        case ResourceTerrain:
-            delete (Mesh*)handle;
-            break;
-        default:
-            gLog.Warn("invalid resource type: %d\n", (int)type);
-            assert(!"Invalid resource type.");
+        std::shared_ptr<Mesh> terrain = std::make_shared<Mesh>();
+        if (terrain->Create(Mesh::ShapeTriangle,
+                            vertices, texcoords, {}, indices, 0)) {
+            return terrain;
         }
+
+        return {};
     }
 
-    ResourceHandle ResourceMgr::GetResource(EResourceType type, const std::string& name)
+    void ResourceMgr::freeTexture(const std::shared_ptr<TextureId>& texture)
     {
-        std::map<std::string, ResourceRefCounter>& resources = mResources[type];
+        glDeleteTextures(1, texture.get());
+    }
 
-        if (resources.find(name) != resources.end())
-            return resources[name].Attach();
-        else if (LoadResource(type, name))
-            return resources[name].Attach();
-        else
-        {
-            gLog.Err("couldn't load resource %ls\n", name.c_str());
-            return (ResourceHandle)0;
+    std::shared_ptr<TextureId> ResourceMgr::getTexture(const std::string& name)
+    {
+        return mTextures.get(name);
+    }
+
+    std::shared_ptr<Image> ResourceMgr::getImage(const std::string& name)
+    {
+        return mImages.get(name);
+    }
+
+    std::shared_ptr<Mesh> ResourceMgr::getMesh(const std::string& name)
+    {
+        return mMeshes.get(name);
+    }
+
+    std::shared_ptr<Mesh> ResourceMgr::getTerrain(const std::string& heightmap)
+    {
+        return mTerrains.get(heightmap);
+    }
+
+    std::shared_ptr<Mesh> ResourceMgr::getLine()
+    {
+        return getMesh("*line");
+    }
+
+    std::shared_ptr<Mesh> ResourceMgr::getSprite(const std::shared_ptr<TextureId>& texture)
+    {
+        std::shared_ptr<Mesh> mesh = getMesh("*quad");
+        if (!mesh) {
+            return {};
         }
-    }
 
-    bool ResourceMgr::AddReference(EResourceType type, ResourceHandle handle)
-    {
-        std::map<std::string, ResourceRefCounter>& resources = mResources[type];
-
-        for (std::map<std::string, ResourceRefCounter>::iterator it = resources.begin(); it != resources.end(); ++it)
-            if (it->second.handle == handle)
-            {
-                it->second.Attach();
-                return true;
-            }
-
-        return false;
-    }
-
-    void ResourceMgr::FreeResource(EResourceType type, ResourceHandle handle)
-    {
-        std::map<std::string, ResourceRefCounter>& resources = mResources[type];
-
-        for (std::map<std::string, ResourceRefCounter>::iterator it = resources.begin(); it != resources.end(); ++it)
-            if (it->second.handle == handle)
-            {
-                if (it->second.Detach())
-                {
-                    DeleteResource(type, it->second.handle);
-                    resources.erase(it);
-                }
-
-                break;
-            }
-    }
-
-
-    const std::string ResourceMgr::GetShaderPath()
-    {
-        return StringUtils::toString(mBasePath + mTypePath[ResourceShader]);
-    }
-
-    // there should be 1 Free* for every Get* call!
-    TextureId ResourceMgr::GetTexture(const std::string& name)
-    {
-        return (TextureId)GetResource(ResourceTexture, name);
-    }
-
-    TextureId ResourceMgr::GetTexture(TextureId id)
-    {
-        return AddReference(ResourceTexture, (ResourceHandle)id) ? id : 0;
-    }
-
-    void ResourceMgr::FreeTexture(TextureId id)
-    {
-        FreeResource(ResourceTexture, (ResourceHandle)id);
-    }
-
-    Image* ResourceMgr::GetImage(const std::string& name)
-    {
-        return (Image*)GetResource(ResourceImage, name);
-    }
-
-    Image* ResourceMgr::GetImage(Image* img)
-    {
-        return AddReference(ResourceImage, (ResourceHandle)img) ? img : NULL;
-    }
-
-    void ResourceMgr::FreeImage(Image* img)
-    {
-        FreeResource(ResourceImage, (ResourceHandle)img);
-    }
-
-    Mesh* ResourceMgr::GetMesh(const std::string& name)
-    {
-        return (Mesh*)GetResource(ResourceMesh, name);
-    }
-
-    Mesh* ResourceMgr::GetMesh(Mesh* mesh)
-    {
-        return AddReference(ResourceMesh, (ResourceHandle)mesh) ? mesh : NULL;
-    }
-
-    void ResourceMgr::FreeMesh(Mesh* mesh)
-    {
-        FreeResource(ResourceMesh, (ResourceHandle)mesh);
-    }
-
-    Mesh* ResourceMgr::GetTerrain(const std::string& heightmap)
-    {
-        return (Mesh*)GetResource(ResourceTerrain, heightmap);
-    }
-
-    Mesh* ResourceMgr::GetTerrain(Mesh* terrain)
-    {
-        return AddReference(ResourceTerrain, (ResourceHandle)terrain) ? terrain : NULL;
-    }
-
-    void ResourceMgr::FreeTerrain(Mesh* terrain)
-    {
-        FreeResource(ResourceTerrain, (ResourceHandle)terrain);
-    }
-
-    Mesh* ResourceMgr::GetLine()
-    {
-        return GetMesh("*line");
-    }
-
-    Mesh* ResourceMgr::GetSprite(TextureId texture)
-    {
-        Mesh* ret = GetMesh("*quad");
-        if (ret)
-            ret->mTexture = texture;
-        return ret;
-    }
+        mesh->SetTexture(texture);
+        return mesh;
+   }
 } // namespace sb

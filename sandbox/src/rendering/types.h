@@ -36,3 +36,4 @@ namespace sb
 #define RENDERER_ALPHA_BLENDING     GL_BLEND
 
 #endif //RENDERER_TYPES_H
+

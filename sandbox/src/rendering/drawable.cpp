@@ -7,8 +7,6 @@
 namespace sb
 {
     Drawable::Drawable(EProjectionType projType):
-        mMesh(NULL),
-        mTexture(0),
         mColor(Color::White),
         mFlags(0),
         mPosition(0.f, 0.f, 0.f),
@@ -36,28 +34,8 @@ namespace sb
         }
     }
 
-    Drawable::Drawable():
-        mMesh(NULL),
-        mTexture(0)
+    Drawable::Drawable()
     {
-    }
-
-    Drawable::~Drawable()
-    {
-        if (mMesh)
-            gResourceMgr.FreeMesh(mMesh);
-        if (mTexture)
-            gResourceMgr.FreeTexture(mTexture);
-    }
-
-    Drawable::Drawable(const Drawable& copy)
-    {
-        *this = copy;
-
-        if (copy.mMesh)
-            mMesh = gResourceMgr.GetMesh(copy.mMesh);
-        if (copy.mTexture)
-            mTexture = gResourceMgr.GetTexture(copy.mTexture);
     }
 
     const Vec3& Drawable::GetPosition() const

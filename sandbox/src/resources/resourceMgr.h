@@ -1,93 +1,161 @@
 #ifndef RESOURCEMGR_H
 #define RESOURCEMGR_H
 
-#include "utils/singleton.h"
 #include "rendering/types.h"
+#include "utils/logger.h"
+#include "utils/singleton.h"
 
 #include <map>
 #include <vector>
 #include <string>
 #include <cassert>
+#include <memory>
 
 namespace sb
 {
     class Image;
     class Mesh;
 
+    template<typename T>
+    void noop(const std::shared_ptr<T>&) {}
+
+    template<
+        typename T,
+        std::shared_ptr<T>(*LoadFunc)(const std::string&),
+        void(*ReleaseFunc)(const std::shared_ptr<T>&) = noop<T>
+    >
+    class SpecificResourceMgr
+    {
+    public:
+        SpecificResourceMgr(const std::string& basePath):
+            mBasePath(basePath)
+        {
+            if (mBasePath[mBasePath.size() - 1] != '/') { 
+                mBasePath += "/";
+            }
+        }
+
+        std::string getBasePath() const
+        {
+            return mBasePath();
+        }
+
+        std::shared_ptr<T> get(const std::string& name)
+        {
+            auto it = mResources.find(name);
+            if (it != mResources.end()) {
+                return it->second;
+            }
+
+            std::shared_ptr<T> resource = LoadFunc(name);
+            if (resource) {
+                mResources.insert(std::make_pair(name, resource));
+            }
+
+            return resource;
+        }
+
+        static bool isSpecial(const std::string& resourceName)
+        {
+            return resourceName.size() > 0
+                    && resourceName[0] == '*';
+        }
+
+        static std::string makeSpecial(const std::string& name)
+        {
+            return "*" + name;
+        }
+
+        void addSpecial(const std::string& name,
+                        const std::shared_ptr<T>& resource)
+        {
+            mResources.insert(std::make_pair(makeSpecial(name), resource));
+        }
+
+        std::shared_ptr<T> getSpecial(const std::string& name) const
+        {
+            auto it = mResources.find(makeSpecial(name));
+            if (it != mResources.end()) {
+                return it->second;
+            }
+
+            return {};
+        }
+
+        void freeUnused()
+        {
+            for (auto it = mResources.begin(); it != mResources.end();) {
+                if (it->second.use_count() == 1
+                        && !isSpecial(it->first)) {
+                    gLog.Info("ResourceMgr: removing %s\n", (mBasePath + it->first).c_str());
+                    ReleaseFunc(it->second);
+                    it = mResources.erase(it);
+                } else {
+                    ++it;
+                }
+            }
+        }
+
+        void freeAll()
+        {
+            mResources.clear();
+        }
+
+    private:
+        std::string mBasePath;
+        std::map<std::string, std::shared_ptr<T>> mResources;
+    };
+
     class ResourceMgr: public Singleton<ResourceMgr>
     {
+    public:
+        ResourceMgr(const std::string& basePath = "data/");
+        ~ResourceMgr();
+
+        void freeUnused();
+        void freeAll();
+
+        const std::string getShaderPath() { return mShaderPath; }
+
+        std::shared_ptr<TextureId> getTexture(const std::string& name);
+        std::shared_ptr<Image> getImage(const std::string& name);
+        std::shared_ptr<Mesh> getMesh(const std::string& name);
+        std::shared_ptr<Mesh> getTerrain(const std::string& heightmap);
+
+        std::shared_ptr<Mesh> getLine();
+        std::shared_ptr<Mesh> getSprite(const std::shared_ptr<TextureId>& tex);
+
     private:
-        enum EResourceType {
-            ResourceInvalid = 0,
-            ResourceTexture,
-            ResourceImage,
-            ResourceMesh,
-            ResourceTerrain,
-            ResourceShader,
+        static std::shared_ptr<TextureId> loadTexture(const std::string& path);
+        static std::shared_ptr<Image> loadImage(const std::string& path);
+        static std::shared_ptr<Mesh> loadMesh(const std::string& path);
+        static std::shared_ptr<Mesh> loadTerrain(const std::string& heightmapPath);
 
-            ResourceCount
-        };
+        static void freeTexture(const std::shared_ptr<TextureId>& texture);
 
-        std::string mBasePath;
-        std::vector<std::string> mTypePath;
+        const std::string mBasePath;
+        const std::string mShaderPath;
 
-        class ResourceRefCounter {
-        public:
-            ResourceHandle handle;
-            unsigned references;
-
-            ResourceRefCounter(ResourceHandle h = 0);
-            ResourceHandle Attach();
-            bool Detach();
-        };
-
-
-        std::map<EResourceType, std::map<std::string, ResourceRefCounter> > mResources;
+        SpecificResourceMgr<
+            TextureId,
+            &ResourceMgr::loadTexture,
+            &ResourceMgr::freeTexture
+        > mTextures;
+        SpecificResourceMgr<
+            Image,
+            &ResourceMgr::loadImage
+        > mImages;
+        SpecificResourceMgr<
+            Mesh,
+            &ResourceMgr::loadMesh
+        > mMeshes;
+        SpecificResourceMgr<
+            Mesh,
+            &ResourceMgr::loadTerrain
+        > mTerrains;
 
         // default texture, indicating some errors
-        TextureId GetDefaultTexture();
-
-        bool LoadResource(EResourceType type, const std::string& name);
-        bool LoadTexture(const std::string& name);
-        bool LoadMesh(const std::string& name);
-        bool LoadTerrain(const std::string& heightmap);
-
-        void DeleteResource(EResourceType type,
-                            ResourceHandle& handle);
-        ResourceHandle GetResource(EResourceType type,
-                                   const std::string& name);
-        bool AddReference(EResourceType type,
-                          ResourceHandle handle);
-        void FreeResource(EResourceType type,
-                          ResourceHandle handle);
-
-    public:
-        ResourceMgr();
-        ~ResourceMgr();
-        void FreeAllResources();
-
-        const std::string GetShaderPath();
-
-        // there should be 1 Free* for every Get* call!
-        TextureId GetTexture(const std::string& name);
-        TextureId GetTexture(TextureId id);
-        void FreeTexture(TextureId id);
-
-        Image* GetImage(const std::string& name);
-        Image* GetImage(Image* img);
-        void FreeImage(Image* img);
-
-        Mesh* GetMesh(const std::string& name);
-        Mesh* GetMesh(Mesh* mesh);
-        void FreeMesh(Mesh* mesh);
-
-        Mesh* GetTerrain(const std::string& heightmap);
-        Mesh* GetTerrain(Mesh* terrain);
-        void FreeTerrain(Mesh* terrain);
-
-        // screw releasing these two, it'll be done at ~ResourceMgr
-        Mesh* GetLine();
-        Mesh* GetSprite(TextureId tex);
+        std::shared_ptr<TextureId> getDefaultTexture();
     };
 } // namespace sb
 

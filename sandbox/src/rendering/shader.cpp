@@ -93,7 +93,7 @@ namespace sb
 
     bool Shader::LoadShader(EShaderType type, const char* file)
     {
-        std::string path = gResourceMgr.GetShaderPath() + file;
+        std::string path = gResourceMgr.getShaderPath() + file;
 
     #define _CRT_SECURE_NO_WARNINGS
         FILE* f = fopen(path.c_str(), "r");

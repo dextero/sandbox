@@ -28,67 +28,45 @@ namespace sb
             GL_CHECK(glDeleteBuffers(1, &mIndexBuffer));
     }
 
-    bool Mesh::Create(EShape shape, Vec3* vertices, Vec2* texcoords, Color* colors, uint32_t elements, uint32_t* indices, uint32_t numIndices, uint32_t textureId)
+    bool Mesh::Create(EShape shape,
+                      const std::vector<Vec3>& vertices,
+                      const std::vector<Vec2>& texcoords,
+                      const std::vector<Color>& colors,
+                      const std::vector<uint32_t>& indices,
+                      std::shared_ptr<TextureId> texture)
     {
         assert(msBuffer);
 
         mShape = shape;
-        mTexture = textureId;
+        mTexture = texture;
 
         // vertices
-        mBufferOffset = msBuffer->AddVertices(vertices, texcoords, colors, elements);
-        mBufferSize = elements;
+        mBufferOffset = msBuffer->AddVertices(&vertices[0],
+                                              texcoords.size() ? &texcoords[0] : NULL,
+                                              colors.size() ? &colors[0] : NULL,
+                                              vertices.size());
+        mBufferSize = vertices.size();
 
         // indices
-        if (!mBufferSize)
-        {
+        if (mBufferSize == 0) {
             gLog.Warn("invalid mesh vertex data\n");
             return false;
-        }
-        else
-        {
-            for (uint32_t i = 0; i < numIndices; ++i)
-                indices[i] += mBufferOffset;
+        } else {
+            std::vector<uint32_t> adjustedIndices = indices;
+            for (size_t i = 0; i < indices.size(); ++i) {
+                adjustedIndices[i] += mBufferOffset;
+            }
 
             // index buffer
             GL_CHECK(glGenBuffers(1, &mIndexBuffer));
             GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer));
-            GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(GLuint), indices, GL_STATIC_DRAW));
+            GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                                  indices.size() * sizeof(GLuint),
+                                  &adjustedIndices[0], GL_STATIC_DRAW));
 
-            mIndexBufferSize = numIndices;
+            mIndexBufferSize = indices.size();
         }
 
         return true;
-    }
-
-    SharedVertexBuffer& Mesh::GetVertexBuffer()
-    {
-        assert(msBuffer);
-        return *msBuffer;
-    }
-
-    uint32_t Mesh::GetVertexBufferOffset()
-    {
-        return mBufferOffset;
-    }
-
-    BufferId Mesh::GetIndexBuffer()
-    {
-        return mIndexBuffer;
-    }
-
-    uint32_t Mesh::GetIndexBufferSize()
-    {
-        return mIndexBufferSize;
-    }
-
-    Mesh::EShape Mesh::GetShape()
-    {
-        return mShape;
-    }
-
-    TextureId Mesh::GetTexture()
-    {
-        return mTexture;
     }
 } // namespace sb

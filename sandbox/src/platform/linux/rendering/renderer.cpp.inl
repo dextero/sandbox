@@ -168,7 +168,7 @@ namespace sb
     {
         // let's free everything before deleting gl context
         Shader::FreeShaders();
-        gResourceMgr.FreeAllResources();
+        gResourceMgr.freeAll();
 
         glXMakeCurrent(mDisplay, 0, 0);
         if (mGLContext)
@@ -263,45 +263,51 @@ namespace sb
             return;
         }
 
-        if (mUseDrawableBuffering)
+        if (mUseDrawableBuffering) {
             mDrawablesBuffer.push_back(d);
-        else
-        {
-            Mesh& mesh = *(d.mMesh ? d.mMesh : gResourceMgr.GetSprite(d.mTexture));
-            TextureId texture = d.mTexture;
-            if (!texture)
-                texture = mesh.GetTexture();
+        } else {
+            std::shared_ptr<TextureId> texture = d.mTexture;
+            std::shared_ptr<Mesh> mesh = d.mMesh;
+
+            if (!mesh) {
+                mesh = gResourceMgr.getSprite(texture);
+            } else if (!texture) {
+                texture = mesh->GetTexture();
+            }
 
             // should be before Shader::Use to ensure that glBindAttribLocation calls are correct
-            mesh.GetVertexBuffer().Bind();
+            mesh->GetVertexBuffer().Bind();
 
-            if (texture)
-            {
+            if (texture) {
                 Shader::Use(Shader::ShaderTexture);
                 Shader::GetCurrent().SetUniform("u_texture", (int)Shader::SamplerImage);
                 GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
-                GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture));
-            }
-            else
-            {
+                GL_CHECK(glBindTexture(GL_TEXTURE_2D, *texture));
+            } else {
                 Shader::Use(Shader::ShaderColor);
             }
 
             Shader& shader = Shader::GetCurrent();
             shader.SetUniform("u_color", d.mColor);
 
-            if (d.mProjectionType == Drawable::ProjectionOrthographic)
-                shader.SetUniform("u_matViewProjection", mCamera.GetOrthographicProjectionMatrix());
-            else
-                shader.SetUniform("u_matViewProjection", Mat44(
-                    mCamera.GetPerspectiveProjectionMatrix() * mCamera.GetViewMatrix()));
+            if (d.mProjectionType == Drawable::ProjectionOrthographic) {
+                shader.SetUniform("u_matViewProjection",
+                                  mCamera.GetOrthographicProjectionMatrix());
+            } else {
+                Mat44 viewProj = mCamera.GetPerspectiveProjectionMatrix()
+                                 * mCamera.GetViewMatrix();
+                shader.SetUniform("u_matViewProjection", viewProj);
+            }
 
             shader.SetUniform("u_matModel", d.GetTransformationMatrix());
 
-            GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.GetIndexBuffer()));
-            GL_CHECK(glDrawElements(mesh.GetShape(), mesh.GetIndexBufferSize(), GL_UNSIGNED_INT, 0));
+            GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
+                                  mesh->GetIndexBuffer()));
+            GL_CHECK(glDrawElements(mesh->GetShape(),
+                                    mesh->GetIndexBufferSize(),
+                                    GL_UNSIGNED_INT, 0));
 
-            mesh.GetVertexBuffer().Unbind();
+            mesh->GetVertexBuffer().Unbind();
         }
     }
 
@@ -319,9 +325,9 @@ namespace sb
         if (shaderType == Shader::ShaderTexture)
             shader->SetUniform("u_texture", (int)Shader::SamplerImage);
 
-        TextureId texture = (mDrawablesBuffer[0].mTexture ? mDrawablesBuffer[0].mTexture : mDrawablesBuffer[0].mMesh->GetTexture());
+        std::shared_ptr<TextureId> texture = (mDrawablesBuffer[0].mTexture ? mDrawablesBuffer[0].mTexture : mDrawablesBuffer[0].mMesh->GetTexture());
         GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
-        GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture));
+        GL_CHECK(glBindTexture(GL_TEXTURE_2D, *texture));
 
         Drawable::EProjectionType projType = mDrawablesBuffer[0].mProjectionType;
         shader->SetUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
@@ -345,12 +351,12 @@ namespace sb
                     Mat44(mCamera.GetPerspectiveProjectionMatrix() * mCamera.GetViewMatrix()));
             }
 
-            TextureId tex = (it->mTexture ? it->mTexture : it->mMesh->GetTexture());
+            std::shared_ptr<TextureId> tex = (it->mTexture ? it->mTexture : it->mMesh->GetTexture());
             if (tex != texture)
             {
                 texture = tex;
                 GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
-                GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture));
+                GL_CHECK(glBindTexture(GL_TEXTURE_2D, *texture));
             }
 
             if (it->mProjectionType != projType)
@@ -364,7 +370,7 @@ namespace sb
             shader->SetUniform("u_matModel", it->GetTransformationMatrix());
             shader->SetUniform("u_color", it->mColor);
 
-            Mesh* mesh = (it->mMesh ? it->mMesh : gResourceMgr.GetSprite(it->mTexture));
+            std::shared_ptr<Mesh> mesh = (it->mMesh ? it->mMesh : gResourceMgr.getSprite(it->mTexture));
             GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetIndexBuffer()));
             GL_CHECK(glDrawElements(mesh->GetShape(), mesh->GetIndexBufferSize(), GL_UNSIGNED_INT, NULL));
         }

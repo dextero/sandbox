@@ -6,14 +6,14 @@ namespace sb
         Drawable(ProjectionPerspective),
         mAttachedTo(NULL)
     {
-        mMesh = gResourceMgr.GetLine();
+        mMesh = gResourceMgr.getLine();
     }
 
     Line::Line(const Vec3& to, const Color& col):
         Drawable(ProjectionPerspective),
         mAttachedTo(NULL)
     {
-        mMesh = gResourceMgr.GetLine();
+        mMesh = gResourceMgr.getLine();
         mColor = col;
 
         SetScale(to);
@@ -23,7 +23,7 @@ namespace sb
         Drawable(ProjectionPerspective),
         mAttachedTo(NULL)
     {
-        mMesh = gResourceMgr.GetLine();
+        mMesh = gResourceMgr.getLine();
         mColor = col;
 
         SetScale(to - from);

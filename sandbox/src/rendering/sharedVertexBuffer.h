@@ -45,8 +45,8 @@ namespace sb
         SharedVertexBuffer(const SharedVertexBuffer& copy);
         ~SharedVertexBuffer();
 
-        void AddElements(EBufferType buffer, void* data, uint32_t elements, uint32_t offset);
-        uint32_t AddVertices(void* vertices, void* texcoords, void* colors, uint32_t elements);
+        void AddElements(EBufferType buffer, const void* data, uint32_t elements, uint32_t offset);
+        uint32_t AddVertices(const void* vertices, const void* texcoords, const void* colors, uint32_t elements);
         void ReleaseVertices(uint32_t offset);
 
         void Bind() const;

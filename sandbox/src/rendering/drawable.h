@@ -14,8 +14,8 @@ namespace sb
     class Drawable
     {
     protected:
-        Mesh* mMesh;
-        TextureId mTexture;    // if present, overrides model's own texture
+        std::shared_ptr<Mesh> mMesh;
+        std::shared_ptr<TextureId> mTexture;    // if present, overrides model's own texture
         Color mColor;
 
         enum EDrawableFlags {
@@ -44,8 +44,6 @@ namespace sb
 
     public:
         Drawable();
-        ~Drawable();
-        Drawable(const Drawable& copy);
 
         const Vec3& GetPosition() const;
         const Vec3 GetRotationAxis() const;

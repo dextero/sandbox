@@ -27,8 +27,8 @@ namespace sb
 #   endif //_DEBUG
 
     // returns retval on failure
-#   define GL_CHECK_RET(funccall, retval)        if (GL_CHECK(funccall)) return (retval)
-#   define IL_CHECK_RET(funccall, retval)        if (IL_CHECK(funccall)) return (retval)
+#   define GL_CHECK_RET(funccall, retval)        if (GL_CHECK(funccall)) return retval
+#   define IL_CHECK_RET(funccall, retval)        if (IL_CHECK(funccall)) return retval
 
 #else //!NO_CHECK_MACROS
 
