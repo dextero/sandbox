@@ -22,35 +22,15 @@ namespace sb
             ShapeTriangleStrip = SHAPE_TRIANGLE_STRIP
         };
 
-    private:
-        static SharedVertexBuffer* msBuffer;
-        uint32_t mBufferOffset;
-        uint32_t mBufferSize;
-
-        BufferId mIndexBuffer;
-        uint32_t mIndexBufferSize;
-
-        EShape mShape;
-        std::shared_ptr<TextureId> mTexture;
-
-        bool create(EShape shape,
-                    const std::vector<Vec3>& vertices,
-                    const std::vector<Vec2>& texcoords,
-                    const std::vector<Color>& colors,
-                    const std::vector<uint32_t>& indices,
-                    std::shared_ptr<TextureId> texture);
-
-    public:
-        Mesh();
+        Mesh(EShape shape,
+             const std::vector<Vec3>& vertices,
+             const std::vector<Vec2>& texcoords,
+             const std::vector<Color>& colors,
+             const std::vector<uint32_t>& indices,
+             std::shared_ptr<TextureId> texture);
         ~Mesh();
 
-        static SharedVertexBuffer& getVertexBuffer()
-        {
-            assert(msBuffer);
-            return *msBuffer;
-        }
-
-        uint32_t getVertexBufferOffset() { return mBufferOffset; }
+        VertexBuffer& getVertexBuffer() { return mVertexBuffer; }
         BufferId getIndexBuffer() { return mIndexBuffer; }
         uint32_t getIndexBufferSize() { return mIndexBufferSize; }
 
@@ -61,6 +41,14 @@ namespace sb
         {
             mTexture = texture;
         }
+
+    private:
+        VertexBuffer mVertexBuffer;
+        BufferId mIndexBuffer;
+        uint32_t mIndexBufferSize;
+
+        EShape mShape;
+        std::shared_ptr<TextureId> mTexture;
 
         friend class ResourceMgr;
     };

@@ -334,8 +334,6 @@ namespace sb
             mCamera.getOrthographicProjectionMatrix() :
             Mat44(mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
 
-        Mesh::getVertexBuffer().bind();
-
         for (std::vector<Drawable>::iterator it = mDrawablesBuffer.begin(); it != mDrawablesBuffer.end(); ++it)
         {
             if (it->getShader() != shaderType)
@@ -371,12 +369,13 @@ namespace sb
             shader->setUniform("u_color", it->mColor);
 
             std::shared_ptr<Mesh> mesh = (it->mMesh ? it->mMesh : gResourceMgr.getSprite(it->mTexture));
+            mesh->getVertexBuffer().bind();
             GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->getIndexBuffer()));
             GL_CHECK(glDrawElements(mesh->getShape(), mesh->getIndexBufferSize(), GL_UNSIGNED_INT, NULL));
+            mesh->getVertexBuffer().unbind();
         }
 
         mDrawablesBuffer.clear();
-        Mesh::getVertexBuffer().unbind();
     }
 
     void Renderer::enableFeature(EFeature feature, bool enable)

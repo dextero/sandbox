@@ -38,13 +38,6 @@ namespace sb
 
         ilInit();
 
-        // init meshs' vertex buffer
-        Mesh::msBuffer = new SharedVertexBuffer(SharedVertexBuffer::BufferTexcoord);
-
-        // released in destructor
-        std::shared_ptr<Mesh> line = std::make_shared<Mesh>();
-        std::shared_ptr<Mesh> quad = std::make_shared<Mesh>();
-
         std::vector<Vec3> lineVertices {
             { 0.f, 0.f, 0.f },
             { 1.f, 1.f, 1.f }
@@ -68,17 +61,12 @@ namespace sb
 
         std::vector<uint32_t> quadIndices { 0, 1, 2, 3 };
 
-        line->create(Mesh::ShapeLine, lineVertices, {}, {}, lineIndices, 0);
-        quad->create(Mesh::ShapeQuad, quadVertices, quadTexcoords, {}, quadIndices, getDefaultTexture());
+        Mesh mesh(Mesh::ShapeLine, lineVertices, {}, {}, lineIndices, {});
+        std::shared_ptr<Mesh> line(new Mesh(Mesh::ShapeLine, lineVertices, {}, {}, lineIndices, {}));
+        std::shared_ptr<Mesh> quad(new Mesh(Mesh::ShapeQuad, quadVertices, quadTexcoords, {}, quadIndices, getDefaultTexture()));
 
         mMeshes.addSpecial("line", line);
         mMeshes.addSpecial("quad", quad);
-    }
-
-    ResourceMgr::~ResourceMgr()
-    {
-        // releasing meshs' vertex buffer
-        SAFE_RELEASE(Mesh::msBuffer);
     }
 
     void ResourceMgr::freeAll()
@@ -224,15 +212,7 @@ namespace sb
                 numIndices += mesh->mFaces[i].mNumIndices;
             }
 
-            // mesh
-            std::shared_ptr<Mesh> loadedMesh = std::make_shared<Mesh>();
-            if (!loadedMesh->create(Mesh::ShapeTriangle,
-                                    vertices, texcoords,
-                                    {}, indices, texture)) {
-                return {};
-            }
-
-            return loadedMesh;
+            return std::shared_ptr<Mesh>(new Mesh(Mesh::ShapeTriangle, vertices, texcoords, {}, indices, texture));
         }
 
         return {};
@@ -302,14 +282,7 @@ namespace sb
             }
         }
 
-        // mesh
-        std::shared_ptr<Mesh> terrain = std::make_shared<Mesh>();
-        if (terrain->create(Mesh::ShapeTriangle,
-                            vertices, texcoords, {}, indices, 0)) {
-            return terrain;
-        }
-
-        return {};
+        return std::shared_ptr<Mesh>(new Mesh(Mesh::ShapeTriangle, vertices, texcoords, {}, indices, 0));
     }
 
     void ResourceMgr::freeTexture(const std::shared_ptr<TextureId>& texture)

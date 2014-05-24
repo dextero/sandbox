@@ -223,14 +223,14 @@ namespace sb
         msShaders[ShaderColor].load("proj_color.vert", "color.frag");
         msShaders[ShaderPointSprite].load("proj_texture.vert", "color.frag", "point_sprite.geom");
 
-        msAttribs[ShaderTexture].push_back(std::make_pair(SharedVertexBuffer::BufferVertex, "a_vertex"));
-        msAttribs[ShaderTexture].push_back(std::make_pair(SharedVertexBuffer::BufferColor, "a_color"));
-        msAttribs[ShaderTexture].push_back(std::make_pair(SharedVertexBuffer::BufferTexcoord, "a_texcoord"));
+        msAttribs[ShaderTexture].emplace_back(VertexBuffer::Type::Vertex.attribIdx, "position");
+        msAttribs[ShaderTexture].emplace_back(VertexBuffer::Type::Color.attribIdx, "color");
+        msAttribs[ShaderTexture].emplace_back(VertexBuffer::Type::Texcoord.attribIdx, "texcoord");
 
-        msAttribs[ShaderColor].push_back(std::make_pair(SharedVertexBuffer::BufferVertex, "a_vertex"));
-        msAttribs[ShaderColor].push_back(std::make_pair(SharedVertexBuffer::BufferColor, "a_color"));
+        msAttribs[ShaderColor].emplace_back(VertexBuffer::Type::Vertex.attribIdx, "position");
+        msAttribs[ShaderColor].emplace_back(VertexBuffer::Type::Color.attribIdx, "color");
 
-        msAttribs[ShaderPointSprite].push_back(std::make_pair(SharedVertexBuffer::BufferVertex, "a_vertex"));
+        msAttribs[ShaderPointSprite].emplace_back(VertexBuffer::Type::Vertex.attribIdx, "position");
     }
 
     void Shader::freeShaders()

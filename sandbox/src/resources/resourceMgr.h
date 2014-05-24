@@ -110,7 +110,6 @@ namespace sb
     {
     public:
         ResourceMgr(const std::string& basePath = "data/");
-        ~ResourceMgr();
 
         void freeUnused();
         void freeAll();
@@ -124,6 +123,9 @@ namespace sb
 
         std::shared_ptr<Mesh> getLine();
         std::shared_ptr<Mesh> getSprite(const std::shared_ptr<TextureId>& tex);
+
+        // default texture, indicating some errors
+        std::shared_ptr<TextureId> getDefaultTexture();
 
     private:
         static std::shared_ptr<TextureId> loadTexture(const std::string& path);
@@ -153,9 +155,6 @@ namespace sb
             Mesh,
             &ResourceMgr::loadTerrain
         > mTerrains;
-
-        // default texture, indicating some errors
-        std::shared_ptr<TextureId> getDefaultTexture();
     };
 } // namespace sb
 
