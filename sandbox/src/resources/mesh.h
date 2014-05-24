@@ -7,7 +7,7 @@
 #include "rendering/types.h"
 #include "rendering/color.h"
 #include "utils/types.h"
-#include "rendering/sharedVertexBuffer.h"
+#include "rendering/vertexBuffer.h"
 
 namespace sb
 {

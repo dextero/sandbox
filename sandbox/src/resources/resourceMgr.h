@@ -30,7 +30,7 @@ namespace sb
         SpecificResourceMgr(const std::string& basePath):
             mBasePath(basePath)
         {
-            if (mBasePath[mBasePath.size() - 1] != '/') { 
+            if (mBasePath[mBasePath.size() - 1] != '/') {
                 mBasePath += "/";
             }
         }

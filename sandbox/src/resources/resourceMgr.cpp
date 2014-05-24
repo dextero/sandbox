@@ -30,7 +30,7 @@ namespace sb
         mTextures(mBasePath + "texture/"),
         mImages(mBasePath + "image/"),
         mMeshes(mBasePath + "mesh/"),
-        mTerrains(mBasePath + "image/")
+        mTerrains("")
     {
         GLint maxTexSize;
         GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize));

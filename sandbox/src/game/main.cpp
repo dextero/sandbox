@@ -8,7 +8,7 @@
 #include "utils/libUtils.h"
 #include "rendering/sprite.h"
 #include "rendering/shader.h"
-#include "rendering/sharedVertexBuffer.h"
+#include "rendering/vertexBuffer.h"
 #include "rendering/terrain.h"
 #include <list>
 

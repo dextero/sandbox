@@ -1,9 +1,9 @@
-#include "shader.h"
-#include "sharedVertexBuffer.h"
-#include "../resources/resourceMgr.h"
-#include "../utils/libUtils.h"
-#include "../utils/stringUtils.h"
-#include "../utils/logger.h"
+#include "rendering/shader.h"
+#include "rendering/vertexBuffer.h"
+#include "resources/resourceMgr.h"
+#include "utils/libUtils.h"
+#include "utils/stringUtils.h"
+#include "utils/logger.h"
 
 #include <cstring>
 

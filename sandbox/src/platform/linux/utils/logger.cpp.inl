@@ -58,12 +58,12 @@ namespace sb
         static char buffer[1024];
         va_list list;
 
-        fprintf(mFile, "[WARN] ");
+        fprintf(mFile, "\033\[33m[WARN] ");
         va_start(list, msg);
         vsprintf(buffer, msg, list);
         va_end(list);
 
-        fprintf(mFile, "%s", buffer);
+        fprintf(mFile, "%s\033\[0m", buffer);
         fflush(mFile);
     }
 
@@ -72,12 +72,12 @@ namespace sb
         static char buffer[1024];
         va_list list;
 
-        fprintf(mFile, "[ERR]  ");
+        fprintf(mFile, "\033\[31m[ERR]  ");
         va_start(list, msg);
         vsprintf(buffer, msg, list);
         va_end(list);
 
-        fprintf(mFile, "%s", buffer);
+        fprintf(mFile, "%s\033\[0m", buffer);
         fflush(mFile);
     }
 } // namespace sb

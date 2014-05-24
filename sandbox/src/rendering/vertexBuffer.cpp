@@ -1,8 +1,8 @@
-#include "sharedVertexBuffer.h"
-#include "color.h"
+#include "rendering/vertexBuffer.h"
+#include "rendering/color.h"
 
-#include "../utils/libUtils.h"
-#include "../utils/logger.h"
+#include "utils/libUtils.h"
+#include "utils/logger.h"
 
 #include <cassert>
 #include <algorithm>
@@ -46,25 +46,26 @@ namespace sb
                   texcoords.size() > 0 ? " texcoords" : "",
                   colors.size() > 0 ? " colors" : "");
 
-        if (vertices.size() != texcoords.size()) {
-            gLog.warn("%lu vertices, but %lu texcoords\n",
-                      vertices.size(), texcoords.size());
-        }
-        if (vertices.size() != colors.size()) {
-            gLog.warn("%lu vertices, but %lu colors\n",
-                      vertices.size(), colors.size());
-        }
-
         GL_CHECK(glGenVertexArrays(1, &mVAO));
         GL_CHECK(glBindVertexArray(mVAO));
 
         assert(vertices.size() > 0 && "vertex buffer must have some vertices");
 
         addBuffer(Type::Vertex, &vertices[0], vertices.size());
+
         if (texcoords.size() > 0) {
+            if (vertices.size() != texcoords.size()) {
+                gLog.warn("%lu vertices, but %lu texcoords\n",
+                          vertices.size(), texcoords.size());
+            }
             addBuffer(Type::Texcoord, &texcoords[0], texcoords.size());
         }
+
         if (colors.size() > 0) {
+            if (vertices.size() != colors.size()) {
+                gLog.warn("%lu vertices, but %lu colors\n",
+                          vertices.size(), colors.size());
+            }
             addBuffer(Type::Color, &colors[0], colors.size());
         }
     }
