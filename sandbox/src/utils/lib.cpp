@@ -20,6 +20,7 @@ namespace sb
         // returns true on error
         bool GLCheck(const char* file, int line, const char* call)
         {
+            gLog.info("%s\n", call);
             GLuint err = glGetError();
             if (err != GL_NO_ERROR) {
                 gLog.err("GL error: \"%s\" at file %s, line %d\n>> %s\n", gluErrorString(err), file, line, call);

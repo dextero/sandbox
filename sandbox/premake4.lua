@@ -11,7 +11,7 @@ solution 'sandbox'
         buildoptions { '-Wall -Wextra -std=c++11 -DGLM_FORCE_RADIANS' }
 
         configuration 'debug'
-            defines { 'DEBUG' }
+            defines { '_DEBUG' }
             flags { 'symbols' }
 
         configuration 'release'

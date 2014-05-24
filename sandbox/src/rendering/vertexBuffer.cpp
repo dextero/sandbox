@@ -32,7 +32,7 @@ namespace sb
                               numElements * type.elemSize, data,
                               GL_DYNAMIC_DRAW));
         GL_CHECK(glVertexAttribPointer(type.attribIdx,
-                                       type.elemSize, GL_FLOAT,
+                                       type.elemSize / sizeof(float), GL_FLOAT,
                                        GL_FALSE, 0, NULL));
     }
 
