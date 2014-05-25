@@ -41,7 +41,7 @@ namespace sb
             GL_CHECK(glAttachShader(id, *geometry));
         }
 
-        gLog.info("linking shader program...\n");
+        gLog.trace("linking shader program...\n");
         GL_CHECK(glLinkProgram(id));
 
         if (!shaderLinkSucceeded(id)) {
@@ -69,7 +69,7 @@ namespace sb
 
                 GL_CHECK_RET(glGetProgramInfoLog(program, retval - 1,
                                                  &retval, &buffer[0]), false);
-                gLog.info("%s\n", buffer.c_str());
+                gLog.printf("%s\n", buffer.c_str());
             }
 
             return false;
@@ -114,27 +114,6 @@ namespace sb
     {
         SET_UNIFORM(glUniform1iv(loc, elements, (const GLint*)value_array));
     }
-
-    //void Shader::initShaders()
-    //{
-        //gLog.info("initializing shaders...\n");
-
-        //msShaders.resize(ShaderCount);
-        //msAttribs.resize(ShaderCount);
-
-        //msShaders[ShaderTexture].load("proj_texture.vert", "texture.frag");
-        //msShaders[ShaderColor].load("proj_color.vert", "color.frag");
-        //msShaders[ShaderPointSprite].load("proj_texture.vert", "color.frag", "point_sprite.geom");
-
-        //msAttribs[ShaderTexture].emplace_back("position");
-        ////msAttribs[ShaderTexture].emplace_back(VertexBuffer::Type::Color.attribIdx, "color");
-        //msAttribs[ShaderTexture].emplace_back("texcoord");
-
-        //msAttribs[ShaderColor].emplace_back("position");
-        //msAttribs[ShaderColor].emplace_back("color");
-
-        //msAttribs[ShaderPointSprite].emplace_back("position");
-    //}
 
     void Shader::bind()
     {

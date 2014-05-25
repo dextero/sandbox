@@ -38,10 +38,10 @@ namespace sb
                                const std::vector<Color>& colors):
         mVAO(0)
     {
-        gLog.info("creating vertex buffer (%lu, vertices%s%s)\n",
-                  vertices.size(),
-                  texcoords.size() > 0 ? " texcoords" : "",
-                  colors.size() > 0 ? " colors" : "");
+        gLog.trace("creating vertex buffer (%lu, vertices%s%s)\n",
+                   vertices.size(),
+                   texcoords.size() > 0 ? " texcoords" : "",
+                   colors.size() > 0 ? " colors" : "");
 
         GL_CHECK(glGenVertexArrays(1, &mVAO));
         GL_CHECK(glBindVertexArray(mVAO));

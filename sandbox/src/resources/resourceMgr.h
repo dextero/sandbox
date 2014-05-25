@@ -91,7 +91,7 @@ namespace sb
             for (auto it = mResources.begin(); it != mResources.end();) {
                 if (it->second.use_count() == 1
                         && !isSpecial(it->first)) {
-                    gLog.info("ResourceMgr: removing %s\n", (mBasePath + it->first).c_str());
+                    gLog.trace("ResourceMgr: removing %s\n", (mBasePath + it->first).c_str());
                     ReleaseFunc(it->second);
                     it = mResources.erase(it);
                 } else {
@@ -163,8 +163,8 @@ namespace sb
                 { GL_GEOMETRY_SHADER, "geometry" }
             };
 
-            gLog.info("compiling %s shader: %s\n",
-                      SHADERS[ShaderType].c_str(), path.c_str());
+            gLog.trace("compiling %s shader: %s\n",
+                       SHADERS[ShaderType].c_str(), path.c_str());
             GL_CHECK(glCompileShader(id));
             if (!shaderCompilationSucceeded(id)) {
                 return {};

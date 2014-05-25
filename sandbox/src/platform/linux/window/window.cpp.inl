@@ -45,7 +45,7 @@ namespace sb
             None
         };
 
-        gLog.info("getting framebuffer config\n");
+        gLog.trace("getting framebuffer config\n");
         int fbCount;
         GLXFBConfig* fbc = glXChooseFBConfig(mDisplay, DefaultScreen(mDisplay), visualAttribs, &fbCount);
 
@@ -59,7 +59,7 @@ namespace sb
                 glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLE_BUFFERS, &sampBuf);
                 glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLES, &samples);
 
-                gLog.info("matching fbconfig %d, visual id 0x%2x: SAMPLE_BUFFERS = %d, SAMPLES = %d\n", i, vi->visualid, sampBuf, samples);
+                gLog.trace("matching fbconfig %d, visual id 0x%2x: SAMPLE_BUFFERS = %d, SAMPLES = %d\n", i, vi->visualid, sampBuf, samples);
 
                 if (bestFbcId < 0 || (sampBuf && samples > bestNumSamp))
                     bestFbcId = i, bestNumSamp = samples;
@@ -73,9 +73,9 @@ namespace sb
 
         XFree(fbc);
         XVisualInfo* vi = glXGetVisualFromFBConfig(mDisplay, bestFbc);
-        gLog.info("chosen visual id = 0x%x\n", vi->visualid);
+        gLog.trace("chosen visual id = 0x%x\n", vi->visualid);
 
-        gLog.info("creating colormap\n");
+        gLog.trace("creating colormap\n");
         XSetWindowAttributes swa;
         Colormap cmap;
         swa.colormap = cmap = XCreateColormap(mDisplay, RootWindow(mDisplay, vi->screen), vi->visual, AllocNone);
@@ -83,19 +83,19 @@ namespace sb
         swa.border_pixel = 0;
         swa.event_mask = StructureNotifyMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
 
-        gLog.info("creating mask\n");
+        gLog.trace("creating mask\n");
         mWindow = XCreateWindow(mDisplay, RootWindow(mDisplay, vi->screen), 0, 0, width, height, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &swa);
 
         if (!mWindow)
         {
-            gLog.info("failed to create window\n");
+            gLog.err("failed to create window\n");
             return false;
         }
 
         XFree(vi);
         XStoreName(mDisplay, mWindow, "Window");
 
-        gLog.info("mapping window\n");
+        gLog.trace("mapping window\n");
         XMapWindow(mDisplay, mWindow);
 
         mRenderer.init(mDisplay, mWindow, bestFbc);

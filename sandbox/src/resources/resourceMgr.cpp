@@ -38,7 +38,7 @@ namespace sb
     {
         GLint maxTexSize;
         GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize));
-        gLog.info("max texture size: %d\n", maxTexSize);
+        gLog.trace("max texture size: %d\n", maxTexSize);
 
         ilInit();
 
@@ -88,7 +88,7 @@ namespace sb
             GL_CHECK(glDeleteProgram(*defShaderPair.second->mProgram));
         }
 
-        gLog.info("all resources freed\n");
+        gLog.trace("all resources freed\n");
     }
 
 
@@ -105,7 +105,7 @@ namespace sb
 
     std::shared_ptr<TextureId> ResourceMgr::loadTexture(const std::string& name)
     {
-        gLog.info("loading texture %s\n", name.c_str());
+        gLog.trace("loading texture %s\n", name.c_str());
 
         ILuint image = ilGenImage();
         IL_CHECK_RET(ilBindImage(image), false);
@@ -129,7 +129,7 @@ namespace sb
 
         if (potWidth != imgWidth || potHeight != imgHeight)
         {
-            gLog.info("scaling texture: %ux%u to %ux%u\n", imgWidth, imgHeight, potWidth, potHeight);
+            gLog.trace("scaling texture: %ux%u to %ux%u\n", imgWidth, imgHeight, potWidth, potHeight);
             iluScale(potWidth, potHeight, 1);
         }
 
@@ -162,7 +162,7 @@ namespace sb
 
     std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
     {
-        gLog.info("loading mesh %s\n", name.c_str());
+        gLog.trace("loading mesh %s\n", name.c_str());
 
         // TODO: wiele tekstur
         Assimp::Importer importer;
@@ -232,15 +232,15 @@ namespace sb
 
     std::shared_ptr<Mesh> ResourceMgr::loadTerrain(const std::string& heightmap)
     {
-        gLog.info("loading terrain %s\n", heightmap.c_str());
+        gLog.trace("loading terrain %s\n", heightmap.c_str());
 
         std::shared_ptr<Image> img = gResourceMgr.getImage(heightmap);
         uint32_t w = img->getWidth();
         uint32_t h = img->getHeight();
         uint32_t* data = (uint32_t*)img->getData();
 
-        gLog.info("loading terrain %s: %ux%u vertices\n",
-                  heightmap.c_str(), w, h);
+        gLog.trace("loading terrain %s: %ux%u vertices\n",
+                   heightmap.c_str(), w, h);
 
 #define RGBA_TO_HEIGHT(rgba) \
     ((float)(((rgba) & 0x00ff0000) \
@@ -314,7 +314,7 @@ namespace sb
                 buffer.resize(retval);
                 GL_CHECK_RET(glGetShaderInfoLog(shader, retval - 1,
                                                 &retval, &buffer[0]), false);
-                gLog.info("%s\n", buffer.c_str());
+                gLog.printf("%s\n", buffer.c_str());
             }
 
             return false;
@@ -395,11 +395,11 @@ namespace sb
     {
         bool hasGeometryShader = (geometryShaderName.size() > 0);
 
-        gLog.info("loading shader: %s, %s, %s\n",
-                  vertexShaderName.c_str(),
-                  fragmentShaderName.c_str(),
-                  hasGeometryShader ? geometryShaderName.c_str()
-                                    : "(no geometry shader)");
+        gLog.trace("loading shader: %s, %s, %s\n",
+                   vertexShaderName.c_str(),
+                   fragmentShaderName.c_str(),
+                   hasGeometryShader ? geometryShaderName.c_str()
+                                     : "(no geometry shader)");
 
         auto vertexShader = mVertexShaders.get(vertexShaderName);
         auto fragmentShader = mFragmentShaders.get(fragmentShaderName);
@@ -422,7 +422,6 @@ namespace sb
             return it->second;
         }
 
-        gLog.info("%s%s\n", mVertexShaders.getBasePath().c_str(), vertexShaderName.c_str());
         Shader shader(vertexShader, fragmentShader, geometryShader,
                       extractAttributes(mVertexShaders.getBasePath() + vertexShaderName));
         auto shader_ptr = std::make_shared<Shader>(std::move(shader));

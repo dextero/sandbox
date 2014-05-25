@@ -44,7 +44,7 @@ namespace sb
                  va_list args)
         {
             static char buffer[1024];
-            
+
             vsprintf(buffer, msg, args);
             fprintf(file, "\033\[%dm%s%s\033\[0m", color, prefix, buffer);
             fflush(file);
@@ -57,6 +57,15 @@ namespace sb
 
         va_start(list, msg);
         log(mFile, LogColor::WHITE, "", msg, list);
+        va_end(list);
+    }
+
+    void Logger::trace(const char* msg, ...)
+    {
+        va_list list;
+
+        va_start(list, msg);
+        log(mFile, LogColor::WHITE, "[TRACE] ", msg, list);
         va_end(list);
     }
 
@@ -83,7 +92,7 @@ namespace sb
         va_list list;
 
         va_start(list, msg);
-        log(mFile, LogColor::RED, "[ERR]  ", msg, list);
+        log(mFile, LogColor::RED, "[ERR] ", msg, list);
         va_end(list);
     }
 
@@ -93,7 +102,7 @@ namespace sb
         va_list list;
 
         va_start(list, msg);
-        log(mFile, LogColor::BLUE, "[DBG]  ", msg, list);
+        log(mFile, LogColor::BLUE, "[DEBUG] ", msg, list);
         va_end(list);
     }
 #endif

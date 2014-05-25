@@ -429,28 +429,28 @@ int main()
         wnd.clear(sb::Color(0.f, 0.f, 0.5f));
 
         // environment
-        gLog.info("skybox\n");
+        gLog.debug("drawing skybox\n");
         wnd.draw(skybox);
-        gLog.info("terrain\n");
+        gLog.debug("drawing terrain\n");
         wnd.draw(terrain);
 
         // axes - disable edpth test to prevent blinking
         wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest, false);
-        gLog.info("axes\n");
+        gLog.debug("drawing axes\n");
         wnd.draw(xaxis);
         wnd.draw(yaxis);
         wnd.draw(zaxis);
         wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest);
 
         // balls & forces
-        gLog.info("sim\n");
+        gLog.debug("drawing sim\n");
         sim.drawAll(wnd.getRenderer());
 
         // crosshair
-        gLog.info("crosshair\n");
+        gLog.debug("drawing crosshair\n");
         wnd.draw(crosshair);
 
-        gLog.info("strings\n");
+        gLog.debug("drawing strings\n");
         // info strings
         uint32_t nextLine = 0u;
         sb::String::print(fpsString, 0.f, 0.f,

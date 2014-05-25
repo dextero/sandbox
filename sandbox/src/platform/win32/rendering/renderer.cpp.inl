@@ -16,7 +16,7 @@ namespace sb
         gLog.info("initializing GLEW...\n");
         glewInit();
 
-        gLog.info("checking GL functions availability\n");
+        gLog.trace("checking GL functions availability\n");
         static struct GLFunc {
             const void* func;
             const char* name;
@@ -70,24 +70,25 @@ namespace sb
         for (size_t i = 0; i < sizeof(functions) / sizeof(functions[0]); ++i)
         {
             if (functions[i].func != NULL)
-                gLog.info("%s \tOK\n", functions[i].name);
+                gLog.trace("%s \tOK\n", functions[i].name);
             else
             {
-                if (functions[i].severity == GLFunc::SevOptional)
+                if (functions[i].severity == GLFunc::SevOptional) {
                     gLog.warn("%s \tNOT AVAILABLE\n", functions[i].name);
-                else
-                {
+                } else {
                     gLog.err("%s \tNOT AVAILABLE\n", functions[i].name);
                     ++requiredFunctionsMissing;
                 }
 
-                if (functions[i].errMsg != NULL)
-                    gLog.info(functions[i].errMsg);
+                if (functions[i].errMsg != NULL) {
+                    gLog.trace(functions[i].errMsg);
+                }
             }
         }
 
-        if (requiredFunctionsMissing > 0)
+        if (requiredFunctionsMissing > 0) {
             gLog.err("some critical GL functions missing, app will most likely crash\n");
+        }
 
         return requiredFunctionsMissing == 0;
     }
@@ -166,7 +167,7 @@ namespace sb
             wglDeleteContext(mGLContext);
             mGLContext = NULL;
 
-            gLog.info("GL context deleted\n");
+            gLog.trace("GL context deleted\n");
         }
     }
 

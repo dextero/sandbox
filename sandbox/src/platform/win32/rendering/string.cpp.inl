@@ -25,7 +25,7 @@ namespace sb
 
     void String::init(HDC dc)
     {
-        gLog.info("initializing font bitmaps...\n");
+        gLog.trace("initializing font bitmaps...\n");
 
         HFONT font, oldfont;
         mDC = dc;

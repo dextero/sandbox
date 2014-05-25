@@ -32,7 +32,7 @@ namespace sb
 
     void String::init(::Display* display)
     {
-        gLog.info("initializing font bitmaps...\n");
+        gLog.trace("initializing font bitmaps...\n");
 
         mDisplay = display;
 

@@ -15,6 +15,7 @@ namespace sb
         ~Logger();
 
         void printf(const char* msg, ...);
+        void trace(const char* msg, ...);
         void info(const char* msg, ...);
         void warn(const char* msg, ...);
         void err(const char* msg, ...);
