@@ -26,58 +26,75 @@ namespace sb
             fflush(mFile);
     }
 
+    namespace
+    {
+        enum class LogColor
+        {
+            WHITE = 0,
+            GREEN = 32,
+            YELLOW = 33,
+            RED = 31,
+            BLUE = 34
+        };
+
+        void log(FILE* file,
+                 LogColor color,
+                 const char* prefix,
+                 const char* msg,
+                 va_list args)
+        {
+            static char buffer[1024];
+            
+            vsprintf(buffer, msg, args);
+            fprintf(file, "\033\[%dm%s%s\033\[0m", color, prefix, buffer);
+            fflush(file);
+        }
+    }
+
     void Logger::printf(const char* msg, ...)
     {
-        static char buffer[1024];
         va_list list;
 
         va_start(list, msg);
-        vsprintf(buffer, msg, list);
+        log(mFile, LogColor::WHITE, "", msg, list);
         va_end(list);
-
-        fprintf(mFile, "%s", buffer);
-        fflush(mFile);
     }
 
     void Logger::info(const char* msg, ...)
     {
-        static char buffer[1024];
         va_list list;
 
-        fprintf(mFile, "[INFO] ");
         va_start(list, msg);
-        vsprintf(buffer, msg, list);
+        log(mFile, LogColor::GREEN, "[INFO] ", msg, list);
         va_end(list);
-
-        fprintf(mFile, "%s", buffer);
-        fflush(mFile);
     }
 
     void Logger::warn(const char* msg, ...)
     {
-        static char buffer[1024];
         va_list list;
 
-        fprintf(mFile, "\033\[33m[WARN] ");
         va_start(list, msg);
-        vsprintf(buffer, msg, list);
+        log(mFile, LogColor::YELLOW, "[WARN] ", msg, list);
         va_end(list);
-
-        fprintf(mFile, "%s\033\[0m", buffer);
-        fflush(mFile);
     }
 
     void Logger::err(const char* msg, ...)
     {
-        static char buffer[1024];
         va_list list;
 
-        fprintf(mFile, "\033\[31m[ERR]  ");
         va_start(list, msg);
-        vsprintf(buffer, msg, list);
+        log(mFile, LogColor::RED, "[ERR]  ", msg, list);
         va_end(list);
-
-        fprintf(mFile, "%s\033\[0m", buffer);
-        fflush(mFile);
     }
+
+#ifdef _DEBUG
+    void Logger::debug(const char* msg, ...)
+    {
+        va_list list;
+
+        va_start(list, msg);
+        log(mFile, LogColor::BLUE, "[DBG]  ", msg, list);
+        va_end(list);
+    }
+#endif
 } // namespace sb

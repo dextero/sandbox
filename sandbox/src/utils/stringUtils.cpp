@@ -1,5 +1,7 @@
 #include "utils/stringUtils.h"
 
+#include <fstream>
+
 namespace sb
 {
     namespace utils
@@ -27,6 +29,22 @@ namespace sb
             ret.push_back(str.substr(prev));
 
             return ret;
+        }
+
+        std::string readFile(const std::string& path)
+        {
+            std::ifstream file(path);
+            std::string contents;
+
+            if (file) {
+                file.seekg(0, std::ios::end);
+                contents.resize(file.tellg());
+                file.seekg(0, std::ios::beg);
+
+                file.read(&contents[0], contents.size());
+            }
+
+            return contents;
         }
     } // namespace utils
 } // namespace sb

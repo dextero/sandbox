@@ -77,8 +77,6 @@ namespace sb
         x = (x - 0.5f) * 2.f;
         y = (y - 0.5f) * -2.f - 0.03f;
 
-        Shader::use(Shader::ShaderNone);
-
         GL_CHECK(glColor4fv((GLfloat*)&color));
 
         std::vector<std::string> lines = utils::split(str, '\n');

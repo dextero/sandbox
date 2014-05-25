@@ -25,7 +25,7 @@ namespace sb
         Buffer buffer(data, numElements * type.elemSize);
 
         buffer.bind(GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING);
-        GL_CHECK(glVertexAttribPointer(type.attribIdx,
+        GL_CHECK(glVertexAttribPointer(mBuffers.size(),
                                        type.elemSize / sizeof(float), GL_FLOAT,
                                        GL_FALSE, 0, NULL));
         buffer.unbind();
@@ -89,46 +89,28 @@ namespace sb
 
     void VertexBuffer::bind() const
     {
+        gLog.debug("binding VAO: %d\n", mVAO);
         GL_CHECK(glBindVertexArray(mVAO));
     }
 
     void VertexBuffer::unbind() const
     {
+        gLog.debug("unbinding VAO\n");
         GL_CHECK(glBindVertexArray(0));
-    }
-
-#ifdef TODO_IS_THIS_EVEN_NECESSARY
-    bool VertexBuffer::empty() const
-    {
-        return mUsedChunks.empty();
-    }
-
-    bool VertexBuffer::hasBuffer(const Type& type) const
-    {
-        return std::find_if(mBuffers, [](const Buffer& b) { b.type == type; });
     }
 
     void VertexBuffer::debug()
     {
-        GL_CHECK(glBindVertexArray(mVAO));
-
-        for (uint32_t i = 0; i < BufferCount; ++i)
-        {
-            if (!hasBuffer((EBufferType)i))
-                continue;
-
-            GLint size;
+        gLog.debug("VAO %d: %lu buffers\n", mVAO, mBuffers.size());
+        for (size_t i = 0; i < mBuffers.size(); ++i) {
             GLuint attribBuffer = 0;
 
-            GL_CHECK(glGetVertexAttribiv(i, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, (GLint*)&attribBuffer));
-            assert((attribBuffer == mBuffers[i]) && "Invalid attrib array buffer binding!");
+            GL_CHECK(glGetVertexAttribiv((GLuint)i, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, (GLint*)&attribBuffer));
 
-            GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, mBuffers[i]));
+            GLint size;
+            auto bufferBind = make_bind(mBuffers[i].buffer, GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING);
             GL_CHECK(glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size));
-            assert((attribBuffer == mBuffers[i]) && "Invalid attrib array buffer size!");
+            gLog.debug("- attrib %lu: buffer %d (%d bytes)\n", i, attribBuffer, size);
         }
-
-        GL_CHECK(glBindVertexArray(0));
     }
-#endif
 } // namespace sb

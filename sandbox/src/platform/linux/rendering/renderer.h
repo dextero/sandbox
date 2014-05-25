@@ -50,7 +50,10 @@ namespace sb
         void setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy);
 
         void draw(Drawable& d);
+
+#ifdef DRAWABLE_BUFFERING
         void drawAll();
+#endif
 
         enum EFeature {
             FeatureBackfaceCulling = RENDERER_BACKFACE_CULLING,

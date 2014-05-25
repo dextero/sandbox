@@ -6,7 +6,13 @@
 
 namespace sb
 {
-    Drawable::Drawable(EProjectionType projType):
+    Drawable::Drawable(EProjectionType projType,
+                       const std::shared_ptr<Mesh>& mesh,
+                       const std::shared_ptr<TextureId>& texture,
+                       const std::shared_ptr<Shader>& shader):
+        mMesh(mesh),
+        mTexture(texture),
+        mShader(shader),
         mColor(Color::White),
         mFlags(0),
         mPosition(0.f, 0.f, 0.f),
@@ -14,7 +20,7 @@ namespace sb
         mProjectionType(projType)
     {}
 
-    void Drawable::recalculateMatrices()
+    void Drawable::recalculateMatrices() const
     {
         if (mFlags & FlagTransformationChanged)
         {
@@ -32,10 +38,6 @@ namespace sb
                                     * mScaleMatrix;
             mFlags &= ~FlagTransformationChanged;
         }
-    }
-
-    Drawable::Drawable()
-    {
     }
 
     const Vec3& Drawable::getPosition() const
@@ -66,14 +68,6 @@ namespace sb
     const Vec3& Drawable::getScale() const
     {
         return mScale;
-    }
-
-    Shader::EShader Drawable::getShader() const
-    {
-        if (mTexture || (mMesh && mMesh->getTexture())) {
-            return Shader::ShaderTexture;
-        }
-        return Shader::ShaderColor;
     }
 
     void Drawable::setPosition(const Vec3& pos)
@@ -132,7 +126,7 @@ namespace sb
         mFlags |= FlagRotationChanged;
     }
 
-    const Mat44& Drawable::getTransformationMatrix()
+    const Mat44& Drawable::getTransformationMatrix() const
     {
         recalculateMatrices();
         return mTransformationMatrix;

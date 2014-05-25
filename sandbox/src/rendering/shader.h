@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <memory>
 
 #include "types.h"
 #include "color.h"
@@ -13,30 +14,13 @@ namespace sb
 {
     class Shader
     {
-    private:
-        ProgramId mProgram;
+        friend class ResourceMgr;
 
-        enum EShaderType {
-            ShaderTypeVertex = 0,
-            ShaderTypeFragment,
-            ShaderTypeGeometry,
-
-            ShaderTypesCount = 3
-        };
-        ShaderId mShaders[ShaderTypesCount];
-
-        static GLenum translateShaderType(EShaderType type);
-        static bool checkCompilationStatus(ShaderId shader);
-        static bool checkLinkStatus(ProgramId program);
     public:
-        Shader();
-        ~Shader();
-
-        bool loadShader(EShaderType type, const char* file);
-        bool load(const char* vertex, const char* fragment, const char* geometry = NULL);
-
-        bool compileAndLink();
-        void free();
+        Shader(const Shader& copy) = default;
+        Shader& operator =(const Shader& copy) = default;
+        Shader(Shader&&) = default;
+        Shader& operator =(Shader&&) = default;
 
         template<typename T> bool setUniform(const char* name, const T& value)
         {
@@ -65,30 +49,29 @@ namespace sb
             SamplerShadowmap = 2
         };
 
-        ProgramId getProgram() { return mProgram; }
+        void bind();
+        void unbind();
 
-        // --------------------------------
-        enum EShader {
-            ShaderNone = 0,
-            ShaderTexture,
-            ShaderColor,
-            ShaderPointSprite,
+    private:
+        std::shared_ptr<ProgramId> mProgram;
+        std::shared_ptr<ShaderId> mVertexShader;
+        std::shared_ptr<ShaderId> mFragmentShader;
+        std::shared_ptr<ShaderId> mGeometryShader;
 
-            ShaderCount
-        };
-        static std::vector<Shader> msShaders;
-        static std::vector<std::vector<std::pair<uint32_t, std::string> > > msAttribs;
-        static EShader msCurrent;
+        std::vector<std::string> mAttribs;
 
-        static void initShaders();
-        static void freeShaders();
-        static Shader& get(EShader shader);
-        static Shader& getCurrent();
+        Shader(const std::shared_ptr<ShaderId>& vertex,
+               const std::shared_ptr<ShaderId>& fragment,
+               const std::shared_ptr<ShaderId>& geometry,
+               const std::vector<std::string>& attribs);
 
-        static void use(EShader shader);
+        std::shared_ptr<ProgramId>
+        linkShader(const std::shared_ptr<ShaderId>& vertex,
+                   const std::shared_ptr<ShaderId>& fragment,
+                   const std::shared_ptr<ShaderId>& geometry);
+
+        static bool shaderLinkSucceeded(ProgramId program);
     };
-
-    #define    CurrShader    Shader::getCurrent()
 } // namespace sb
 
 #endif //SHADER_H

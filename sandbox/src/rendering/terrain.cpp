@@ -4,10 +4,11 @@
 namespace sb
 {
     Terrain::Terrain(const std::string& heightmap,
-                     const std::string& texture):
-        Drawable(ProjectionPerspective)
-    {
-        mMesh = gResourceMgr.getTerrain(heightmap);
-        mTexture = gResourceMgr.getTexture(texture);
-    }
+                     const std::string& texture,
+                     const std::shared_ptr<Shader>& shader):
+        Drawable(ProjectionPerspective,
+                 gResourceMgr.getTerrain(heightmap),
+                 gResourceMgr.getTexture(texture),
+                 shader)
+    {}
 } // namespace sb

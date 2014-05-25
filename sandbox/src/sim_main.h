@@ -40,25 +40,37 @@ int main()
     using sb::utils::makeString;
 
     sb::Window wnd(1200, 900);
+
+    auto colorShader = gResourceMgr.getShader("proj_color.vert", "color.frag");
+    auto textureShader = gResourceMgr.getShader("proj_texture.vert", "texture.frag");
+
     wnd.setTitle("Sandbox");
     wnd.lockCursor();
     wnd.hideCursor();
 
-    Sim::Simulation sim(Sim::Simulation::SimSingleThrow);
+    Sim::Simulation sim(Sim::Simulation::SimSingleThrow,
+                        textureShader,
+                        colorShader);
     sim.setThrowStart(Vec3d(0., 1., 0.), Vec3d(30., 30., 0.));
 
-    sb::Sprite crosshair("dot.png");
+    sb::Sprite crosshair("dot.png", textureShader);
     crosshair.setPosition(0.f, 0.f, 0.f);
     crosshair.setScale(0.01f, 0.01f * 1.33f, 1.f);
 
-    sb::Line xaxis(Vec3(1000.f, 0.f, 0.f), sb::Color(0.f, 0.f, 1.f)),
-         yaxis(Vec3(0.f, 1000.f, 0.f), sb::Color(1.f, 0.f, 0.f)),
-         zaxis(Vec3(0.f, 0.f, 1000.f), sb::Color(0.f, 1.f, 0.f));
+    sb::Line xaxis(Vec3(1000.f, 0.f, 0.f),
+                   sb::Color(0.f, 0.f, 1.f),
+                   colorShader);
+    sb::Line yaxis(Vec3(0.f, 1000.f, 0.f),
+                   sb::Color(1.f, 0.f, 0.f),
+                   colorShader);
+    sb::Line zaxis(Vec3(0.f, 0.f, 1000.f),
+                   sb::Color(0.f, 1.f, 0.f),
+                   colorShader);
 
-    sb::Model skybox("skybox.obj");
+    sb::Model skybox("skybox.obj", textureShader);
     skybox.setScale(1000.f);
 
-    sb::Terrain terrain("hmap_flat.jpg", "ground.jpg");
+    sb::Terrain terrain("hmap_flat.jpg", "ground.jpg", textureShader);
     terrain.setScale(10.f, 1.f, 10.f);
     terrain.setPosition(-640.f, 0.f, -640.f);
 
@@ -297,10 +309,14 @@ int main()
                         sim.mPauseOnGroundHit = !sim.mPauseOnGroundHit;
                         break;
                     case sb::Key::R:
-                        sim = Sim::Simulation(Sim::Simulation::SimContiniousThrow);
+                        sim = Sim::Simulation(Sim::Simulation::SimContiniousThrow,
+                                              textureShader,
+                                              colorShader);
                         break;
                     case sb::Key::T:
-                        sim = Sim::Simulation(Sim::Simulation::SimSingleThrow);
+                        sim = Sim::Simulation(Sim::Simulation::SimSingleThrow,
+                                              textureShader,
+                                              colorShader);
                         break;
                     case sb::Key::V:
                         {
@@ -413,22 +429,28 @@ int main()
         wnd.clear(sb::Color(0.f, 0.f, 0.5f));
 
         // environment
+        gLog.info("skybox\n");
         wnd.draw(skybox);
+        gLog.info("terrain\n");
         wnd.draw(terrain);
 
         // axes - disable edpth test to prevent blinking
         wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest, false);
+        gLog.info("axes\n");
         wnd.draw(xaxis);
         wnd.draw(yaxis);
         wnd.draw(zaxis);
         wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest);
 
         // balls & forces
+        gLog.info("sim\n");
         sim.drawAll(wnd.getRenderer());
 
         // crosshair
+        gLog.info("crosshair\n");
         wnd.draw(crosshair);
 
+        gLog.info("strings\n");
         // info strings
         uint32_t nextLine = 0u;
         sb::String::print(fpsString, 0.f, 0.f,

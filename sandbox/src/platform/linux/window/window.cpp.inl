@@ -112,9 +112,9 @@ namespace sb
 
     bool Window::setFullscreen(bool fullscreen)
     {
-        (void)fullscreen;
         assert(!"Window::setFullscreen not implemented!");
 
+        mFullscreen = fullscreen;
         return true;
     }
 
@@ -229,7 +229,7 @@ namespace sb
 
     void Window::display()
     {
-        mRenderer.drawAll();
+        //mRenderer.drawAll();
         glXSwapBuffers(mDisplay, mWindow);
     }
 

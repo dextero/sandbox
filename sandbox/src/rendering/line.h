@@ -11,11 +11,17 @@ namespace sb
         const Drawable* mAttachedTo;
 
     public:
-        Line();
-        Line(const Vec3& to, const Color& col);
-        Line(const Vec3& from, const Vec3& to, const Color& col);
+        Line(const std::shared_ptr<Shader>& shader);
+        Line(const Vec3& to,
+             const Color& col,
+             const std::shared_ptr<Shader>& shader);
+        Line(const Vec3& from,
+             const Vec3& to,
+             const Color& col,
+             const std::shared_ptr<Shader>& shader);
 
-        void set(const Vec3& from, const Vec3& to);
+        void set(const Vec3& from,
+                 const Vec3& to);
         void attachTo(const Drawable* drawable);
         void update();    // synchronize position with attached drawable
     };

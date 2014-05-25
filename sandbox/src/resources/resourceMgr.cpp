@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -26,11 +28,13 @@ namespace sb
 
     ResourceMgr::ResourceMgr(const std::string& basePath):
         mBasePath(basePath),
-        mShaderPath(mBasePath + "shader/"),
         mTextures(mBasePath + "texture/"),
         mImages(mBasePath + "image/"),
         mMeshes(mBasePath + "mesh/"),
-        mTerrains("")
+        mTerrains(""),
+        mVertexShaders(mBasePath + "shader/"),
+        mFragmentShaders(mBasePath + "shader/"),
+        mGeometryShaders(mBasePath + "shader/")
     {
         GLint maxTexSize;
         GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize));
@@ -75,6 +79,14 @@ namespace sb
         mImages.freeAll();
         mMeshes.freeAll();
         mTerrains.freeAll();
+
+        mVertexShaders.freeAll();
+        mFragmentShaders.freeAll();
+        mGeometryShaders.freeAll();
+
+        for (auto& defShaderPair: mShaderPrograms) {
+            GL_CHECK(glDeleteProgram(*defShaderPair.second->mProgram));
+        }
 
         gLog.info("all resources freed\n");
     }
@@ -285,6 +297,37 @@ namespace sb
         return std::shared_ptr<Mesh>(new Mesh(Mesh::ShapeTriangle, vertices, texcoords, {}, indices, 0));
     }
 
+    bool ResourceMgr::shaderCompilationSucceeded(ShaderId shader)
+    {
+        GLint retval;
+        GL_CHECK_RET(glGetShaderiv(shader, GL_COMPILE_STATUS, &retval), false);
+        if (retval == GL_FALSE)
+        {
+            // compilation failed!
+            GL_CHECK_RET(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &retval),
+                         false);
+
+            gLog.err("Compilation failed! Log:\n");
+            if (retval > 0)
+            {
+                std::string buffer;
+                buffer.resize(retval);
+                GL_CHECK_RET(glGetShaderInfoLog(shader, retval - 1,
+                                                &retval, &buffer[0]), false);
+                gLog.info("%s\n", buffer.c_str());
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    void ResourceMgr::freeShader(const std::shared_ptr<ShaderId>& shader)
+    {
+        GL_CHECK(glDeleteShader(*shader));
+    }
+
     void ResourceMgr::freeTexture(const std::shared_ptr<TextureId>& texture)
     {
         glDeleteTextures(1, texture.get());
@@ -292,22 +335,97 @@ namespace sb
 
     std::shared_ptr<TextureId> ResourceMgr::getTexture(const std::string& name)
     {
+        assert(Window::glInitialized && "GL context uninitialized, create a Window before using ResourceMgr");
         return mTextures.get(name);
     }
 
     std::shared_ptr<Image> ResourceMgr::getImage(const std::string& name)
     {
+        assert(Window::glInitialized && "GL context uninitialized, create a Window before using ResourceMgr");
         return mImages.get(name);
     }
 
     std::shared_ptr<Mesh> ResourceMgr::getMesh(const std::string& name)
     {
+        assert(Window::glInitialized && "GL context uninitialized, create a Window before using ResourceMgr");
         return mMeshes.get(name);
     }
 
     std::shared_ptr<Mesh> ResourceMgr::getTerrain(const std::string& heightmap)
     {
+        assert(Window::glInitialized && "GL context uninitialized, create a Window before using ResourceMgr");
         return mTerrains.get(heightmap);
+    }
+
+    std::vector<std::string> extractAttributes(const std::string& filename)
+    {
+        std::ifstream file(filename);
+        std::string line;
+        std::vector<std::string> attributes;
+
+        while (std::getline(file, line)) {
+            // TODO: ugly
+            size_t commentAt = line.find("//");
+            if (commentAt != std::string::npos) {
+                line = line.substr(0, commentAt);
+            }
+            commentAt = line.find("/*");
+            if (commentAt != std::string::npos) {
+                line = line.substr(0, commentAt);
+            }
+
+            std::vector<std::string> words = utils::split(line, ' ');
+            if (words.size() < 2) {
+                continue;
+            }
+
+            if (words[0] != "in") {
+                if (words[words.size() - 1] == ";") {
+                    attributes.push_back(words[words.size() - 2]);
+                } else {
+                    std::string& name = words[words.size() - 1];
+                    attributes.push_back(name.substr(0, name.size() - 1));
+                }
+            }
+        }
+
+        return attributes;
+    }
+
+    std::shared_ptr<Shader> ResourceMgr::getShader(
+            const std::string& vertexShaderName,
+            const std::string& fragmentShaderName,
+            const std::string& geometryShaderName)
+    {
+        assert(Window::glInitialized && "GL context uninitialized, create a Window before using ResourceMgr");
+
+        gLog.info("loading shader: %s, %s, %s\n",
+                  vertexShaderName.c_str(),
+                  fragmentShaderName.c_str(),
+                  geometryShaderName.size() > 0
+                      ? geometryShaderName.c_str()
+                      : "(no geometry shader)");
+
+        auto vertexShader = mVertexShaders.get(vertexShaderName);
+        auto fragmentShader = mFragmentShaders.get(fragmentShaderName);
+        auto geometryShader = mGeometryShaders.get(geometryShaderName);
+
+        ShaderProgramDef programDef { *vertexShader,
+                                      *fragmentShader,
+                                      *geometryShader };
+
+        auto it = mShaderPrograms.find(programDef);
+
+        if (it != mShaderPrograms.end()) {
+            return it->second;
+        }
+
+        Shader shader(vertexShader, fragmentShader, geometryShader,
+                      extractAttributes(vertexShaderName));
+        auto shader_ptr = std::make_shared<Shader>(std::move(shader));
+        mShaderPrograms.insert(std::make_pair(programDef, shader_ptr));
+
+        return shader_ptr;
     }
 
     std::shared_ptr<Mesh> ResourceMgr::getLine()
@@ -315,14 +433,8 @@ namespace sb
         return getMesh("*line");
     }
 
-    std::shared_ptr<Mesh> ResourceMgr::getSprite(const std::shared_ptr<TextureId>& texture)
+    std::shared_ptr<Mesh> ResourceMgr::getQuad()
     {
-        std::shared_ptr<Mesh> mesh = getMesh("*quad");
-        if (!mesh) {
-            return {};
-        }
-
-        mesh->setTexture(texture);
-        return mesh;
-   }
+        return getMesh("*quad");
+    }
 } // namespace sb

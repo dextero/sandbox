@@ -16,6 +16,7 @@ namespace sb
     protected:
         std::shared_ptr<Mesh> mMesh;
         std::shared_ptr<TextureId> mTexture;    // if present, overrides model's own texture
+        std::shared_ptr<Shader> mShader;
         Color mColor;
 
         enum EDrawableFlags {
@@ -25,11 +26,14 @@ namespace sb
             FlagTransformationChanged = 0x7
         };
 
-        Mat44 mTranslationMatrix, mScaleMatrix, mRotationMatrix;
-        Mat44 mTransformationMatrix;
-        int mFlags;
+        mutable Mat44 mTranslationMatrix;
+        mutable Mat44 mScaleMatrix;
+        mutable Mat44 mRotationMatrix;
+        mutable Mat44 mTransformationMatrix;
+        mutable int mFlags;
 
-        Vec3 mPosition, mScale;
+        Vec3 mPosition;
+        Vec3 mScale;
         Quat mRotation;
 
     protected:
@@ -38,20 +42,20 @@ namespace sb
             ProjectionPerspective
         } mProjectionType;
 
-        Drawable(EProjectionType projType);
+        Drawable(EProjectionType projType,
+                 const std::shared_ptr<Mesh>& mesh,
+                 const std::shared_ptr<TextureId>& texture,
+                 const std::shared_ptr<Shader>& shader);
 
-        void recalculateMatrices();
+        void recalculateMatrices() const;
 
     public:
-        Drawable();
-
         const Vec3& getPosition() const;
         const Vec3 getRotationAxis() const;
         Radians getRotationAngle() const;
         void getRotationAxisAngle(Vec3& axis, Radians& angle) const;
         const Quat& getRotationQuaternion() const;
         const Vec3& getScale() const;
-        Shader::EShader getShader() const;
 
         void setPosition(const Vec3& pos);
         void setPosition(float x, float y, float z);
@@ -62,7 +66,7 @@ namespace sb
         void setScale(float uniform);
         void rotate(Radians angle);
         void rotate(const Vec3& axis, Radians angle);
-        const Mat44& getTransformationMatrix();
+        const Mat44& getTransformationMatrix() const;
 
     friend class Renderer;
     };

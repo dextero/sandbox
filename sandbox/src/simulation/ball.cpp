@@ -21,13 +21,37 @@ namespace Sim
         mAccNet.second.attachTo(&mModel);
     }
 
-    Ball::Ball(const Vec3d& pos, const Vec3d& velocity, double mass, double radius):
-        mVelocity(Vec3d(1., 1., 1.), sb::Line(Vec3(1.f, 1.f, 1.f), sb::Color(ColorVelocity, 0.6f))),
-        mAccGravity(Vec3d(1., 1., 1.), sb::Line(Vec3(1.f, 1.f, 1.f), sb::Color(ColorGravity, 0.6f))),
-        mAccDrag(Vec3d(1., 1., 1.), sb::Line(Vec3(1.f, 1.f, 1.f), sb::Color(ColorDrag, 0.6f))),
-        mAccWind(Vec3d(1., 1., 1.), sb::Line(Vec3(1.f, 1.f, 1.f), sb::Color(ColorWind, 0.6f))),
-        mAccBuoyancy(Vec3d(1., 1., 1.), sb::Line(Vec3(1.f, 1.f, 1.f), sb::Color(ColorBuoyancy, 0.6f))),
-        mAccNet(Vec3d(1., 1., 1.), sb::Line(Vec3(1.f, 1.f, 1.f), sb::Color(ColorNet, 0.6f))),
+    Ball::Ball(const Vec3d& pos,
+               const Vec3d& velocity,
+               double mass,
+               double radius,
+               const std::shared_ptr<sb::Shader>& modelShader,
+               const std::shared_ptr<sb::Shader>& lineShader):
+        mLineShader(lineShader),
+        mVelocity(Vec3d(1., 1., 1.),
+                  sb::Line(Vec3(1.f, 1.f, 1.f),
+                           sb::Color(ColorVelocity, 0.6f),
+                           lineShader)),
+        mAccGravity(Vec3d(1., 1., 1.),
+                    sb::Line(Vec3(1.f, 1.f, 1.f),
+                             sb::Color(ColorGravity, 0.6f),
+                             lineShader)),
+        mAccDrag(Vec3d(1., 1., 1.),
+                 sb::Line(Vec3(1.f, 1.f, 1.f),
+                          sb::Color(ColorDrag, 0.6f),
+                          lineShader)),
+        mAccWind(Vec3d(1., 1., 1.),
+                 sb::Line(Vec3(1.f, 1.f, 1.f),
+                          sb::Color(ColorWind, 0.6f),
+                          lineShader)),
+        mAccBuoyancy(Vec3d(1., 1., 1.),
+                     sb::Line(Vec3(1.f, 1.f, 1.f),
+                              sb::Color(ColorBuoyancy, 0.6f),
+                              lineShader)),
+        mAccNet(Vec3d(1., 1., 1.),
+                sb::Line(Vec3(1.f, 1.f, 1.f),
+                         sb::Color(ColorNet, 0.6f),
+                         lineShader)),
         mMass(mass),
         mRadius(radius),
         mArea(PI * radius * radius),
@@ -37,7 +61,7 @@ namespace Sim
         mDeltaDistance(0.0),
         mTime(0.0),
         mPos(pos),
-        mModel("sphere.obj"),
+        mModel("sphere.obj", modelShader),
         mTimeToLive(5u)
     {
         mPath.push_back(pos);
@@ -47,13 +71,6 @@ namespace Sim
 
         set(mVelocity, velocity);
         set(mAccNet, mAccGravity.first + mAccDrag.first + mAccWind.first);
-
-        attachLines();
-    }
-
-    Ball::Ball(const Ball& copy)
-    {
-        *this = copy;
 
         attachLines();
     }
@@ -165,7 +182,9 @@ namespace Sim
         r.enableFeature(sb::Renderer::FeatureDepthTest, false);
         if (mPath.size() > 1)
         {
-            static sb::Line line(Vec3(1.f, 1.f, 1.f), sb::Color(ColorPath, 0.6f));
+            static sb::Line line(Vec3(1.f, 1.f, 1.f),
+                                 sb::Color(ColorPath, 0.6f),
+                                 mLineShader);
 
             std::list<Vec3d>::iterator it, next;
             for (it = mPath.begin(), next = ++it; next != mPath.end(); it = next++)

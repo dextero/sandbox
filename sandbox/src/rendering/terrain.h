@@ -9,7 +9,8 @@ namespace sb
     {
     public:
         Terrain(const std::string& heightmap,
-                const std::string& texture);
+                const std::string& texture,
+                const std::shared_ptr<Shader>& shader);
     };
 } // namespace sb
 

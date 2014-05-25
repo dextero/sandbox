@@ -13,7 +13,6 @@ namespace sb
         bind_guard(T& object, Args&&... args):
             object(&object)
         {
-            gLog.warn("bind_guard %x, %x\n", args...);
             object.bind(std::forward<Args>(args)...);
         }
 
@@ -55,7 +54,7 @@ namespace sb
 }
 
 #ifdef _DEBUG
-#   define make_bind(obj, ...) (gLog.info("make_bind @ %s:%d\n", __FILE__, __LINE__), make_bind(obj, ##__VA_ARGS__))
+#   define make_bind(obj, ...) (gLog.debug("make_bind @ %s:%d\n", __FILE__, __LINE__), make_bind(obj, ##__VA_ARGS__))
 #endif
 
 #endif /* UTILS_MISC_H */

@@ -2,25 +2,24 @@
 
 namespace sb
 {
-    Line::Line():
-        Drawable(ProjectionPerspective),
-        mAttachedTo(NULL)
-    {
-        mMesh = gResourceMgr.getLine();
-    }
+    Line::Line(const std::shared_ptr<Shader>& shader):
+        Line(Vec3(), Vec3(), Color(), shader)
+    {}
 
-    Line::Line(const Vec3& to, const Color& col):
-        Drawable(ProjectionPerspective),
-        mAttachedTo(NULL)
-    {
-        mMesh = gResourceMgr.getLine();
-        mColor = col;
+    Line::Line(const Vec3& to,
+               const Color& col,
+               const std::shared_ptr<Shader>& shader):
+        Line(Vec3(), to, col, shader)
+    {}
 
-        setScale(to);
-    }
-
-    Line::Line(const Vec3& from, const Vec3& to, const Color& col):
-        Drawable(ProjectionPerspective),
+    Line::Line(const Vec3& from,
+               const Vec3& to,
+               const Color& col,
+               const std::shared_ptr<Shader>& shader):
+        Drawable(ProjectionPerspective,
+                 gResourceMgr.getLine(),
+                 nullptr,
+                 shader),
         mAttachedTo(NULL)
     {
         mMesh = gResourceMgr.getLine();
@@ -30,7 +29,8 @@ namespace sb
         setPosition(from);
     }
 
-    void Line::set(const Vec3& from, const Vec3& to)
+    void Line::set(const Vec3& from,
+                   const Vec3& to)
     {
         setScale(to - from);
         setPosition(from);

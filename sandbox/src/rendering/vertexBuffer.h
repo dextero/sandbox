@@ -76,18 +76,20 @@ namespace sb
         void bind(GLuint bufferType,
                   GLuint bufferBinding)
         {
-            gLog.warn("bind %x, %x (%x?)\n", bufferType, bufferBinding, GL_ARRAY_BUFFER_BINDING);
             assert(this->prevId == 0
                    && this->bufferType == 0
                    && "recursive bind? this should never happen");
             this->bufferType = bufferType;
             GL_CHECK(glGetIntegerv(bufferBinding, (GLint*)&prevId));
             GL_CHECK(glBindBuffer(bufferType, id));
+
+            gLog.debug("buffer %x: bind %d (was %d)\n", bufferType, prevId, id);
         }
 
         void unbind()
         {
-            gLog.warn("unbind %x\n", bufferType);
+            gLog.debug("unbind %x\n", bufferType);
+
             GL_CHECK(glBindBuffer(bufferType, prevId));
             bufferType = 0;
             prevId = 0;
@@ -145,12 +147,8 @@ namespace sb
 
         void bind() const;
         void unbind() const;
-#ifdef TODO_IS_THIS_EVEN_NECESSARY
-        bool empty() const;
-        bool hasBuffer(EBufferType type) const;
 
         void debug();
-#endif
 
     private:
         struct BufferTypePair {

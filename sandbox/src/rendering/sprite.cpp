@@ -3,19 +3,20 @@
 
 namespace sb
 {
-    Sprite::Sprite():
-        Drawable(ProjectionOrthographic)
-    {
-        mTexture = gResourceMgr.getTexture("default.png");
-        mMesh = NULL;
-    }
+    Sprite::Sprite(const std::shared_ptr<Shader>& shader):
+        Drawable(ProjectionOrthographic,
+                 gResourceMgr.getQuad(),
+                 gResourceMgr.getTexture("default.png"),
+                 shader)
+    {}
 
-    Sprite::Sprite(const std::string& image):
-        Drawable(ProjectionOrthographic)
-    {
-        mTexture = gResourceMgr.getTexture(image);
-        mMesh = NULL;
-    }
+    Sprite::Sprite(const std::string& image,
+                   const std::shared_ptr<Shader>& shader):
+        Drawable(ProjectionOrthographic,
+                 gResourceMgr.getQuad(),
+                 gResourceMgr.getTexture(image),
+                 shader)
+    {}
 
     void Sprite::setImage(const std::string& image)
     {

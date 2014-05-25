@@ -21,7 +21,6 @@ namespace sb
         bool GLCheck(const char* file, int line, const char* call)
         {
             GLuint err = glGetError();
-            gl_debug();
 
             if (err != GL_NO_ERROR) {
                 gLog.err("GL error: \"%s\" at file %s, line %d\n>> %s\n", gluErrorString(err), file, line, call);

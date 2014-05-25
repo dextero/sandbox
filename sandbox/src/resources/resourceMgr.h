@@ -2,8 +2,11 @@
 #define RESOURCEMGR_H
 
 #include "rendering/types.h"
+#include "rendering/shader.h"
 #include "utils/logger.h"
 #include "utils/singleton.h"
+#include "utils/stringUtils.h"
+#include "utils/lib.h"
 
 #include <map>
 #include <vector>
@@ -30,7 +33,8 @@ namespace sb
         SpecificResourceMgr(const std::string& basePath):
             mBasePath(basePath)
         {
-            if (mBasePath[mBasePath.size() - 1] != '/') {
+            if (mBasePath != ""
+                    && mBasePath[mBasePath.size() - 1] != '/') {
                 mBasePath += "/";
             }
         }
@@ -120,9 +124,13 @@ namespace sb
         std::shared_ptr<Image> getImage(const std::string& name);
         std::shared_ptr<Mesh> getMesh(const std::string& name);
         std::shared_ptr<Mesh> getTerrain(const std::string& heightmap);
+        std::shared_ptr<Shader> getShader(
+                const std::string& vertexShaderName,
+                const std::string& fragmentShaderName,
+                const std::string& geometryShaderName = "");
 
         std::shared_ptr<Mesh> getLine();
-        std::shared_ptr<Mesh> getSprite(const std::shared_ptr<TextureId>& tex);
+        std::shared_ptr<Mesh> getQuad();
 
         // default texture, indicating some errors
         std::shared_ptr<TextureId> getDefaultTexture();
@@ -133,7 +141,40 @@ namespace sb
         static std::shared_ptr<Mesh> loadMesh(const std::string& path);
         static std::shared_ptr<Mesh> loadTerrain(const std::string& heightmapPath);
 
+        static bool shaderCompilationSucceeded(ShaderId id);
+
+        template<GLuint ShaderType>
+        static std::shared_ptr<ShaderId> loadShader(const std::string& path)
+        {
+            std::string code = utils::readFile(path);
+            if (code.size() == 0) {
+                return {};
+            }
+
+            ShaderId id;
+            GL_CHECK_RET(id = glCreateShader(ShaderType), {});
+
+            const GLchar* codePtr = (const GLchar*)&code[0];
+            GL_CHECK_RET(glShaderSource(id, 1, &codePtr, NULL), {});
+
+            static std::map<GLuint, std::string> SHADERS {
+                { GL_VERTEX_SHADER, "vertex" },
+                { GL_FRAGMENT_SHADER, "fragment" },
+                { GL_GEOMETRY_SHADER, "geometry" }
+            };
+
+            gLog.info("compiling %s shader: %s\n",
+                      SHADERS[ShaderType].c_str(), path.c_str());
+            GL_CHECK(glCompileShader(id));
+            if (!shaderCompilationSucceeded(id)) {
+                return {};
+            }
+
+            return std::make_shared<ShaderId>(id);
+        }
+
         static void freeTexture(const std::shared_ptr<TextureId>& texture);
+        static void freeShader(const std::shared_ptr<ShaderId>& shader);
 
         const std::string mBasePath;
         const std::string mShaderPath;
@@ -155,6 +196,49 @@ namespace sb
             Mesh,
             &ResourceMgr::loadTerrain
         > mTerrains;
+
+        SpecificResourceMgr<
+            ShaderId,
+            &ResourceMgr::loadShader<GL_VERTEX_SHADER>,
+            &ResourceMgr::freeShader
+        > mVertexShaders;
+        SpecificResourceMgr<
+            ShaderId,
+            &ResourceMgr::loadShader<GL_FRAGMENT_SHADER>,
+            &ResourceMgr::freeShader
+        > mFragmentShaders;
+        SpecificResourceMgr<
+            ShaderId,
+            &ResourceMgr::loadShader<GL_GEOMETRY_SHADER>,
+            &ResourceMgr::freeShader
+        > mGeometryShaders;
+
+        struct ShaderProgramDef
+        {
+            ShaderId vertex;
+            ShaderId fragment;
+            ShaderId geometry;
+
+            bool operator <(const ShaderProgramDef& s) const
+            {
+                if (vertex < s.vertex) {
+                    return true;
+                }
+                if (fragment < s.fragment) {
+                    return true;
+                }
+                return geometry < s.geometry;
+            }
+
+            bool operator ==(const ShaderProgramDef& s) const
+            {
+                return vertex == s.vertex
+                        && fragment == s.fragment
+                        && geometry == s.geometry;
+            }
+        };
+
+        std::map<ShaderProgramDef, std::shared_ptr<Shader>> mShaderPrograms;
     };
 } // namespace sb
 

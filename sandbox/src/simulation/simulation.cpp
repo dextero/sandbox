@@ -9,12 +9,22 @@ using sb::utils::toString;
 
 namespace Sim
 {
-    Simulation::Simulation(ESimType type):
+    Simulation::Simulation(ESimType type,
+                           const std::shared_ptr<sb::Shader>& ballShader,
+                           const std::shared_ptr<sb::Shader>& lineShader):
+        mBallShader(ballShader),
+        mLineShader(lineShader),
         mThrowStartPos(Vec3d(0., 0., 0.)),
         mThrowStartVelocity(Vec3d(0., 0., 0.)),
-        mThrowStartLine(Vec3(1.f, 1.f, 1.f), sb::Color(ColorThrow, 0.4f)),
-        mGravityLine(Vec3(1.f, 1.f, 1.f), sb::Color(ColorGravity, 0.4f)),
-        mWindVelocityLine(Vec3(1.f, 1.f, 1.f), sb::Color(ColorWind, 0.4f)),
+        mThrowStartLine(Vec3(1.f, 1.f, 1.f),
+                        sb::Color(ColorThrow, 0.4f),
+                        lineShader),
+        mGravityLine(Vec3(1.f, 1.f, 1.f),
+                     sb::Color(ColorGravity, 0.4f),
+                     lineShader),
+        mWindVelocityLine(Vec3(1.f, 1.f, 1.f),
+                          sb::Color(ColorWind, 0.4f),
+                          lineShader),
         mAirDensity(1.204),
         mSimType(type),
         mBallThrowAccumulator(0.f),
@@ -69,7 +79,12 @@ namespace Sim
             mBallThrowAccumulator += dt;
             if (mBallThrowAccumulator >= mBallThrowDelay && mBalls.size() < mMaxBalls)
             {
-                mBalls.push_back(new Ball(mThrowStartPos, mThrowStartVelocity, mBallMass, mBallRadius));
+                mBalls.push_back(new Ball(mThrowStartPos,
+                                          mThrowStartVelocity,
+                                          mBallMass,
+                                          mBallRadius,
+                                          mBallShader,
+                                          mLineShader));
                 mBallThrowAccumulator = 0.f;
             }
         }

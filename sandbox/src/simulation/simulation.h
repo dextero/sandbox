@@ -28,17 +28,25 @@ namespace Sim
         };
 
     private:
+        std::shared_ptr<sb::Shader> mBallShader;
+        std::shared_ptr<sb::Shader> mLineShader;
+
         std::list<Ball*> mBalls;
         std::list<std::list<Ball*>::iterator> mMarkedForDelete;
 
-        Vec3d mThrowStartPos, mThrowStartVelocity;
-        Vec3d mGravity, mWindVelocity;
-        sb::Line mThrowStartLine, mGravityLine, mWindVelocityLine;
+        Vec3d mThrowStartPos;
+        Vec3d mThrowStartVelocity;
+        Vec3d mGravity;
+        Vec3d mWindVelocity;
+        sb::Line mThrowStartLine;
+        sb::Line mGravityLine;
+        sb::Line mWindVelocityLine;
 
     public:
         double mAirDensity;
         ESimType mSimType;
-        float mBallThrowDelay, mBallThrowAccumulator;
+        float mBallThrowDelay;
+        float mBallThrowAccumulator;
         uint32_t mMaxBalls;
         float mSloMoFactor;
 
@@ -47,7 +55,9 @@ namespace Sim
         bool mPaused, mShowLauncherLines, mPauseOnGroundHit;
         EVectorDisplayType mVectorDisplayType;
 
-        Simulation(ESimType type);
+        Simulation(ESimType type,
+                   const std::shared_ptr<sb::Shader>& ballShader,
+                   const std::shared_ptr<sb::Shader>& lineShader);
         ~Simulation();
 
         void update(float dt);
@@ -59,9 +69,15 @@ namespace Sim
         void reset();
 
         // returns lines displayed
-        uint32_t printParametersToScreen(float x = 0.f, float y = 0.f, uint32_t line = 0u);
-        const Ball* raycast(const Vec3& rayOrig, const Vec3& rayDir);
-        uint32_t printBallParametersToScreen(const Ball* ball, float x = 0.f, float y = 0.f, uint32_t line = 0u);
+        uint32_t printParametersToScreen(float x = 0.f,
+                                         float y = 0.f,
+                                         uint32_t line = 0u);
+        const Ball* raycast(const Vec3& rayOrig,
+                            const Vec3& rayDir);
+        uint32_t printBallParametersToScreen(const Ball* ball,
+                                             float x = 0.f,
+                                             float y = 0.f,
+                                             uint32_t line = 0u);
     };
 }
 

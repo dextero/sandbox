@@ -2,15 +2,13 @@
 
 namespace sb
 {
-    Model::Model():
-        Drawable(ProjectionPerspective)
+    Model::Model(const std::string& path,
+                 const std::shared_ptr<Shader>& shader):
+        Drawable(ProjectionPerspective,
+                 gResourceMgr.getMesh(path),
+                 nullptr,
+                 shader)
     {}
-
-    Model::Model(const std::string& path):
-        Drawable(ProjectionPerspective)
-    {
-        mMesh = gResourceMgr.getMesh(path);
-    }
 
     bool Model::loadFromFile(const std::string& path)
     {

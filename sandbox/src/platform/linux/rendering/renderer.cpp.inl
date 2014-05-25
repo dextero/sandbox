@@ -7,6 +7,7 @@
 #include "utils/lib.h"
 #include "utils/stringUtils.h"
 #include "utils/logger.h"
+#include "utils/stl.h"
 #include "resources/mesh.h"
 #include "resources/image.h"
 
@@ -106,56 +107,69 @@ namespace sb
         switch(filter)
         {
         case FilterShader:
-            std::sort(mDrawablesBuffer.begin(), mDrawablesBuffer.end(), [](const Drawable& first, const Drawable& second) -> bool {
-                return first.getShader() < second.getShader();
+            std::sort(mDrawablesBuffer, [](const Drawable& first,
+                                           const Drawable& second) -> bool {
+                return first.mShader < second.mShader;
             });
             break;
         case FilterTexture:
-            std::sort(mDrawablesBuffer.begin(), mDrawablesBuffer.end(), [](const Drawable& first, const Drawable& second) -> bool {
+            std::sort(mDrawablesBuffer, [](const Drawable& first,
+                                           const Drawable& second) -> bool {
                 return first.mTexture < second.mTexture;
             });
             break;
         case FilterDepth:
-            std::sort(mDrawablesBuffer.begin(), mDrawablesBuffer.end(), [](const Drawable& first, const Drawable& second) -> bool {
-                Vec4 f(first.getPosition().x, first.getPosition().y, first.getPosition().z, 1.f),
-                     s(second.getPosition().x, second.getPosition().y, second.getPosition().z, 1.f);
-                f = const_cast<Drawable&>(first).getTransformationMatrix() * f;
-                s = const_cast<Drawable&>(second).getTransformationMatrix() * f;
+            std::sort(mDrawablesBuffer, [](const Drawable& first,
+                                           const Drawable& second) -> bool {
+                Vec4 f(first.getPosition().x,
+                       first.getPosition().y,
+                       first.getPosition().z,
+                       1.f);
+                Vec4 s(second.getPosition().x,
+                       second.getPosition().y,
+                       second.getPosition().z,
+                       1.f);
+                f = first.getTransformationMatrix() * f;
+                s = second.getTransformationMatrix() * s;
                 return f.z < s.z;
             });
             break;
         case FilterProjection:
-            std::sort(mDrawablesBuffer.begin(), mDrawablesBuffer.end(), [](const Drawable& first, const Drawable& second) -> bool {
+            std::sort(mDrawablesBuffer, [](const Drawable& first,
+                                           const Drawable& second) -> bool {
                 return first.mProjectionType < second.mProjectionType;
             });
             break;
         case FilterShaderTextureProjectionDepth:
-            std::sort(mDrawablesBuffer.begin(), mDrawablesBuffer.end(), [](const Drawable& first, const Drawable& second) -> bool {
-                if (first.getShader() == second.getShader())
-                {
-                    if (first.mTexture == second.mTexture)
-                    {
-                        if (first.mProjectionType == second.mProjectionType)
-                        {
-                            Vec4 f(first.getPosition().x, first.getPosition().y, first.getPosition().z, 1.f),
-                                 s(second.getPosition().x, second.getPosition().y, second.getPosition().z, 1.f);
-                            f = const_cast<Drawable&>(first).getTransformationMatrix() * f;
-                            s = const_cast<Drawable&>(second).getTransformationMatrix() * f;
-                            return f.z < s.z;
-                        }
-                        else
-                            return first.mProjectionType < second.mProjectionType;
-                    }
-                    else
-                        return first.mTexture < second.mTexture;
+            std::sort(mDrawablesBuffer, [](const Drawable& first,
+                                           const Drawable& second) -> bool {
+                if (first.mShader != second.mShader) {
+                    return first.mShader < second.mShader;
                 }
-                else
-                    return first.getShader() < second.getShader();
+
+                if (first.mTexture != second.mTexture) {
+                    return first.mTexture < second.mTexture;
+                }
+
+                if (first.mProjectionType != second.mProjectionType) {
+                    return first.mProjectionType < second.mProjectionType;
+                }
+
+                Vec4 f(first.getPosition().x,
+                       first.getPosition().y,
+                       first.getPosition().z,
+                       1.f);
+                Vec4 s(second.getPosition().x,
+                       second.getPosition().y,
+                       second.getPosition().z,
+                       1.f);
+                f = first.getTransformationMatrix() * f;
+                s = second.getTransformationMatrix() * s;
+                return f.z < s.z;
             });
             break;
         }
     }
-
 
     Renderer::Renderer():
         mGLContext(NULL),
@@ -167,7 +181,6 @@ namespace sb
     Renderer::~Renderer()
     {
         // let's free everything before deleting gl context
-        Shader::freeShaders();
         gResourceMgr.freeAll();
 
         glXMakeCurrent(mDisplay, 0, 0);
@@ -226,11 +239,9 @@ namespace sb
 
         GL_CHECK(glEnable(GL_TEXTURE_2D));
 
-        Shader::initShaders();
         String::init(mDisplay);
 
         mCamera.setPerspectiveMatrix();
-
         mCamera.setOrthographicMatrix();
 
         return true;
@@ -268,38 +279,37 @@ namespace sb
         } else {
             std::shared_ptr<TextureId> texture = d.mTexture;
             std::shared_ptr<Mesh> mesh = d.mMesh;
+            std::shared_ptr<Shader> shader = d.mShader;
 
             if (!mesh) {
-                mesh = gResourceMgr.getSprite(texture);
-            } else if (!texture) {
+                mesh = gResourceMgr.getQuad();
+            }
+
+            if (!texture) {
                 texture = mesh->getTexture();
             }
 
             // should be before Shader::use to ensure that glBindAttribLocation calls are correct
             auto vaoBind = make_bind(mesh->getVertexBuffer());
+            mesh->getVertexBuffer().debug();
+            auto shaderBind = make_bind(*shader);
 
-            if (texture) {
-                Shader::use(Shader::ShaderTexture);
-                Shader::getCurrent().setUniform("texture", (int)Shader::SamplerImage);
-                GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
-                GL_CHECK(glBindTexture(GL_TEXTURE_2D, *texture));
-            } else {
-                Shader::use(Shader::ShaderColor);
-            }
+            shader->setUniform("texture", (int)Shader::SamplerImage);
+            GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
+            GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture ? *texture : 0));
 
-            Shader& shader = Shader::getCurrent();
-            shader.setUniform("color", d.mColor);
+            shader->setUniform("color", d.mColor);
 
             if (d.mProjectionType == Drawable::ProjectionOrthographic) {
-                shader.setUniform("matViewProjection",
-                                  mCamera.getOrthographicProjectionMatrix());
+                shader->setUniform("matViewProjection",
+                                   mCamera.getOrthographicProjectionMatrix());
             } else {
                 Mat44 viewProj = mCamera.getPerspectiveProjectionMatrix()
                                  * mCamera.getViewMatrix();
-                shader.setUniform("matViewProjection", viewProj);
+                shader->setUniform("matViewProjection", viewProj);
             }
 
-            shader.setUniform("matModel", d.getTransformationMatrix());
+            shader->setUniform("matModel", d.getTransformationMatrix());
 
             auto indexBind = make_bind(mesh->getIndexBuffer());
             GL_CHECK(glDrawElements(mesh->getShape(),
@@ -308,6 +318,7 @@ namespace sb
         }
     }
 
+#ifdef DRAWABLE_BUFFERING
     void Renderer::drawAll()
     {
         if (mDrawablesBuffer.size() == 0)
@@ -315,19 +326,16 @@ namespace sb
 
         filterDrawables(FilterShaderTextureProjectionDepth);
 
-        Shader::EShader shaderType = mDrawablesBuffer[0].getShader();
-        Shader::use(shaderType);
-
         Shader* shader = &Shader::getCurrent();
         if (shaderType == Shader::ShaderTexture)
-            shader->setUniform("u_texture", (int)Shader::SamplerImage);
+            shader->setUniform("texture", (int)Shader::SamplerImage);
 
         std::shared_ptr<TextureId> texture = (mDrawablesBuffer[0].mTexture ? mDrawablesBuffer[0].mTexture : mDrawablesBuffer[0].mMesh->getTexture());
         GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
         GL_CHECK(glBindTexture(GL_TEXTURE_2D, *texture));
 
         Drawable::EProjectionType projType = mDrawablesBuffer[0].mProjectionType;
-        shader->setUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
+        shader->setUniform("matViewProjection", projType == Drawable::ProjectionOrthographic ?
             mCamera.getOrthographicProjectionMatrix() :
             Mat44(mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
 
@@ -340,8 +348,8 @@ namespace sb
                 shader = &Shader::getCurrent();
 
                 if (shaderType == Shader::ShaderTexture)
-                    shader->setUniform("u_texture", Shader::SamplerImage);
-                shader->setUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
+                    shader->setUniform("texture", Shader::SamplerImage);
+                    shader->setUniform("matViewProjection", projType == Drawable::ProjectionOrthographic ?
                     mCamera.getOrthographicProjectionMatrix() :
                     Mat44(mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
             }
@@ -357,13 +365,13 @@ namespace sb
             if (d.mProjectionType != projType)
             {
                 projType = d.mProjectionType;
-                shader->setUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
+                shader->setUniform("matViewProjection", projType == Drawable::ProjectionOrthographic ?
                     mCamera.getOrthographicProjectionMatrix() :
                     Mat44(mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
             }
 
-            shader->setUniform("u_matModel", d.getTransformationMatrix());
-            shader->setUniform("u_color", d.mColor);
+            shader->setUniform("matModel", d.getTransformationMatrix());
+            shader->setUniform("color", d.mColor);
 
             std::shared_ptr<Mesh> mesh = (d.mMesh ? d.mMesh : gResourceMgr.getSprite(d.mTexture));
 
@@ -377,6 +385,7 @@ namespace sb
 
         mDrawablesBuffer.clear();
     }
+#endif
 
     void Renderer::enableFeature(EFeature feature, bool enable)
     {

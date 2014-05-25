@@ -57,6 +57,8 @@ namespace sb
         std::wstring toWString(const std::string& str);
 
         std::vector<std::string> split(const std::string& str, char c);
+
+        std::string readFile(const std::string& path);
     } // namespace utils
 } // namespace sb
 

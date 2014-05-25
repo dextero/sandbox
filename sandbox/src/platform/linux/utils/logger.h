@@ -18,6 +18,12 @@ namespace sb
         void info(const char* msg, ...);
         void warn(const char* msg, ...);
         void err(const char* msg, ...);
+
+#ifdef _DEBUG
+        void debug(const char* msg, ...);
+#else
+        inline void debug(const char*, ...) {}
+#endif
     };
 } // namespace sb
 

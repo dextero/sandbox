@@ -15,15 +15,6 @@ namespace sb
 {
     class Window
     {
-    private:
-        ::Display* mDisplay;
-        ::Window mWindow;
-
-        bool mLockCursor, mFullscreen;
-
-        Renderer mRenderer;
-        std::queue<Event> mEvents;
-
     public:
         Window(unsigned width, unsigned height);
         ~Window();
@@ -47,6 +38,16 @@ namespace sb
 
         Renderer& getRenderer();
         Camera& getCamera();
+
+    private:
+        ::Display* mDisplay;
+        ::Window mWindow;
+
+        bool mLockCursor;
+        bool mFullscreen;
+
+        Renderer mRenderer;
+        std::queue<Event> mEvents;
     };
 } // namespace sb
 
