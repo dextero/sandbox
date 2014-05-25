@@ -1,5 +1,33 @@
-#ifdef PLATFORM_WIN32
-#   include "platform/win32/utils/logger.h"
-#else // PLATFORM_LINUX
-#   include "platform/linux/utils/logger.h"
-#endif // PLATFORM_WIN32
+#ifndef LOGGER_H
+#define LOGGER_H
+
+#include "utils/singleton.h"
+#include <cstdio>
+
+namespace sb
+{
+    class Logger: public Singleton<Logger>
+    {
+        FILE* mFile;
+
+    public:
+        Logger(FILE* f = stderr);
+        ~Logger();
+
+        void printf(const char* msg, ...);
+        void trace(const char* msg, ...);
+        void info(const char* msg, ...);
+        void warn(const char* msg, ...);
+        void err(const char* msg, ...);
+
+#ifdef _DEBUG
+        void debug(const char* msg, ...);
+#else
+        inline void debug(const char*, ...) {}
+#endif
+    };
+} // namespace sb
+
+#define gLog sb::Logger::get()
+
+#endif // LOGGER_H

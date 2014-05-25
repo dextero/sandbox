@@ -1,222 +1,499 @@
-#define SIMULATION
-#ifdef SIMULATION
-#include "sim_main.h"
-#else
 #include "window/window.h"
-#include "utils/timer.h"
-#include "utils/types.h"
-#include "utils/libUtils.h"
 #include "rendering/sprite.h"
-#include "rendering/shader.h"
-#include "rendering/vertexBuffer.h"
+#include "rendering/line.h"
+#include "rendering/model.h"
+#include "rendering/string.h"
 #include "rendering/terrain.h"
-#include <list>
+#include "utils/logger.h"
+#include "utils/stringUtils.h"
+#include "utils/lib.h"
+#include "utils/timer.h"
+#include "simulation/simulation.h"
+#include "simulation/ball.h"
+#include <sstream>
+#include <IL/ilut.h>
 
-class ParticleManager
+void wait_for_key()
 {
+    getchar();
+}
+
+class Accumulator
+{
+    float mAccumulator,
+          mBase,
+          mStep;
+    bool mRunning;
+
 public:
-    enum ParticleType {
-        ParticleInvalid = 0,
-        ParticleTypeFirst,
-        ParticleFire = ParticleTypeFirst,
-        ParticleWater,
-
-        ParticleTypesCount
-    };
-
-    struct ParticleBatch {
-        std::vector<Vec2> position;
-        std::vector<Vec2> velocity;
-        std::vector<ParticleType> type;
-        std::vector<float> timeToLive;
-    };
-
-    sb::SharedVertexBuffer mSharedVertexBuffer;
-
-    std::vector<sb::TextureId> mTextures;
-    std::map<ParticleType, ParticleBatch> mParticles;
-
-    ParticleManager();
-
-    void remove(ParticleType type, size_t id);
-    void update(float dt);
-    void spawn(const Vec2& pos, ParticleType type);
-    void drawAll(sb::Window& wnd);
+    Accumulator(float base, float step = 1.f): mAccumulator(0.f), mBase(base), mStep(step), mRunning(false) {}
+    void reset() { mRunning = true; mAccumulator = mBase; }
+    void stop() { mRunning = false; }
+    void update() { if (mRunning) mAccumulator += mStep; }
+    void update(float dt) { if (mRunning) mAccumulator += dt; }
+    float getValue() const { return mAccumulator; }
+    bool running() const { return mRunning; }
 };
-
-ParticleManager::ParticleManager()
-{
-    mTextures.resize(ParticleTypesCount);
-
-    mTextures[ParticleInvalid] = gResourceMgr.getTexture(L"error.png");
-    mTextures[ParticleFire] = gResourceMgr.getTexture(L"fire.png");
-    mTextures[ParticleWater] = gResourceMgr.getTexture(L"water.png");
-
-    for (int type = ParticleTypeFirst; type < ParticleTypesCount; ++type)
-    {
-        ParticleBatch& batch = mParticles[(ParticleType)type];
-
-        batch.position.reserve(1000);
-        batch.velocity.reserve(1000);
-        batch.type.reserve(1000);
-        batch.timeToLive.reserve(1000);
-    }
-}
-
-void ParticleManager::remove(ParticleType type, size_t id)
-{
-    ParticleBatch& batch = mParticles[type];
-
-    if (batch.position.size())
-    {
-        size_t last = batch.position.size() - 1;
-        if (id != last)
-        {
-            batch.position[id] = batch.position[last];
-            batch.velocity[id] = batch.velocity[last];
-            batch.type[id] = batch.type[last];
-            batch.timeToLive[id] = batch.timeToLive[last];
-        }
-
-        batch.position.pop_back();
-        batch.velocity.pop_back();
-        batch.type.pop_back();
-        batch.timeToLive.pop_back();
-    }
-}
-
-void ParticleManager::update(float dt)
-{
-    for (std::map<ParticleType, ParticleBatch>::iterator it = mParticles.begin(); it != mParticles.end(); ++it)
-    {
-        ParticleBatch& batch = it->second;
-
-        for (size_t i = 0; i < std::min(batch.position.size(), (size_t)100);)
-        {
-            if (batch.timeToLive[i] <= 0.f)
-                remove(it->first, i);
-            else
-            {
-                batch.position[i] += batch.velocity[i] * dt;
-                //batch.timeToLive[i] -= dt;
-                ++i;
-            }
-        }
-    }
-}
-
-void ParticleManager::spawn(const Vec2& pos, ParticleType type)
-{
-    ParticleBatch& batch = mParticles[type];
-
-    for (int i = 0; i < 20; ++i)
-    {
-        batch.position.push_back(pos);
-        batch.velocity.push_back(Vec2((float)(rand() % 11) - 5.f, (float)(rand() % 11) - 5.f) / 100.f);
-        batch.type.push_back(type);
-        batch.timeToLive.push_back(10.f);
-    }
-}
-
-void ParticleManager::drawAll(sb::Window& wnd)
-{
-    GL_CHECK(glEnable(GL_TEXTURE_2D));
-    glPointSize(5.f);
-
-    for (std::map<ParticleType, ParticleBatch>::iterator it = mParticles.begin(); it != mParticles.end(); ++it)
-    {
-        ParticleBatch& batch = it->second;
-
-        if (batch.position.size() > 0)
-        {
-            uint32_t offset = mSharedVertexBuffer.addVertices(&batch.position[0], NULL, NULL, batch.position.size());
-            mSharedVertexBuffer.bind();
-
-            sb::Shader::use(sb::Shader::ShaderPointSprite);
-            sb::Shader& shader = sb::Shader::getCurrent();
-            static Mat44 identity = Mat44();
-
-            shader.setUniform("u_matViewProjection", wnd.getCamera().getOrthographicProjectionMatrix());
-            shader.setUniform("u_matModel", identity);
-            shader.setUniform("u_color", sb::Color::White);
-            shader.setUniform("u_texture", (int)sb::Shader::SamplerImage);
-
-            GL_CHECK(glActiveTexture(GL_TEXTURE0));
-            GL_CHECK(glBindTexture(GL_TEXTURE_2D, mTextures[it->first]));
-
-            GL_CHECK(glVertexPointer(2, GL_FLOAT, 0, (void*)offset));
-            GL_CHECK(glDrawArrays(GL_POINTS, 0, batch.position.size()));
-
-            mSharedVertexBuffer.unbind();
-            mSharedVertexBuffer.releaseVertices(offset);
-        }
-    }
-}
-
 
 int main()
 {
-    sb::Window window(800, 600);
-    window.getRenderer().enableFeature(sb::Renderer::FeatureBackfaceCulling, false);
+    using sb::utils::makeString;
 
-    Vec2 halfWndSize = Vec2(window.getSize()) / 2.f;
-    sb::Timer timer;
+    sb::Window wnd(1200, 900);
 
-    ParticleManager particles;
+    auto colorShader = gResourceMgr.getShader("proj_basic.vert", "color.frag");
+    auto textureShader = gResourceMgr.getShader("proj_texture.vert", "texture.frag");
 
-    sb::Event event;
-    while (window.isOpened())
+    wnd.setTitle("Sandbox");
+    wnd.lockCursor();
+    wnd.hideCursor();
+
+    Sim::Simulation sim(Sim::Simulation::SimSingleThrow,
+                        textureShader,
+                        colorShader);
+    sim.setThrowStart(Vec3d(0., 1., 0.), Vec3d(30., 30., 0.));
+
+    sb::Sprite crosshair("dot.png", textureShader);
+    crosshair.setPosition(0.f, 0.f, 0.f);
+    crosshair.setScale(0.01f, 0.01f * 1.33f, 1.f);
+
+    sb::Line xaxis(Vec3(1000.f, 0.f, 0.f),
+                   sb::Color(0.f, 0.f, 1.f),
+                   colorShader);
+    sb::Line yaxis(Vec3(0.f, 1000.f, 0.f),
+                   sb::Color(1.f, 0.f, 0.f),
+                   colorShader);
+    sb::Line zaxis(Vec3(0.f, 0.f, 1000.f),
+                   sb::Color(0.f, 1.f, 0.f),
+                   colorShader);
+
+    sb::Model skybox("skybox.obj", textureShader);
+    skybox.setScale(1000.f);
+
+    sb::Terrain terrain("hmap_flat.jpg", "ground.jpg", textureShader);
+    terrain.setScale(10.f, 1.f, 10.f);
+    terrain.setPosition(-640.f, 0.f, -640.f);
+
+    gLog.info("all data loaded!\n");
+
+    wnd.getCamera().lookAt(Vec3(5.f, 5.f, 20.f), Vec3(5.f, 5.f, 0.f));
+
+    float moveSpeed = 0.f, strafeSpeed = 0.f, ascendSpeed = 0.f;
+    const float SPEED = 0.5f;
+
+    sb::Timer clock;
+    float lastFrameTime = 0.f,
+          physicsUpdateStep = 0.03f,
+          fpsCounter = 0.f,        // how many frames have been rendered in fpsUpdateStep time?
+          fpsUpdateStep = 1.f,    // update FPS-string every fpsUpdateStep seconds
+          fpsCurrValue = 0.f;    // current FPS value
+
+    Accumulator deltaTime(0.f, 0.f),
+                fpsDeltaTime(0.f, 0.f),
+                throwVelocity(10.f, 0.5f),
+                windVelocity(0.5f, 0.5f);
+    deltaTime.reset();
+    fpsDeltaTime.reset();
+
+    std::string fpsString;
+
+    bool displayHelp = true, displaySimInfo = true, displayBallInfo = true;
+    const std::string helpString =
+        "controls:\n"
+        "wasdqz + mouse - moving\n"
+        "123456 - camera presets\n"
+        "esc - exit\n"
+        "f1 - show/hide controls info\n"
+        "f2 - show/hide simulation info\n"
+        "f3 - show/hide ball info\n"
+        "f4 - show/hide ball launcher lines\n"
+        "f8 - exit + display debug info\n"
+        "print screen - save screenshot\n"
+        "p - pause simulation\n"
+        "o - switch vector display mode (forces/accelerations)\n"
+        "i - enable/disable auto-pause when a ball hits ground\n"
+        "t - reset simulation (single ball)\n"
+        "r - reset simulation (multiple balls)\n"
+        "mouse left - set throw position/initial velocity*\n"
+        "mouse right - set wind force*\n"
+        "cf - decrease/increase slow motion factor\n"
+        "vg - decrease/increase line width\n"
+        "bh - decrease/increase air density\n"
+        "nj - decrease/increase ball path length\n"
+        "mk - decrease/increase ball spawn delay\n"
+        ",l - decrease/increase ball limit by 5\n"
+        ".; - decrease/increase ball mass**\n"
+        "/' - decrease/increase ball radius**\n"
+        "* hold button to adjust value\n"
+        "** doesn't affect existing balls";
+    const uint32_t helpStringLines = 27u;
+
+    gLog.info("entering main loop\n");
+
+    // main loop
+    while(wnd.isOpened())
     {
-        while (window.getEvent(event))
+        float delta = clock.getSecsElapsed() - lastFrameTime;
+        deltaTime.update(delta);
+        fpsDeltaTime.update(delta);
+        ++fpsCounter;
+        lastFrameTime = clock.getSecsElapsed();
+
+        // FPS update
+        if (fpsDeltaTime.getValue() >= fpsUpdateStep)
         {
-            switch (event.type)
+            fpsCurrValue = fpsCounter / fpsUpdateStep;
+            fpsString = "FPS = " + sb::utils::toString(fpsCurrValue);
+            fpsDeltaTime.update(-fpsUpdateStep);
+            fpsCounter = 0.f;
+        }
+
+        // event handling
+        sb::Event e;
+        while (wnd.getEvent(e))
+        {
+            switch (e.type)
             {
-            case sb::Event::WindowClosed:
-                window.close();
-                break;
-            case sb::Event::KeyPressed:
-                switch (event.data.key)
-                {
-                case sb::Key::Esc:
-                    window.close();
-                    break;
-                default:
-                    break;
-                }
-                break;
             case sb::Event::MousePressed:
                 {
-                    ParticleManager::ParticleType type;
-                    switch (event.data.mouse.button)
+                    switch (e.data.mouse.button)
                     {
                     case sb::Mouse::ButtonLeft:
-                        type = ParticleManager::ParticleFire;
+                        if (!throwVelocity.running())
+                            throwVelocity.reset();
                         break;
                     case sb::Mouse::ButtonRight:
-                        type = ParticleManager::ParticleWater;
+                        if (!windVelocity.running())
+                            windVelocity.reset();
                         break;
                     default:
-                        type = ParticleManager::ParticleInvalid;
                         break;
                     }
-
-                    if (type != ParticleManager::ParticleInvalid)
-                        particles.spawn(Vec2((float)event.data.mouse.x / halfWndSize[0] - 1.f, -((float)event.data.mouse.y / halfWndSize[1] - 1.f)), type);
                     break;
                 }
+            case sb::Event::MouseReleased:
+                {
+                    switch(e.data.mouse.button)
+                    {
+                    case sb::Mouse::ButtonLeft:
+                        {
+                            Vec3 pos = wnd.getCamera().getEye();
+                            if (pos[1] < sim.mBallRadius)
+                                pos[1] = (float)sim.mBallRadius;
+
+                            Vec3 v = glm::normalize(wnd.getCamera().getFront()) * throwVelocity.getValue();
+                            sim.setThrowStart(Vec3d(pos[0], pos[1], pos[2]), Vec3d(v[0], v[1], v[2]));
+                            sim.reset();
+                            throwVelocity.stop();
+                            break;
+                        }
+                        break;
+                    case sb::Mouse::ButtonRight:
+                        sim.setWind(Vec3d(glm::normalize(wnd.getCamera().getFront()) * windVelocity.getValue()));
+                        windVelocity.stop();
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+            case sb::Event::KeyPressed:
+                {
+                    switch (e.data.key)
+                    {
+                    case sb::Key::Num1:
+                        moveSpeed = strafeSpeed = 0.f;
+                        wnd.getCamera().lookAt(Vec3(50.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        break;
+                    case sb::Key::Num2:
+                        moveSpeed = strafeSpeed = 0.f;
+                        wnd.getCamera().lookAt(Vec3(-50.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        break;
+                    case sb::Key::Num3:
+                        moveSpeed = strafeSpeed = 0.f;
+                        wnd.getCamera().lookAt(Vec3(0.0001f, 50.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        break;
+                    case sb::Key::Num4:
+                        moveSpeed = strafeSpeed = 0.f;
+                        wnd.getCamera().lookAt(Vec3(0.0001f, -50.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        break;
+                    case sb::Key::Num5:
+                        moveSpeed = strafeSpeed = 0.f;
+                        wnd.getCamera().lookAt(Vec3(0.f, 0.f, 50.f), Vec3(0.f, 0.f, 0.f));
+                        break;
+                    case sb::Key::Num6:
+                        moveSpeed = strafeSpeed = 0.f;
+                        wnd.getCamera().lookAt(Vec3(0.f, 0.f, -50.f), Vec3(0.f, 0.f, 0.f));
+                        break;
+                    case sb::Key::N:
+                        sim.mBallPathLength = sb::math::clamp(sim.mBallPathLength - 1.0, 0.0, 1000.0);
+                        break;
+                    case sb::Key::J:
+                        sim.mBallPathLength = sb::math::clamp(sim.mBallPathLength + 1.0, 0.0, 1000.0);
+                        break;
+                    case sb::Key::M:
+                        sim.mBallThrowDelay -= 0.1f;
+                        break;
+                    case sb::Key::K:
+                        sim.mBallThrowDelay += 0.1f;
+                        break;
+                    case sb::Key::B:
+                        sim.mAirDensity -= 0.01;
+                        break;
+                    case sb::Key::H:
+                        sim.mAirDensity += 0.01;
+                        break;
+                    case sb::Key::Comma:
+                        if (sim.mSimType == Sim::Simulation::SimContiniousThrow && sim.mMaxBalls > 1u)
+                            sim.mMaxBalls -= 5;
+                        break;
+                    case sb::Key::L:
+                        if (sim.mSimType == Sim::Simulation::SimContiniousThrow)
+                            sim.mMaxBalls += 5;
+                        break;
+                    case sb::Key::A: strafeSpeed = -SPEED; break;
+                    case sb::Key::D: strafeSpeed = SPEED; break;
+                    case sb::Key::S: moveSpeed = -SPEED; break;
+                    case sb::Key::W: moveSpeed = SPEED; break;
+                    case sb::Key::Q: ascendSpeed = SPEED; break;
+                    case sb::Key::Z: ascendSpeed = -SPEED; break;
+                    case sb::Key::C:
+                        sim.mSloMoFactor -= 0.1f;
+                        break;
+                    case sb::Key::F:
+                        sim.mSloMoFactor += 0.1f;
+                        break;
+                    case sb::Key::Slash:
+                        sim.mBallRadius -= 0.1f;
+                        break;
+                    case sb::Key::Apostrophe:
+                        sim.mBallRadius += 0.1f;
+                        break;
+                    case sb::Key::Period:
+                        sim.mBallMass -= 0.1f;
+                        break;
+                    case sb::Key::Colon:
+                        sim.mBallMass += 0.1f;
+                        break;
+                    case sb::Key::Esc:
+                        wnd.close();
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+            case sb::Event::KeyReleased:
+                {
+                    switch (e.data.key)
+                    {
+                    case sb::Key::A:
+                    case sb::Key::D:
+                        strafeSpeed = 0.f;
+                        break;
+                    case sb::Key::S:
+                    case sb::Key::W:
+                        moveSpeed = 0.f;
+                        break;
+                    case sb::Key::Q:
+                    case sb::Key::Z:
+                        ascendSpeed = 0.f;
+                        break;
+                    case sb::Key::P:
+                        sim.togglePause();
+                        break;
+                    case sb::Key::O:
+                        sim.mVectorDisplayType = (sim.mVectorDisplayType == Sim::Simulation::DisplayForce ? Sim::Simulation::DisplayAcceleration : Sim::Simulation::DisplayForce);
+                        break;
+                    case sb::Key::I:
+                        sim.mPauseOnGroundHit = !sim.mPauseOnGroundHit;
+                        break;
+                    case sb::Key::R:
+                        sim = Sim::Simulation(Sim::Simulation::SimContiniousThrow,
+                                              textureShader,
+                                              colorShader);
+                        break;
+                    case sb::Key::T:
+                        sim = Sim::Simulation(Sim::Simulation::SimSingleThrow,
+                                              textureShader,
+                                              colorShader);
+                        break;
+                    case sb::Key::V:
+                        {
+                            GLfloat lineWidth = 0.f;
+                            GL_CHECK(glGetFloatv(GL_LINE_WIDTH, &lineWidth));
+                            if (lineWidth > 1.f)
+                                GL_CHECK(glLineWidth(lineWidth / 2.f));
+                            break;
+                        }
+                    case sb::Key::G:
+                        {
+                            GLfloat lineWidth = 0.f;
+                            GL_CHECK(glGetFloatv(GL_LINE_WIDTH, &lineWidth));
+                            if (lineWidth < 9.f)
+                                GL_CHECK(glLineWidth(lineWidth * 2.f));
+                            break;
+                        }
+                    case sb::Key::F1:
+                        displayHelp = !displayHelp;
+                        break;
+                    case sb::Key::F2:
+                        displaySimInfo = !displaySimInfo;
+                        break;
+                    case sb::Key::F3:
+                        displayBallInfo = !displayBallInfo;
+                        break;
+                    case sb::Key::F4:
+                        sim.mShowLauncherLines = !sim.mShowLauncherLines;
+                        break;
+                    case sb::Key::PrintScreen:
+                        {
+#ifdef PLATFORM_WIN32
+                            SYSTEMTIME systime;
+                            ::GetSystemTime(&systime);
+                            std::string filename =
+                                    makeString(systime.wHour, ".",
+                                               systime.wMinute, ".",
+                                               systime.wSecond, ".",
+                                               systime.wMilliseconds, ".png");
+#else // PLATFORM_LINUX
+                            timeval current;
+                            gettimeofday(&current, NULL);
+                            std::string filename =
+                                    makeString(current.tv_sec, ".",
+                                               (current.tv_usec / 1000), ".png");
+#endif // PLATFORM_WIN32
+
+                            wnd.saveScreenshot(filename);
+                            break;
+                        }
+                    default:
+                        break;
+                    }
+                    break;
+                }
+            case sb::Event::MouseMoved:
+                {
+                    if (wnd.hasFocus())
+                    {
+                        Degrees dtX = Degrees(((int)e.data.mouse.x - wnd.getSize().x / 2)
+                                              / (float)(wnd.getSize().x / 2));
+                        Degrees dtY = Degrees(((int)e.data.mouse.y - wnd.getSize().y / 2)
+                                              / (float)(wnd.getSize().y / 2));
+
+                        wnd.getCamera().mouseLook(dtX, dtY);
+                    }
+                    break;
+                }
+            case sb::Event::WindowFocus:
+                if (e.data.focus)
+                {
+                    wnd.hideCursor();
+                    wnd.lockCursor();
+                }
+                else
+                {
+                    wnd.hideCursor(false);
+                    wnd.lockCursor(false);
+                    moveSpeed = strafeSpeed = 0.f;
+                }
+                break;
+            case sb::Event::WindowResized:
+                crosshair.setScale(0.01f, 0.01f * ((float)e.data.wndResize.width / (float)e.data.wndResize.height), 0.01f);
+                break;
+            case sb::Event::WindowClosed:
+                wnd.close();
+                break;
             default:
                 break;
             }
         }
 
-        particles.update(timer.getSecsElapsed());
-        timer.reset();
+        // physics update
+        uint32_t guard = 3u;
+        while ((deltaTime.getValue() >= physicsUpdateStep) && guard--)
+        {
+            sim.update(physicsUpdateStep);
+            deltaTime.update(-physicsUpdateStep);
 
-        window.clear(sb::Color::Black);
-            particles.drawAll(window);
-        window.display();
+            throwVelocity.update();
+            windVelocity.update();
+        }
+
+        // drawing
+        wnd.getCamera().moveRelative(Vec3(strafeSpeed, ascendSpeed, moveSpeed));
+
+        // move skybox, so player won't go out of it
+        skybox.setPosition(wnd.getCamera().getEye());
+
+        wnd.clear(sb::Color(0.f, 0.f, 0.5f));
+
+        // environment
+        gLog.debug("drawing skybox\n");
+        wnd.draw(skybox);
+        gLog.debug("drawing terrain\n");
+        wnd.draw(terrain);
+
+        // axes - disable edpth test to prevent blinking
+        wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest, false);
+        gLog.debug("drawing axes\n");
+        wnd.draw(xaxis);
+        wnd.draw(yaxis);
+        wnd.draw(zaxis);
+        wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest);
+
+        // balls & forces
+        gLog.debug("drawing sim\n");
+        sim.drawAll(wnd.getRenderer());
+
+        // crosshair
+        gLog.debug("drawing crosshair\n");
+        wnd.draw(crosshair);
+
+        gLog.debug("drawing strings\n");
+        // info strings
+        uint32_t nextLine = 0u;
+        sb::String::print(fpsString, 0.f, 0.f,
+                          (fpsCurrValue > 30.f
+                              ? sb::Color::Green
+                              : (fpsCurrValue > 20.f ? sb::Color::Yellow
+                                                     : sb::Color::Red)),
+                          nextLine++);
+        sb::String::print(
+                makeString("pos = ", wnd.getCamera().getEye(),
+                           "\nfront = ", wnd.getCamera().getFront(),
+                           "\nphi = ",
+                           Degrees(wnd.getCamera().getHorizontalAngle()),
+                           "\ntheta = ",
+                           Degrees(wnd.getCamera().getVerticalAngle())),
+                0.f, 0.f, sb::Color::White, nextLine);
+        nextLine += 4;
+
+        sb::String::print(makeString("throw velocity = ",
+                                     throwVelocity.getValue()),
+                           0.f, 0.f, Sim::ColorThrow, nextLine++);
+        sb::String::print(makeString("wind velocity = ",
+                                     windVelocity.getValue()),
+                          0.f, 0.f, Sim::ColorWind, nextLine++);
+
+        if (displayHelp)
+        {
+            sb::String::print(helpString,
+                              0.f, 0.0f, sb::Color::White, ++nextLine);
+            nextLine += helpStringLines;
+        }
+        if (displaySimInfo)
+            nextLine = sim.printParametersToScreen(0.f, 0.f, ++nextLine);
+        if (displayBallInfo)
+            nextLine = sim.printBallParametersToScreen(
+                    sim.raycast(wnd.getCamera().getEye(),
+                                glm::normalize(wnd.getCamera().getFront())),
+                    0.f, 0.0f, nextLine);
+
+        wnd.display();
     }
 
+    gLog.info("window closed\n");
     return 0;
 }
-#endif /* SIMULATION */
+
