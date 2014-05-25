@@ -9,15 +9,15 @@ namespace sb
     Logger::Logger(FILE* f):
         mFile(f)
     {
-    #ifdef _DEBUG
-        static const char* logFile = "debug.log";
-        f = fopen(logFile, "w");
-        if (f)
-        {
-            fprintf(mFile, "log redirected to %s\n", logFile);
-            mFile = f;
-        }
-    #endif //_DEBUG
+    //#ifdef _DEBUG
+        //static const char* logFile = "debug.log";
+        //f = fopen(logFile, "w");
+        //if (f)
+        //{
+            //fprintf(mFile, "log redirected to %s\n", logFile);
+            //mFile = f;
+        //}
+    //#endif //_DEBUG
     }
 
     Logger::~Logger()

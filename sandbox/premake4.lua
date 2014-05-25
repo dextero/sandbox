@@ -4,7 +4,7 @@ solution 'sandbox'
     project 'sandbox'
         kind 'consoleapp'
         language 'c++'
-        files { 'src/**.h', '**.cpp', '**.cpp.inl' }
+        files { 'src/**.h', 'src/**.cpp', 'src/**.cpp.inl' }
         includedirs { 'src' }
         targetdir 'bin'
         links { 'GL', 'GLU', 'GLEW', 'IL', 'ILU', 'assimp', 'X11' }

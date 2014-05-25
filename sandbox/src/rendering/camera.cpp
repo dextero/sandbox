@@ -1,5 +1,5 @@
 #include "camera.h"
-#include "utils/mathUtils.h"
+#include "utils/math.h"
 
 
 namespace sb

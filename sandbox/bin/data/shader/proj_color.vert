@@ -1,16 +1,16 @@
 #version 330
 
-uniform mat4 u_matViewProjection;
-uniform mat4 u_matModel;
+uniform mat4 matViewProjection;
+uniform mat4 matModel;
 
-layout (location = 0) in vec3 a_vertex;
-layout (location = 3) in vec4 a_color;
+in vec3 position;
+in vec4 color;
 
-out vec4 v_color;
+out vec4 out_color;
 
 void main()
 {
-	v_color = a_color;
-	gl_Position = u_matViewProjection * u_matModel * vec4(a_vertex, 1.0);
+	out_color = color;
+	gl_Position = matViewProjection * matModel * vec4(position, 1.0);
 }
 

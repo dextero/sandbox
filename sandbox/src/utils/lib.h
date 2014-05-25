@@ -10,6 +10,8 @@ namespace sb
 
         // return true on error
         bool ILCheck(const char* file, int line, const char* call);
+
+        void gl_debug();
     }
 }
 

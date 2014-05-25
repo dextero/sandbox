@@ -1,7 +1,7 @@
 #include "rendering/vertexBuffer.h"
 #include "rendering/color.h"
 
-#include "utils/libUtils.h"
+#include "utils/lib.h"
 #include "utils/logger.h"
 
 #include <cassert>
@@ -22,18 +22,15 @@ namespace sb
                                  const void* data,
                                  size_t numElements)
     {
-        assert(data && numElements > 0 && "added buffer must not be empty");
+        Buffer buffer(data, numElements * type.elemSize);
 
-        BufferId id;
-
-        GL_CHECK(glGenBuffers(1, &id));
-        GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, id));
-        GL_CHECK(glBufferData(GL_ARRAY_BUFFER,
-                              numElements * type.elemSize, data,
-                              GL_DYNAMIC_DRAW));
+        buffer.bind(GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING);
         GL_CHECK(glVertexAttribPointer(type.attribIdx,
                                        type.elemSize / sizeof(float), GL_FLOAT,
                                        GL_FALSE, 0, NULL));
+        buffer.unbind();
+
+        mBuffers.emplace_back(std::move(buffer), type);
     }
 
     VertexBuffer::VertexBuffer(const std::vector<Vec3>& vertices,
@@ -80,9 +77,10 @@ namespace sb
                 GL_CHECK(glBindVertexArray(0));
             }
 
-            for (const Buffer& buffer: mBuffers) {
+            for (const BufferTypePair& bt: mBuffers) {
                 // TODO: unbind?
-                GL_CHECK(glDeleteBuffers(1, &buffer.id));
+                GLuint id = bt.buffer.getId();
+                GL_CHECK(glDeleteBuffers(1, &id));
             }
 
             GL_CHECK(glDeleteVertexArrays(1, &mVAO));

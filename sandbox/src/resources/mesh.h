@@ -28,11 +28,10 @@ namespace sb
              const std::vector<Color>& colors,
              const std::vector<uint32_t>& indices,
              std::shared_ptr<TextureId> texture);
-        ~Mesh();
 
         VertexBuffer& getVertexBuffer() { return mVertexBuffer; }
-        BufferId getIndexBuffer() { return mIndexBuffer; }
-        uint32_t getIndexBufferSize() { return mIndexBufferSize; }
+        IndexBuffer& getIndexBuffer() { return mIndexBuffer; }
+        size_t getIndexBufferSize() { return mIndexBufferSize; }
 
         EShape getShape() { return mShape; }
         const std::shared_ptr<TextureId>& getTexture() { return mTexture; }
@@ -44,7 +43,7 @@ namespace sb
 
     private:
         VertexBuffer mVertexBuffer;
-        BufferId mIndexBuffer;
+        IndexBuffer mIndexBuffer;
         uint32_t mIndexBufferSize;
 
         EShape mShape;

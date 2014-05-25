@@ -4,7 +4,7 @@
 #include "rendering/drawable.h"
 #include "rendering/string.h"
 #include "rendering/sprite.h"
-#include "utils/libUtils.h"
+#include "utils/lib.h"
 #include "utils/stringUtils.h"
 #include "utils/logger.h"
 #include "resources/mesh.h"
@@ -276,11 +276,11 @@ namespace sb
             }
 
             // should be before Shader::use to ensure that glBindAttribLocation calls are correct
-            mesh->getVertexBuffer().bind();
+            auto vaoBind = make_bind(mesh->getVertexBuffer());
 
             if (texture) {
                 Shader::use(Shader::ShaderTexture);
-                Shader::getCurrent().setUniform("u_texture", (int)Shader::SamplerImage);
+                Shader::getCurrent().setUniform("texture", (int)Shader::SamplerImage);
                 GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
                 GL_CHECK(glBindTexture(GL_TEXTURE_2D, *texture));
             } else {
@@ -288,26 +288,23 @@ namespace sb
             }
 
             Shader& shader = Shader::getCurrent();
-            shader.setUniform("u_color", d.mColor);
+            shader.setUniform("color", d.mColor);
 
             if (d.mProjectionType == Drawable::ProjectionOrthographic) {
-                shader.setUniform("u_matViewProjection",
+                shader.setUniform("matViewProjection",
                                   mCamera.getOrthographicProjectionMatrix());
             } else {
                 Mat44 viewProj = mCamera.getPerspectiveProjectionMatrix()
                                  * mCamera.getViewMatrix();
-                shader.setUniform("u_matViewProjection", viewProj);
+                shader.setUniform("matViewProjection", viewProj);
             }
 
-            shader.setUniform("u_matModel", d.getTransformationMatrix());
+            shader.setUniform("matModel", d.getTransformationMatrix());
 
-            GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
-                                  mesh->getIndexBuffer()));
+            auto indexBind = make_bind(mesh->getIndexBuffer());
             GL_CHECK(glDrawElements(mesh->getShape(),
                                     mesh->getIndexBufferSize(),
                                     GL_UNSIGNED_INT, 0));
-
-            mesh->getVertexBuffer().unbind();
         }
     }
 
@@ -334,11 +331,11 @@ namespace sb
             mCamera.getOrthographicProjectionMatrix() :
             Mat44(mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
 
-        for (std::vector<Drawable>::iterator it = mDrawablesBuffer.begin(); it != mDrawablesBuffer.end(); ++it)
+        for (Drawable& d: mDrawablesBuffer)
         {
-            if (it->getShader() != shaderType)
+            if (d.getShader() != shaderType)
             {
-                shaderType = it->getShader();
+                shaderType = d.getShader();
                 Shader::use(shaderType);
                 shader = &Shader::getCurrent();
 
@@ -349,7 +346,7 @@ namespace sb
                     Mat44(mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
             }
 
-            std::shared_ptr<TextureId> tex = (it->mTexture ? it->mTexture : it->mMesh->getTexture());
+            std::shared_ptr<TextureId> tex = (d.mTexture ? d.mTexture : d.mMesh->getTexture());
             if (tex != texture)
             {
                 texture = tex;
@@ -357,22 +354,25 @@ namespace sb
                 GL_CHECK(glBindTexture(GL_TEXTURE_2D, *texture));
             }
 
-            if (it->mProjectionType != projType)
+            if (d.mProjectionType != projType)
             {
-                projType = it->mProjectionType;
+                projType = d.mProjectionType;
                 shader->setUniform("u_matViewProjection", projType == Drawable::ProjectionOrthographic ?
                     mCamera.getOrthographicProjectionMatrix() :
                     Mat44(mCamera.getPerspectiveProjectionMatrix() * mCamera.getViewMatrix()));
             }
 
-            shader->setUniform("u_matModel", it->getTransformationMatrix());
-            shader->setUniform("u_color", it->mColor);
+            shader->setUniform("u_matModel", d.getTransformationMatrix());
+            shader->setUniform("u_color", d.mColor);
 
-            std::shared_ptr<Mesh> mesh = (it->mMesh ? it->mMesh : gResourceMgr.getSprite(it->mTexture));
-            mesh->getVertexBuffer().bind();
-            GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->getIndexBuffer()));
-            GL_CHECK(glDrawElements(mesh->getShape(), mesh->getIndexBufferSize(), GL_UNSIGNED_INT, NULL));
-            mesh->getVertexBuffer().unbind();
+            std::shared_ptr<Mesh> mesh = (d.mMesh ? d.mMesh : gResourceMgr.getSprite(d.mTexture));
+
+            {
+                auto bind = make_bind(mesh->getVertexBuffer());
+                auto indexBind = make_bind(mesh->getIndexBuffer());
+
+                GL_CHECK(glDrawElements(mesh->getShape(), mesh->getIndexBufferSize(), GL_UNSIGNED_INT, NULL));
+            }
         }
 
         mDrawablesBuffer.clear();

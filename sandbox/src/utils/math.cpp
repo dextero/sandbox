@@ -1,4 +1,4 @@
-#include "mathUtils.h"
+#include "utils/math.h"
 
 namespace sb
 {

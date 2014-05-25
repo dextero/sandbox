@@ -2,8 +2,8 @@
 #define CAMERA_H
 
 #include "types.h"
-#include "../utils/mathUtils.h"
-#include "../utils/types.h"
+#include "utils/math.h"
+#include "utils/types.h"
 
 namespace sb
 {

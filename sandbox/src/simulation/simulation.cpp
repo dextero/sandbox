@@ -1,9 +1,9 @@
 #include "simulation.h"
 
 #include "ball.h"
-#include "../utils/stringUtils.h"
-#include "../rendering/string.h"
-#include "../utils/logger.h"
+#include "rendering/string.h"
+#include "utils/stringUtils.h"
+#include "utils/logger.h"
 
 using sb::utils::toString;
 

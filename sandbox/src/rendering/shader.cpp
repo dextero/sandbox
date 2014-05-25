@@ -1,7 +1,7 @@
 #include "rendering/shader.h"
 #include "rendering/vertexBuffer.h"
 #include "resources/resourceMgr.h"
-#include "utils/libUtils.h"
+#include "utils/lib.h"
 #include "utils/stringUtils.h"
 #include "utils/logger.h"
 
