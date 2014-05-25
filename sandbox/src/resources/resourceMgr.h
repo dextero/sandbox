@@ -41,7 +41,7 @@ namespace sb
 
         std::string getBasePath() const
         {
-            return mBasePath();
+            return mBasePath;
         }
 
         std::shared_ptr<T> get(const std::string& name)

@@ -41,7 +41,7 @@ int main()
 
     sb::Window wnd(1200, 900);
 
-    auto colorShader = gResourceMgr.getShader("proj_color.vert", "color.frag");
+    auto colorShader = gResourceMgr.getShader("proj_basic.vert", "color.frag");
     auto textureShader = gResourceMgr.getShader("proj_texture.vert", "texture.frag");
 
     wnd.setTitle("Sandbox");

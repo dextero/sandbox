@@ -21,28 +21,11 @@ namespace sb
 {
     class Renderer
     {
-    private:
-        GLXContext mGLContext;
-        ::Display* mDisplay;
-        std::vector<Drawable> mDrawablesBuffer;
-        bool mUseDrawableBuffering;
-
-        bool initGLEW();
-
-        enum EFilterType {
-            FilterShader,
-            FilterTexture,
-            FilterDepth,
-            FilterProjection,
-            FilterShaderTextureProjectionDepth
-        };
-        void filterDrawables(EFilterType filter);
-
     public:
-        Camera mCamera;
-
         Renderer();
         ~Renderer();
+
+        inline Camera& getCamera() { return mCamera; }
 
         bool init(::Display* display, ::Window window, GLXFBConfig& fbc);
         void setClearColor(const Color& c);
@@ -63,6 +46,25 @@ namespace sb
 
         void enableFeature(EFeature feature, bool enable = true);
         void saveScreenshot(const std::string& filename, int width, int height);
+
+    private:
+        Camera mCamera;
+        GLXContext mGLContext;
+        ::Display* mDisplay;
+        std::vector<Drawable> mDrawablesBuffer;
+        bool mUseDrawableBuffering;
+
+        bool initGLEW();
+
+        enum EFilterType {
+            FilterShader,
+            FilterTexture,
+            FilterDepth,
+            FilterProjection,
+            FilterShaderTextureProjectionDepth
+        };
+        void filterDrawables(EFilterType filter);
+
     };
 } // namespace sb
 

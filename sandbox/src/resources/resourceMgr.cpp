@@ -335,25 +335,21 @@ namespace sb
 
     std::shared_ptr<TextureId> ResourceMgr::getTexture(const std::string& name)
     {
-        assert(Window::glInitialized && "GL context uninitialized, create a Window before using ResourceMgr");
         return mTextures.get(name);
     }
 
     std::shared_ptr<Image> ResourceMgr::getImage(const std::string& name)
     {
-        assert(Window::glInitialized && "GL context uninitialized, create a Window before using ResourceMgr");
         return mImages.get(name);
     }
 
     std::shared_ptr<Mesh> ResourceMgr::getMesh(const std::string& name)
     {
-        assert(Window::glInitialized && "GL context uninitialized, create a Window before using ResourceMgr");
         return mMeshes.get(name);
     }
 
     std::shared_ptr<Mesh> ResourceMgr::getTerrain(const std::string& heightmap)
     {
-        assert(Window::glInitialized && "GL context uninitialized, create a Window before using ResourceMgr");
         return mTerrains.get(heightmap);
     }
 
@@ -374,12 +370,12 @@ namespace sb
                 line = line.substr(0, commentAt);
             }
 
-            std::vector<std::string> words = utils::split(line, ' ');
+            std::vector<std::string> words = utils::split(line, isspace);
             if (words.size() < 2) {
                 continue;
             }
 
-            if (words[0] != "in") {
+            if (words[0] == "in") {
                 if (words[words.size() - 1] == ";") {
                     attributes.push_back(words[words.size() - 2]);
                 } else {
@@ -397,18 +393,24 @@ namespace sb
             const std::string& fragmentShaderName,
             const std::string& geometryShaderName)
     {
-        assert(Window::glInitialized && "GL context uninitialized, create a Window before using ResourceMgr");
+        bool hasGeometryShader = (geometryShaderName.size() > 0);
 
         gLog.info("loading shader: %s, %s, %s\n",
                   vertexShaderName.c_str(),
                   fragmentShaderName.c_str(),
-                  geometryShaderName.size() > 0
-                      ? geometryShaderName.c_str()
-                      : "(no geometry shader)");
+                  hasGeometryShader ? geometryShaderName.c_str()
+                                    : "(no geometry shader)");
 
         auto vertexShader = mVertexShaders.get(vertexShaderName);
         auto fragmentShader = mFragmentShaders.get(fragmentShaderName);
-        auto geometryShader = mGeometryShaders.get(geometryShaderName);
+        auto geometryShader = hasGeometryShader
+                              ? mGeometryShaders.get(geometryShaderName)
+                              : std::make_shared<ShaderId>(0);
+
+        if (!vertexShader || !fragmentShader) {
+            gLog.err("cannot get shader\n");
+            return {};
+        }
 
         ShaderProgramDef programDef { *vertexShader,
                                       *fragmentShader,
@@ -420,8 +422,9 @@ namespace sb
             return it->second;
         }
 
+        gLog.info("%s%s\n", mVertexShaders.getBasePath().c_str(), vertexShaderName.c_str());
         Shader shader(vertexShader, fragmentShader, geometryShader,
-                      extractAttributes(vertexShaderName));
+                      extractAttributes(mVertexShaders.getBasePath() + vertexShaderName));
         auto shader_ptr = std::make_shared<Shader>(std::move(shader));
         mShaderPrograms.insert(std::make_pair(programDef, shader_ptr));
 

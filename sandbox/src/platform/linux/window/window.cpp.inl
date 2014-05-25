@@ -271,7 +271,7 @@ namespace sb
 
     Camera& Window::getCamera()
     {
-        return mRenderer.mCamera;
+        return mRenderer.getCamera();
     }
 
 } // namespace sb

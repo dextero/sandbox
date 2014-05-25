@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <functional>
 
 #include "utils/types.h"
 
@@ -56,7 +57,12 @@ namespace sb
         std::string toString(const std::wstring& wstr);
         std::wstring toWString(const std::string& str);
 
-        std::vector<std::string> split(const std::string& str, char c);
+        std::vector<std::string>
+        split(const std::string& str, char c);
+
+        std::vector<std::string>
+        split(const std::string& str,
+              const std::function<bool(char)>& isSeparator);
 
         std::string readFile(const std::string& path);
     } // namespace utils
