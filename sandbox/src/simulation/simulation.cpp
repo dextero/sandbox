@@ -215,15 +215,15 @@ namespace Sim
     {
         Vec3d orig = Vec3d(rayOrig);
         Vec3d dir = Vec3d(rayDir);
-        dir = glm::normalize(dir);
+        dir = dir.normalized();
 
         double intersection = std::numeric_limits<double>::infinity();
         Ball* ret = NULL;
         for (std::list<Ball*>::iterator it = mBalls.begin(); it != mBalls.end(); ++it)
         {
             Vec3d origToCenter(orig - (*it)->mPos);
-            double b = -glm::dot(dir, origToCenter);
-            double det = b * b - glm::dot(origToCenter, origToCenter) + (*it)->mRadius * (*it)->mRadius;
+            double b = -dir.dot(origToCenter);
+            double det = b * b - origToCenter.dot(origToCenter) + (*it)->mRadius * (*it)->mRadius;
 
             if (det < 0.)
                 continue;

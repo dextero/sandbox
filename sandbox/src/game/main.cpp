@@ -13,24 +13,42 @@
 #include <sstream>
 #include <IL/ilut.h>
 
-void wait_for_key()
-{
-    getchar();
-}
-
 class Accumulator
 {
-    float mAccumulator,
-          mBase,
-          mStep;
+    float mAccumulator;
+    float mBase;
+    float mStep;
     bool mRunning;
 
 public:
-    Accumulator(float base, float step = 1.f): mAccumulator(0.f), mBase(base), mStep(step), mRunning(false) {}
-    void reset() { mRunning = true; mAccumulator = mBase; }
+    Accumulator(float base,
+                float step = 1.f):
+        mAccumulator(0.f),
+        mBase(base),
+        mStep(step),
+        mRunning(false)
+    {}
+
+    void reset()
+    {
+        mRunning = true;
+        mAccumulator = mBase;
+    }
+
+    void update()
+    {
+        if (mRunning) {
+            mAccumulator += mStep;
+        }
+    }
+    void update(float dt)
+    {
+        if (mRunning) {
+            mAccumulator += dt;
+        }
+    }
+
     void stop() { mRunning = false; }
-    void update() { if (mRunning) mAccumulator += mStep; }
-    void update(float dt) { if (mRunning) mAccumulator += dt; }
     float getValue() const { return mAccumulator; }
     bool running() const { return mRunning; }
 };
@@ -82,22 +100,26 @@ int main()
     const float SPEED = 0.5f;
 
     sb::Timer clock;
-    float lastFrameTime = 0.f,
-          physicsUpdateStep = 0.03f,
-          fpsCounter = 0.f,        // how many frames have been rendered in fpsUpdateStep time?
-          fpsUpdateStep = 1.f,    // update FPS-string every fpsUpdateStep seconds
-          fpsCurrValue = 0.f;    // current FPS value
+    float lastFrameTime = 0.f;
+    float physicsUpdateStep = 0.03f;
+    float fpsCounter = 0.f;      // how many frames have been rendered in fpsUpdateStep time?
+    float fpsUpdateStep = 1.f;   // update FPS-string every fpsUpdateStep seconds
+    float fpsCurrValue = 0.f;    // current FPS value
 
-    Accumulator deltaTime(0.f, 0.f),
-                fpsDeltaTime(0.f, 0.f),
-                throwVelocity(10.f, 0.5f),
-                windVelocity(0.5f, 0.5f);
+    Accumulator deltaTime(0.f, 0.f);
+    Accumulator fpsDeltaTime(0.f, 0.f);
+    Accumulator throwVelocity(10.f, 0.5f);
+    Accumulator windVelocity(0.5f, 0.5f);
+
     deltaTime.reset();
     fpsDeltaTime.reset();
 
     std::string fpsString;
 
-    bool displayHelp = true, displaySimInfo = true, displayBallInfo = true;
+    bool displayHelp = true;
+    bool displaySimInfo = true;
+    bool displayBallInfo = true;
+
     const std::string helpString =
         "controls:\n"
         "wasdqz + mouse - moving\n"
@@ -159,12 +181,14 @@ int main()
                     switch (e.data.mouse.button)
                     {
                     case sb::Mouse::ButtonLeft:
-                        if (!throwVelocity.running())
+                        if (!throwVelocity.running()) {
                             throwVelocity.reset();
+                        }
                         break;
                     case sb::Mouse::ButtonRight:
-                        if (!windVelocity.running())
+                        if (!windVelocity.running()) {
                             windVelocity.reset();
+                        }
                         break;
                     default:
                         break;
@@ -178,18 +202,21 @@ int main()
                     case sb::Mouse::ButtonLeft:
                         {
                             Vec3 pos = wnd.getCamera().getEye();
-                            if (pos[1] < sim.mBallRadius)
-                                pos[1] = (float)sim.mBallRadius;
+                            if (pos.y < sim.mBallRadius) {
+                                pos.y = (float)sim.mBallRadius;
+                            }
 
-                            Vec3 v = glm::normalize(wnd.getCamera().getFront()) * throwVelocity.getValue();
-                            sim.setThrowStart(Vec3d(pos[0], pos[1], pos[2]), Vec3d(v[0], v[1], v[2]));
+                            Vec3 v = wnd.getCamera().getFront().normalized()
+                                                    * throwVelocity.getValue();
+                            sim.setThrowStart(Vec3d(pos), Vec3d(v));
                             sim.reset();
                             throwVelocity.stop();
                             break;
                         }
                         break;
                     case sb::Mouse::ButtonRight:
-                        sim.setWind(Vec3d(glm::normalize(wnd.getCamera().getFront()) * windVelocity.getValue()));
+                        sim.setWind(Vec3d(wnd.getCamera().getFront().normalized()
+                                          * windVelocity.getValue()));
                         windVelocity.stop();
                         break;
                     default:
@@ -203,27 +230,33 @@ int main()
                     {
                     case sb::Key::Num1:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.getCamera().lookAt(Vec3(50.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(50.f, 0.f, 0.f),
+                                               Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::Num2:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.getCamera().lookAt(Vec3(-50.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(-50.f, 0.f, 0.f),
+                                               Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::Num3:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.getCamera().lookAt(Vec3(0.0001f, 50.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(0.0001f, 50.f, 0.f),
+                                               Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::Num4:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.getCamera().lookAt(Vec3(0.0001f, -50.f, 0.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(0.0001f, -50.f, 0.f),
+                                               Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::Num5:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.getCamera().lookAt(Vec3(0.f, 0.f, 50.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(0.f, 0.f, 50.f),
+                                               Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::Num6:
                         moveSpeed = strafeSpeed = 0.f;
-                        wnd.getCamera().lookAt(Vec3(0.f, 0.f, -50.f), Vec3(0.f, 0.f, 0.f));
+                        wnd.getCamera().lookAt(Vec3(0.f, 0.f, -50.f),
+                                               Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::N:
                         sim.mBallPathLength = sb::math::clamp(sim.mBallPathLength - 1.0, 0.0, 1000.0);
@@ -244,12 +277,15 @@ int main()
                         sim.mAirDensity += 0.01;
                         break;
                     case sb::Key::Comma:
-                        if (sim.mSimType == Sim::Simulation::SimContiniousThrow && sim.mMaxBalls > 1u)
+                        if (sim.mSimType == Sim::Simulation::SimContiniousThrow
+                                && sim.mMaxBalls > 1u) {
                             sim.mMaxBalls -= 5;
+                        }
                         break;
                     case sb::Key::L:
-                        if (sim.mSimType == Sim::Simulation::SimContiniousThrow)
+                        if (sim.mSimType == Sim::Simulation::SimContiniousThrow) {
                             sim.mMaxBalls += 5;
+                        }
                         break;
                     case sb::Key::A: strafeSpeed = -SPEED; break;
                     case sb::Key::D: strafeSpeed = SPEED; break;
@@ -303,7 +339,11 @@ int main()
                         sim.togglePause();
                         break;
                     case sb::Key::O:
-                        sim.mVectorDisplayType = (sim.mVectorDisplayType == Sim::Simulation::DisplayForce ? Sim::Simulation::DisplayAcceleration : Sim::Simulation::DisplayForce);
+                        if (sim.mVectorDisplayType == Sim::Simulation::DisplayForce) {
+                            sim.mVectorDisplayType = Sim::Simulation::DisplayAcceleration;
+                        } else {
+                            sim.mVectorDisplayType = Sim::Simulation::DisplayForce;
+                        }
                         break;
                     case sb::Key::I:
                         sim.mPauseOnGroundHit = !sim.mPauseOnGroundHit;
@@ -322,16 +362,18 @@ int main()
                         {
                             GLfloat lineWidth = 0.f;
                             GL_CHECK(glGetFloatv(GL_LINE_WIDTH, &lineWidth));
-                            if (lineWidth > 1.f)
+                            if (lineWidth > 1.f) {
                                 GL_CHECK(glLineWidth(lineWidth / 2.f));
+                            }
                             break;
                         }
                     case sb::Key::G:
                         {
                             GLfloat lineWidth = 0.f;
                             GL_CHECK(glGetFloatv(GL_LINE_WIDTH, &lineWidth));
-                            if (lineWidth < 9.f)
+                            if (lineWidth < 9.f) {
                                 GL_CHECK(glLineWidth(lineWidth * 2.f));
+                            }
                             break;
                         }
                     case sb::Key::F1:
@@ -376,10 +418,13 @@ int main()
                 {
                     if (wnd.hasFocus())
                     {
-                        Degrees dtX = Degrees(((int)e.data.mouse.x - wnd.getSize().x / 2)
-                                              / (float)(wnd.getSize().x / 2));
-                        Degrees dtY = Degrees(((int)e.data.mouse.y - wnd.getSize().y / 2)
-                                              / (float)(wnd.getSize().y / 2));
+                        Vec2i halfSize = wnd.getSize() / 2;
+                        int pixelsDtX = (int)e.data.mouse.x - halfSize.x;
+                        int pixelsDtY = (int)e.data.mouse.y - halfSize.y;
+
+                        static const float ROTATION_SPEED = 1.0f;
+                        Radians dtX = Radians(ROTATION_SPEED * (float)pixelsDtX / halfSize.x);
+                        Radians dtY = Radians(ROTATION_SPEED * (float)pixelsDtY / halfSize.y);
 
                         wnd.getCamera().mouseLook(dtX, dtY);
                     }
@@ -462,12 +507,15 @@ int main()
         sb::String::print(
                 makeString("pos = ", wnd.getCamera().getEye(),
                            "\nfront = ", wnd.getCamera().getFront(),
+                           " len = ", wnd.getCamera().getFront().length(),
+                           "\nright = ", wnd.getCamera().getRight(),
+                           "\nupReal = ", wnd.getCamera().getUpReal(),
                            "\nphi = ",
                            Degrees(wnd.getCamera().getHorizontalAngle()),
                            "\ntheta = ",
                            Degrees(wnd.getCamera().getVerticalAngle())),
                 0.f, 0.f, sb::Color::White, nextLine);
-        nextLine += 4;
+        nextLine += 6;
 
         sb::String::print(makeString("throw velocity = ",
                                      throwVelocity.getValue()),
@@ -487,7 +535,7 @@ int main()
         if (displayBallInfo)
             nextLine = sim.printBallParametersToScreen(
                     sim.raycast(wnd.getCamera().getEye(),
-                                glm::normalize(wnd.getCamera().getFront())),
+                                wnd.getCamera().getFront().normalized()),
                     0.f, 0.0f, nextLine);
 
         wnd.display();

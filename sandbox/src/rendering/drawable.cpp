@@ -84,7 +84,7 @@ namespace sb
 
     void Drawable::setRotation(const Vec3& axis, Radians angle)
     {
-        mRotation = glm::angleAxis(angle.value(), glm::normalize(axis));
+        mRotation = glm::angleAxis(angle.value(), axis.normalized());
         mFlags |= FlagRotationChanged;
     }
 

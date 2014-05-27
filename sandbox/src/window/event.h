@@ -31,8 +31,8 @@ namespace sb
             Delete = XK_Delete,
             Insert = XK_Insert,
             Pause = XK_Pause,
-            PrintScreen = XK_Print, // TODO: check
-            //Sleep = XK_Sleep,        // TODO: find
+            PrintScreen = XK_Print,  // TODO: check
+            //Sleep = XK_Sleep,      // TODO: find
             Space = XK_space,        // TODO: check
             PageUp = XK_Prior,
             PageDown = XK_Next,
@@ -40,16 +40,16 @@ namespace sb
             End = XK_End,
 
             Comma = XK_comma,            /* ,< */
-            Period = XK_period,            /* .> */
+            Period = XK_period,          /* .> */
             Equal = XK_equal,            /* += */
             Minus = XK_minus,            /* -_ */
-            Colon = XK_semicolon,            /* ;: */
+            Colon = XK_semicolon,        /* ;: */
             Slash = XK_slash,            /* /? */
-            Tilde = XK_dead_grave,            /* `~ */
-            LBracket = XK_bracketleft,        /* [{ */
-            Backslash = XK_backslash,        /* \| */
-            RBracket = XK_bracketright,        /* ]} */
-            Apostrophe = XK_dead_acute,        /* '" */
+            Tilde = XK_dead_grave,       /* `~ */
+            LBracket = XK_bracketleft,   /* [{ */
+            Backslash = XK_backslash,    /* \| */
+            RBracket = XK_bracketright,  /* ]} */
+            Apostrophe = XK_dead_acute,  /* '" */
 
             LCtrl = XK_Control_L,
             LAlt = XK_Alt_L,
@@ -59,7 +59,7 @@ namespace sb
             RAlt = XK_Alt_R,
             RShift = XK_Shift_R,
             RWin = XK_Super_R,    // TODO: check
-            //Shift = VK_SHIFT,            /* LShift or RShift */
+            //Shift = VK_SHIFT,   /* LShift or RShift */
 
             ArrowDown = XK_Down,
             ArrowRight = XK_Right,
@@ -105,32 +105,32 @@ namespace sb
             Num7 = XK_7,
             Num8 = XK_8,
             Num9 = XK_9,
-            A = XK_A,
-            B = XK_B,
-            C = XK_C,
-            D = XK_D,
-            E = XK_E,
-            F = XK_F,
-            G = XK_G,
-            H = XK_H,
-            I = XK_I,
-            J = XK_J,
-            K = XK_K,
-            L = XK_L,
-            M = XK_M,
-            N = XK_N,
-            O = XK_O,
-            P = XK_P,
-            Q = XK_Q,
-            R = XK_R,
-            S = XK_S,
-            T = XK_T,
-            U = XK_U,
-            V = XK_V,
-            W = XK_W,
-            X = XK_X,
-            Y = XK_Y,
-            Z = XK_Z
+            A = XK_a,
+            B = XK_b,
+            C = XK_c,
+            D = XK_d,
+            E = XK_e,
+            F = XK_f,
+            G = XK_g,
+            H = XK_h,
+            I = XK_i,
+            J = XK_j,
+            K = XK_k,
+            L = XK_l,
+            M = XK_m,
+            N = XK_n,
+            O = XK_o,
+            P = XK_p,
+            Q = XK_q,
+            R = XK_r,
+            S = XK_s,
+            T = XK_t,
+            U = XK_u,
+            V = XK_v,
+            W = XK_w,
+            X = XK_x,
+            Y = XK_y,
+            Z = XK_z
         };
     }
 

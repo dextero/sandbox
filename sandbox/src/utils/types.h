@@ -2,6 +2,8 @@
 #define UTILS_TYPES_H
 
 #include <ostream>
+#include <utility>
+#include <functional>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -10,15 +12,19 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
+#include "utils/vector.h"
+
 typedef glm::float4x4 Mat44f;
 typedef glm::float3x3 Mat33f;
-typedef glm::float4 Vec4f;
-typedef glm::float3 Vec3f;
-typedef glm::float2 Vec2f;
 typedef glm::fquat Quatf;
 
-typedef glm::int2 Vec2i;
-typedef glm::double3 Vec3d;
+typedef sb::TVec2<int> Vec2i;
+typedef sb::TVec2<float> Vec2f;
+
+typedef sb::TVec3<float> Vec3f;
+typedef sb::TVec3<double> Vec3d;
+
+typedef sb::TVec4<float> Vec4f;
 
 typedef Mat44f Mat44;
 typedef Mat33f Mat33;

@@ -1,6 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <cmath>
+
 #include "types.h"
 #include "utils/math.h"
 #include "utils/types.h"
@@ -24,9 +26,6 @@ namespace sb
         Vec3 mFront;
         Vec3 mRight;
         Vec3 mUpReal;
-
-        Radians mAngleXZ;
-        Radians mAngleY;
 
         enum EMatrixUpdateFlags {
             MatrixRotationUpdated = 1,
@@ -81,8 +80,8 @@ namespace sb
         const Vec3& getFront() { return mFront; }
         const Vec3& getRight() { return mRight; }
         const Vec3& getUpReal() { return mUpReal; }
-        Radians getHorizontalAngle() { return mAngleXZ; }
-        Radians getVerticalAngle() { return mAngleY; }
+        Radians getHorizontalAngle() { return Radians(atan2(mFront.x, mFront.z)); }
+        Radians getVerticalAngle() { return Radians(std::asin(mFront.y / mFront.length())); }
     };
 } // namespace sb
 

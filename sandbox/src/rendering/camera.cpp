@@ -1,6 +1,7 @@
 #include "camera.h"
 #include "utils/math.h"
-
+#include "utils/logger.h"
+#include "utils/stringUtils.h"
 
 namespace sb
 {
@@ -11,8 +12,6 @@ namespace sb
         mFront(0.f, 0.f, -1.f),
         mRight(1.f, 0.f, 0.f),
         mUpReal(0.f, 1.f, 0.f),
-        mAngleXZ(0.f),
-        mAngleY(0.f),
         mMatrixUpdateFlags(0)
     {
         setOrthographicMatrix();
@@ -43,15 +42,24 @@ namespace sb
 
     void Camera::updateViewMatrix()
     {
-        if (mMatrixUpdateFlags & MatrixRotationUpdated)
+        if (mMatrixUpdateFlags & MatrixRotationUpdated) {
             mRotationMatrix = Mat44(
+#if 0
+                 mRight.x,  mUpReal.x, -mFront.x,  0.f,
+                 mRight.y,  mUpReal.y, -mFront.y,  0.f,
+                 mRight.z,  mUpReal.z, -mFront.z,  0.f,
+                 0.f,       0.f,       0.f,        1.f
+#else
                  mRight.x,   mRight.y,   mRight.z,  0.f,
                  mUpReal.x,  mUpReal.y,  mUpReal.z, 0.f,
                 -mFront.x,  -mFront.y,  -mFront.z,  0.f,
                  0.f,        0.f,        0.f,       1.f
+#endif
             );
-        if (mMatrixUpdateFlags & MatrixTranslationUpdated)
+        }
+        if (mMatrixUpdateFlags & MatrixTranslationUpdated) {
             mTranslationMatrix = glm::translate(-mEye);
+        }
 
         mMatrixUpdateFlags = 0;
         mViewMatrix = mRotationMatrix * mTranslationMatrix;
@@ -60,8 +68,9 @@ namespace sb
     // updates only if needed
     Mat44& Camera::getViewMatrix()
     {
-        if (mMatrixUpdateFlags)
+        if (mMatrixUpdateFlags) {
             updateViewMatrix();
+        }
 
         return mViewMatrix;
     }
@@ -70,11 +79,11 @@ namespace sb
     {
         mEye = pos;
         mAt = at;
-        mUp = glm::normalize(up);
+        mUp = up.normalized();
 
-        mFront = glm::normalize(Vec3(mAt - mEye));
-        mRight = glm::normalize(glm::cross(mFront, mUp));
-        mUpReal = glm::normalize(glm::cross(mRight, mFront));
+        mFront = (mAt - mEye).normalized();
+        mRight = mFront.cross(mUp);     // normalized, since mFront & mUp are normalized
+        mUpReal = mRight.cross(mFront); // normalized, since mRight & mFront are normalized
 
         mMatrixUpdateFlags |= MatrixTranslationUpdated | MatrixRotationUpdated;
     }
@@ -91,7 +100,7 @@ namespace sb
 
     void Camera::rotate(const Vec3& axis, Radians angle)
     {
-        Quat rot = glm::angleAxis(angle.value(), glm::normalize(axis));
+        Quat rot = glm::angleAxis(angle.value(), axis.normalized());
         lookAt(mEye, mEye + (rot * (mAt - mEye)), mUp);
     }
 
@@ -103,27 +112,24 @@ namespace sb
 
     void Camera::mouseLook(Radians dtX, Radians dtY)
     {
-        mAngleXZ = Radians(atan2(mFront.z, mFront.x));
-        mAngleY = Radians(acos(mFront.y / mFront.length()));
+        float angleXZ = getHorizontalAngle().value();
+        float angleY = getVerticalAngle().value();
 
-        // don't know why -, but it works
-        mAngleXZ = Radians(mAngleXZ.value() - atan(dtX.value()));
-        mAngleY = Radians(glm::clamp(mAngleY.value() + atanf(dtY.value()),
-                                     0.00001f, PI - 0.00001f));
+        angleXZ += dtX.value();
+        angleY += dtY.value();
+        angleY = glm::clamp(angleY, -PI_2 + 0.00001f, PI_2 - 0.00001f);
 
         float len = Vec3(mAt - mEye).length();
-        Vec3 at = mEye + Vec3(len * sinf(mAngleXZ.value())
-                                  * sinf(mAngleY.value()),
-                              len * cosf(mAngleY.value()),
-                              len * cosf(mAngleXZ.value())
-                                  * sinf(mAngleY.value()));
+        Vec3 at = mEye + Vec3(len * sinf(angleXZ) * cosf(angleY),
+                              len * sinf(angleY),
+                              len * cosf(angleXZ) * cosf(angleY));
 
         lookAt(mEye, at, mUp);
     }
 
     void Camera::move(float distance)
     {
-        Vec3 delta = glm::normalize(mFront) * distance;
+        Vec3 delta = mFront.normalized() * distance;
         mEye += delta;
         mAt += delta;
 
@@ -140,7 +146,7 @@ namespace sb
 
     void Camera::strafe(float distance)
     {
-        Vec3 delta = glm::normalize(mRight) * distance;
+        Vec3 delta = mRight.normalized() * distance;
         mEye += delta;
         mAt += delta;
 
@@ -149,7 +155,7 @@ namespace sb
 
     void Camera::ascend(float distance)
     {
-        Vec3 delta = glm::normalize(mUpReal) * distance;
+        Vec3 delta = mUpReal.normalized() * distance;
         mEye += delta;
         mAt += delta;
 
@@ -159,7 +165,9 @@ namespace sb
     // delta = (right, upReal, front) instead of (x, y, z)
     void Camera::moveRelative(const Vec3& delta)
     {
-        Vec3 d = glm::normalize(mRight) * delta.x + glm::normalize(mUpReal) * delta.y + glm::normalize(mFront) * delta.z;
+        Vec3 d = mRight.normalized() * delta.x
+                 + mUpReal.normalized() * delta.y
+                 + mFront.normalized() * delta.z;
         mEye += d;
         mAt += d;
 
