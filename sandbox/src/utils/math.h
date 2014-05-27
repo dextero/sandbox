@@ -14,6 +14,8 @@ namespace sb
 {
     namespace math
     {
+        static const float EPSILON = 0.0001f;
+
         template<typename T> T clamp(T value, T min, T max)
         {
             return (value < min ? min : (value > max ? max : value));

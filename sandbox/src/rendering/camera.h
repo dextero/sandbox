@@ -13,26 +13,6 @@ namespace sb
 
     class Camera
     {
-        Mat44 mOrthographicProjectionMatrix;
-        Mat44 mPerspectiveProjectionMatrix;
-        Mat44 mViewMatrix;
-
-        Mat44 mRotationMatrix;
-        Mat44 mTranslationMatrix;
-
-        Vec3 mEye;
-        Vec3 mAt;
-        Vec3 mUp;
-        Vec3 mFront;
-        Vec3 mRight;
-        Vec3 mUpReal;
-
-        enum EMatrixUpdateFlags {
-            MatrixRotationUpdated = 1,
-            MatrixTranslationUpdated = 1 << 1
-        };
-        uint32_t mMatrixUpdateFlags;
-
     public:
         Camera();
 
@@ -80,8 +60,35 @@ namespace sb
         const Vec3& getFront() { return mFront; }
         const Vec3& getRight() { return mRight; }
         const Vec3& getUpReal() { return mUpReal; }
-        Radians getHorizontalAngle() { return Radians(atan2(mFront.x, mFront.z)); }
-        Radians getVerticalAngle() { return Radians(std::asin(mFront.y / mFront.length())); }
+        Radians getHorizontalAngle() { return mXZAngle; }
+        Radians getVerticalAngle() { return mYAngle; }
+
+    private:
+        Mat44 mOrthographicProjectionMatrix;
+        Mat44 mPerspectiveProjectionMatrix;
+        Mat44 mViewMatrix;
+
+        Mat44 mRotationMatrix;
+        Mat44 mTranslationMatrix;
+
+        Vec3 mEye;
+        Vec3 mAt;
+        Vec3 mUp;
+        Vec3 mFront;
+        Vec3 mRight;
+        Vec3 mUpReal;
+
+        Radians mXZAngle;
+        Radians mYAngle;
+
+        enum EMatrixUpdateFlags {
+            MatrixRotationUpdated = 1,
+            MatrixTranslationUpdated = 1 << 1
+        };
+        uint32_t mMatrixUpdateFlags;
+
+        // needs to be called after every mFront change
+        void updateAngles();
     };
 } // namespace sb
 

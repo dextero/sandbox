@@ -54,14 +54,17 @@ namespace sb
         template<typename T, glm::precision P>
         explicit TVec2(const glm::detail::tvec2<T, P>& v): base_type(v) {}
 
-        float length() const
+        inline float length() const
         { return glm::length((const base_type&)*this); }
 
-        float dot(const base_type& v) const
+        inline float dot(const base_type& v) const
         { return glm::dot((const base_type&)*this, v); }
 
-        TVec2 normalized() const
+        inline TVec2 normalized() const
         { return TVec2(glm::normalize((const base_type&)*this)); }
+
+        inline bool isZero() const
+        { return this->x == (ElemT)0 && this->y == (ElemT)0; }
 
         OPERATORS(glm::detail::tvec2, TVec2, ElemT)
     };
@@ -81,16 +84,19 @@ namespace sb
         template<typename T, glm::precision P>
         explicit TVec3(const glm::detail::tvec3<T, P>& v): base_type(v) {}
 
-        float length() const
+        inline float length() const
         { return glm::length((const base_type&)*this); }
 
-        float dot(const base_type& v) const
+        inline float dot(const base_type& v) const
         { return glm::dot((const base_type&)*this, v); }
-        TVec3 cross(const base_type& v) const
+        inline TVec3 cross(const base_type& v) const
         { return TVec3(glm::cross((const base_type&)*this, v)); }
 
-        TVec3 normalized() const
+        inline TVec3 normalized() const
         { return TVec3(glm::normalize((const base_type&)*this)); }
+
+        inline bool isZero() const
+        { return this->x == (ElemT)0 && this->y == (ElemT)0 && this->z == (ElemT)0; }
 
         OPERATORS(glm::detail::tvec3, TVec3, ElemT)
     };
@@ -110,16 +116,17 @@ namespace sb
         template<typename T, glm::precision P>
         explicit TVec4(const glm::detail::tvec4<T, P>& v): base_type(v) {}
 
-        float length() const
+        inline float length() const
         { return glm::length((const base_type&)*this); }
 
-        float dot(const base_type& v) const
+        inline float dot(const base_type& v) const
         { return glm::dot((const base_type&)*this, v); }
-        TVec4 cross(const base_type& v) const
-        { return TVec4(glm::cross((const base_type&)*this, v)); }
 
-        TVec4 normalized() const
+        inline TVec4 normalized() const
         { return TVec4(glm::normalize((const base_type&)*this)); }
+
+        inline bool isZero() const
+        { return this->x == (ElemT)0 && this->y == (ElemT)0 && this->z == (ElemT)0 && this->w == (ElemT)0; }
 
         OPERATORS(glm::detail::tvec4, TVec4, ElemT)
     };

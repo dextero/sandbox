@@ -1,3 +1,5 @@
+#include <fenv.h>
+
 #include "window/window.h"
 #include "rendering/sprite.h"
 #include "rendering/line.h"
@@ -55,6 +57,8 @@ public:
 
 int main()
 {
+    feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW);
+
     using sb::utils::makeString;
 
     sb::Window wnd(1200, 900);

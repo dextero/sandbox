@@ -12,6 +12,8 @@ namespace sb
         mFront(0.f, 0.f, -1.f),
         mRight(1.f, 0.f, 0.f),
         mUpReal(0.f, 1.f, 0.f),
+        mXZAngle(0.0),
+        mYAngle(0.0),
         mMatrixUpdateFlags(0)
     {
         setOrthographicMatrix();
@@ -44,7 +46,7 @@ namespace sb
     {
         if (mMatrixUpdateFlags & MatrixRotationUpdated) {
             mRotationMatrix = Mat44(
-#if 0
+#if 1
                  mRight.x,  mUpReal.x, -mFront.x,  0.f,
                  mRight.y,  mUpReal.y, -mFront.y,  0.f,
                  mRight.z,  mUpReal.z, -mFront.z,  0.f,
@@ -82,10 +84,24 @@ namespace sb
         mUp = up.normalized();
 
         mFront = (mAt - mEye).normalized();
+
+        Vec3 oldRight = mRight;
         mRight = mFront.cross(mUp);     // normalized, since mFront & mUp are normalized
+
+        if (mRight.isZero()) {
+            oldRight.y = 0;
+            mRight = oldRight.normalized();
+            gLog.trace("right was zero, reverted to %s\n", utils::toString(mRight).c_str());
+        }
+
         mUpReal = mRight.cross(mFront); // normalized, since mRight & mFront are normalized
 
+        assert(mFront.dot(mFront) > 0.0f);
+        assert(mRight.dot(mRight) > 0.0f);
+        assert(mUpReal.dot(mUpReal) > 0.0f);
+
         mMatrixUpdateFlags |= MatrixTranslationUpdated | MatrixRotationUpdated;
+        updateAngles();
     }
 
     void Camera::rotate(Radians angle)
@@ -96,6 +112,7 @@ namespace sb
         mRight = rot * mRight;
 
         mMatrixUpdateFlags |= MatrixRotationUpdated;
+        updateAngles();
     }
 
     void Camera::rotate(const Vec3& axis, Radians angle)
@@ -115,14 +132,22 @@ namespace sb
         float angleXZ = getHorizontalAngle().value();
         float angleY = getVerticalAngle().value();
 
-        angleXZ += dtX.value();
-        angleY += dtY.value();
-        angleY = glm::clamp(angleY, -PI_2 + 0.00001f, PI_2 - 0.00001f);
+        angleXZ -= dtX.value(); // -? lol
+        angleY -= dtY.value();  // same
+        angleY = glm::clamp(angleY, -PI_2, PI_2);
 
         float len = Vec3(mAt - mEye).length();
         Vec3 at = mEye + Vec3(len * sinf(angleXZ) * cosf(angleY),
                               len * sinf(angleY),
                               len * cosf(angleXZ) * cosf(angleY));
+
+        //gLog.trace("%f, %f, len %f\n", angleXZ, angleY, len);
+        //gLog.trace("eye: %s\n", utils::toString(mEye).c_str());
+        //gLog.trace("at: %s\n", utils::toString(mAt).c_str());
+        //gLog.trace("at - eye: %s\n", utils::toString(Vec3(mAt - mEye)).c_str());
+        //gLog.trace("new at = %s\n", utils::toString(Vec3(len * sinf(angleXZ) * cosf(angleY),
+                                                     //len * sinf(angleY),
+                                                     //len * cosf(angleXZ) * cosf(angleY))).c_str());
 
         lookAt(mEye, at, mUp);
     }
@@ -173,5 +198,16 @@ namespace sb
 
         mMatrixUpdateFlags |= MatrixTranslationUpdated;
 
+    }
+
+    void Camera::updateAngles()
+    {
+        if (std::abs(mFront.x) >= math::EPSILON
+                || std::abs(mFront.z >= math::EPSILON)) {
+            mXZAngle = Radians(std::atan2(mFront.x, mFront.z));
+
+        }
+
+        mYAngle = Radians(std::asin(mFront.y / mFront.length()));
     }
 }
