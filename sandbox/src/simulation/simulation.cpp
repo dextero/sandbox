@@ -114,8 +114,8 @@ namespace Sim
     {
         gLog.info("simulation: throw_start set to %s\n", toString(v).c_str());
 
-        mThrowStartLine.setPosition((float)pos[0], (float)pos[1], (float)pos[2]);
-        mThrowStartLine.setScale((float)v[0], (float)v[1], (float)v[2]);
+        mThrowStartLine.setPosition(pos);
+        mThrowStartLine.setScale(v);
         mThrowStartPos = pos;
         mThrowStartVelocity = v;
 
@@ -129,7 +129,7 @@ namespace Sim
     {
         gLog.info("simulation: gravity set to %s\n", toString(g).c_str());
 
-        mGravityLine.setScale((float)g[0], (float)g[1], (float)g[2]);
+        mGravityLine.setScale(g);
         mGravity = g;
     }
 
@@ -137,7 +137,7 @@ namespace Sim
     {
         gLog.info("simulation: wind set to %s\n", toString(w).c_str());
 
-        mWindVelocityLine.setScale((float)w[0], (float)w[1], (float)w[2]);
+        mWindVelocityLine.setScale(w);
         mWindVelocity = w;
     }
 

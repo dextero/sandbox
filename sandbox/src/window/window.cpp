@@ -168,7 +168,7 @@ namespace sb
                     if (!ignore)
                     {
                         Vec2i wndSize = getSize();
-                        XWarpPointer(mDisplay, None, mWindow, 0, 0, 0, 0, wndSize[0] / 2, wndSize[1] / 2);
+                        XWarpPointer(mDisplay, None, mWindow, 0, 0, 0, 0, wndSize.x / 2, wndSize.y / 2);
                     }
                     ignore = !ignore;
                 }

@@ -8,7 +8,7 @@ solution 'sandbox'
         includedirs { 'src' }
         targetdir 'bin'
         links { 'GL', 'GLU', 'GLEW', 'IL', 'ILU', 'assimp', 'X11' }
-        buildoptions { '-g -Wall -Wextra -std=c++11 -DGLM_FORCE_RADIANS' }
+        buildoptions { '-g -Wall -Wextra -std=c++11 -DGLM_FORCE_RADIANS -DGLM_SWIZZLE' }
 
         configuration 'debug'
             defines { '_DEBUG' }

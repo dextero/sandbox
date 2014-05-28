@@ -79,9 +79,9 @@ namespace Sim
     {
         what.first = value;
         if (scaleToForce)
-            what.second.setScale(Vec3((float)(value[0] * mMass), (float)(value[1] * mMass), (float)(value[2] * mMass)));
+            what.second.setScale(value * mMass);
         else
-            what.second.setScale(Vec3((float)value[0], (float)value[1], (float)value[2]));
+            what.second.setScale(value);
     }
 
     bool Ball::update(double dt, const Vec3d& gravity, const Vec3d& windVelocity, double fluidDensity, double maxPathLength, bool force)
@@ -108,25 +108,25 @@ namespace Sim
 
         // total distance
         mDistanceCovered += delta.length();
-        mHorizontalDistanceCovered += sqrt(delta[0] * delta[0] + delta[2] * delta[2]);
+        mHorizontalDistanceCovered += delta.xz().length();
 
         // to prevent falling under the ground
-        if (mPos[1] < mRadius)
+        if (mPos.y < mRadius)
         {
-            mPos[1] = mRadius;
+            mPos.y = mRadius;
             --mTimeToLive;
             // stop ball when touched ground
             set(mVelocity, Vec3d(0., 0., 0.));
         }
 
-        mModel.setPosition((float)mPos[0], (float)mPos[1], (float)mPos[2]);
+        mModel.setPosition(mPos);
 
         // updating velocity
         set(mVelocity, mVelocity.first + mAccNet.first * dt, force);
 
         // updating energy
-        if (mPos[1] > mRadius)
-            mTotalEnergy = mMass * (gravity.length() * mPos[1] + mVelocity.first.dot(mVelocity.first) / 2.0);
+        if (mPos.y > mRadius)
+            mTotalEnergy = mMass * (gravity.length() * mPos.y + mVelocity.first.dot(mVelocity.first) / 2.0);
 
         // accelerations:
         // gravity - constant
@@ -199,8 +199,8 @@ namespace Sim
             std::list<Vec3d>::iterator it, next;
             for (it = mPath.begin(), next = ++it; next != mPath.end(); it = next++)
             {
-                line.setPosition((float)(*it)[0], (float)(*it)[1], (float)(*it)[2]);
-                line.setScale((float)((*next)[0] - (*it)[0]), (float)((*next)[1] - (*it)[1]), (float)((*next)[2] - (*it)[2]));
+                line.setPosition(*it);
+                line.setScale(*next - *it);
                 r.draw(line);
             }
         }
