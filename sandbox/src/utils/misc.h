@@ -55,8 +55,4 @@ namespace sb
     }
 }
 
-#ifdef _DEBUG
-#   define make_bind(obj, ...) (gLog.debug("make_bind @ %s:%d\n", __FILE__, __LINE__), make_bind(obj, ##__VA_ARGS__))
-#endif
-
 #endif /* UTILS_MISC_H */

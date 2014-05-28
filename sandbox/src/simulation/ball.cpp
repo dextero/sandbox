@@ -11,23 +11,12 @@ namespace Sim
     const sb::Color& ColorThrow = sb::Color::Yellow;
     const sb::Color& ColorPath = sb::Color(0.7f, 0.f, 0.7f);
 
-    void Ball::attachLines()
-    {
-        mVelocity.second.attachTo(&mModel);
-        mAccGravity.second.attachTo(&mModel);
-        mAccDrag.second.attachTo(&mModel);
-        mAccWind.second.attachTo(&mModel);
-        mAccBuoyancy.second.attachTo(&mModel);
-        mAccNet.second.attachTo(&mModel);
-    }
-
     Ball::Ball(const Vec3d& pos,
                const Vec3d& velocity,
                double mass,
                double radius,
                const std::shared_ptr<sb::Shader>& modelShader,
                const std::shared_ptr<sb::Shader>& lineShader):
-        mLineShader(lineShader),
         mVelocity(Vec3d(1., 1., 1.),
                   sb::Line(Vec3(1.f, 1.f, 1.f),
                            sb::Color(ColorVelocity, 0.6f),
@@ -62,7 +51,8 @@ namespace Sim
         mTime(0.0),
         mPos(pos),
         mModel("sphere.obj", modelShader),
-        mTimeToLive(5u)
+        mTimeToLive(5u),
+        mLineShader(lineShader)
     {
         mPath.push_back(pos);
 
@@ -214,5 +204,15 @@ namespace Sim
         r.draw(mAccNet.second);
 
         r.enableFeature(sb::Renderer::FeatureDepthTest);
+    }
+
+    void Ball::attachLines()
+    {
+        mVelocity.second.attachTo(&mModel);
+        mAccGravity.second.attachTo(&mModel);
+        mAccDrag.second.attachTo(&mModel);
+        mAccWind.second.attachTo(&mModel);
+        mAccBuoyancy.second.attachTo(&mModel);
+        mAccNet.second.attachTo(&mModel);
     }
 }

@@ -155,19 +155,75 @@ namespace sb
 
         union {
             struct MouseEvent {
-                unsigned x, y;
+                unsigned x;
+                unsigned y;
                 Mouse::Button button;
                 int wheelDelta;
             } mouse;
+
             Key::Code key;
+
             struct WindowResize {
-                unsigned width, height;
+                unsigned width;
+                unsigned height;
             } wndResize;
+
             bool focus;
         } data;
 
+        Event(): type(Empty) {}
+
+        static Event mouseMovedEvent(unsigned x,
+                                     unsigned y)
+        {
+            return Event(MouseMoved, x, y);
+        }
+        static Event mousePressedEvent(unsigned x,
+                                       unsigned y,
+                                       Mouse::Button btn)
+        {
+            return Event(MousePressed, x, y, btn);
+        }
+        static Event mouseReleasedEvent(unsigned x,
+                                        unsigned y,
+                                        Mouse::Button btn)
+        {
+            return Event(MouseReleased, x, y, btn);
+        }
+        static Event mouseWheelEvent(unsigned x,
+                                     unsigned y,
+                                     int delta)
+        {
+            return Event(MouseWheel, x, y, Mouse::ButtonNone, delta);
+        }
+        static Event keyPressedEvent(Key::Code code)
+        {
+            return Event(code, true);
+        }
+        static Event keyReleasedEvent(Key::Code code)
+        {
+            return Event(code, false);
+        }
+        static Event windowResizedEvent(unsigned x,
+                                        unsigned y)
+        {
+            return Event(WindowResized, x, y);
+        }
+        static Event windowFocusEvent(bool focus)
+        {
+            return Event(focus);
+        }
+        static Event windowClosedEvent()
+        {
+            return Event(WindowClosed);
+        }
+
     private:
-        Event(Type type, unsigned x = 0, unsigned y = 0, Mouse::Button btn = Mouse::ButtonNone, int wheelDelta = 0)
+        Event(Type type,
+              unsigned x = 0,
+              unsigned y = 0,
+              Mouse::Button btn = Mouse::ButtonNone,
+              int wheelDelta = 0)
         {
             this->type = type;
 
@@ -193,7 +249,8 @@ namespace sb
             }
         }
 
-        Event(Key::Code code, bool pressed)
+        Event(Key::Code code,
+              bool pressed)
         {
             type = pressed ? KeyPressed : KeyReleased;
             data.key = code;
@@ -204,18 +261,6 @@ namespace sb
             type = WindowFocus;
             this->data.focus = focus;
         }
-
-    public:
-        Event(): type(Empty) {}
-        static Event mouseMovedEvent(unsigned x, unsigned y) { return Event(MouseMoved, x, y); }
-        static Event mousePressedEvent(unsigned x, unsigned y, Mouse::Button btn) { return Event(MousePressed, x, y, btn); }
-        static Event mouseReleasedEvent(unsigned x, unsigned y, Mouse::Button btn) { return Event(MouseReleased, x, y, btn); }
-        static Event mouseWheelEvent(unsigned x, unsigned y, int delta) { return Event(MouseWheel, x, y, Mouse::ButtonNone, delta); }
-        static Event keyPressedEvent(Key::Code code) { return Event(code, true); }
-        static Event keyReleasedEvent(Key::Code code) { return Event(code, false); }
-        static Event windowResizedEvent(unsigned x, unsigned y) { return Event(WindowResized, x, y); }
-        static Event windowFocusEvent(bool focus) { return Event(focus); }
-        static Event windowClosedEvent() { return Event(WindowClosed); }
     };
 } // namespace sb
 

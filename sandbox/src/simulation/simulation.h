@@ -27,34 +27,6 @@ namespace Sim
             DisplayAcceleration
         };
 
-    private:
-        std::shared_ptr<sb::Shader> mBallShader;
-        std::shared_ptr<sb::Shader> mLineShader;
-
-        std::list<Ball*> mBalls;
-        std::list<std::list<Ball*>::iterator> mMarkedForDelete;
-
-        Vec3d mThrowStartPos;
-        Vec3d mThrowStartVelocity;
-        Vec3d mGravity;
-        Vec3d mWindVelocity;
-        sb::Line mThrowStartLine;
-        sb::Line mGravityLine;
-        sb::Line mWindVelocityLine;
-
-    public:
-        double mAirDensity;
-        ESimType mSimType;
-        float mBallThrowDelay;
-        float mBallThrowAccumulator;
-        uint32_t mMaxBalls;
-        float mSloMoFactor;
-
-        double mBallMass, mBallRadius, mBallPathLength;
-
-        bool mPaused, mShowLauncherLines, mPauseOnGroundHit;
-        EVectorDisplayType mVectorDisplayType;
-
         Simulation(ESimType type,
                    const std::shared_ptr<sb::Shader>& ballShader,
                    const std::shared_ptr<sb::Shader>& lineShader);
@@ -78,6 +50,66 @@ namespace Sim
                                              float x = 0.f,
                                              float y = 0.f,
                                              uint32_t line = 0u);
+
+        double getBallRadius() const { return mBallRadius; }
+
+        void increaseBallPathLength(double delta)
+        {
+            mBallPathLength = glm::clamp(mBallPathLength + delta, 0.0, 1000.0);
+        }
+        void increaseMaxBalls(ssize_t delta)
+        {
+            mMaxBalls = glm::clamp((ssize_t)mMaxBalls + delta, (ssize_t)1, (ssize_t)1000);
+        }
+        void increaseAirDensity(double deltaSeconds) { mAirDensity += deltaSeconds; }
+        void increaseBallThrowDelay(double deltaSeconds) { mBallThrowDelay += deltaSeconds; }
+        void increaseSloMoFactor(double delta) { mSloMoFactor += delta; }
+        void increaseBallRadius(double delta) { mBallRadius += delta; }
+        void increaseBallMass(double delta) { mBallMass += delta; }
+
+        void toggleVectorDisplayType()
+        {
+            if (mVectorDisplayType == DisplayForce) {
+                mVectorDisplayType = DisplayAcceleration;
+            } else {
+                mVectorDisplayType = DisplayForce;
+            }
+        }
+
+        void togglePaused() { mPaused = !mPaused; }
+        void toggleShowLauncherLines() { mShowLauncherLines = !mShowLauncherLines; }
+        void togglePauseOnGroundHit() { mPauseOnGroundHit = !mPauseOnGroundHit; }
+
+    private:
+        std::shared_ptr<sb::Shader> mBallShader;
+        std::shared_ptr<sb::Shader> mLineShader;
+
+        std::list<Ball*> mBalls;
+        std::list<std::list<Ball*>::iterator> mMarkedForDelete;
+
+        Vec3d mThrowStartPos;
+        Vec3d mThrowStartVelocity;
+        Vec3d mGravity;
+        Vec3d mWindVelocity;
+        sb::Line mThrowStartLine;
+        sb::Line mGravityLine;
+        sb::Line mWindVelocityLine;
+
+        double mAirDensity;
+        ESimType mSimType;
+        float mBallThrowDelay;
+        float mBallThrowAccumulator;
+        uint32_t mMaxBalls;
+        float mSloMoFactor;
+
+        double mBallMass;
+        double mBallRadius;
+        double mBallPathLength;
+
+        bool mPaused;
+        bool mShowLauncherLines;
+        bool mPauseOnGroundHit;
+        EVectorDisplayType mVectorDisplayType;
     };
 }
 

@@ -8,8 +8,6 @@ namespace sb
 {
     class Logger: public Singleton<Logger>
     {
-        FILE* mFile;
-
     public:
         Logger(FILE* f = stderr);
         ~Logger();
@@ -25,6 +23,8 @@ namespace sb
 #else
         inline void debug(const char*, ...) {}
 #endif
+    private:
+        FILE* mFile;
     };
 } // namespace sb
 

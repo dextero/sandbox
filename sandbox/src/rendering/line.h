@@ -8,8 +8,6 @@ namespace sb
 {
     class Line: public Drawable
     {
-        const Drawable* mAttachedTo;
-
     public:
         Line(const std::shared_ptr<Shader>& shader);
         Line(const Vec3& to,
@@ -24,6 +22,9 @@ namespace sb
                  const Vec3& to);
         void attachTo(const Drawable* drawable);
         void update();    // synchronize position with attached drawable
+
+    private:
+        const Drawable* mAttachedTo;
     };
 } // namespace sb
 

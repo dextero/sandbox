@@ -206,8 +206,8 @@ int main()
                     case sb::Mouse::ButtonLeft:
                         {
                             Vec3 pos = wnd.getCamera().getEye();
-                            if (pos.y < sim.mBallRadius) {
-                                pos.y = (float)sim.mBallRadius;
+                            if (pos.y < sim.getBallRadius()) {
+                                pos.y = (float)sim.getBallRadius();
                             }
 
                             Vec3 v = wnd.getCamera().getFront().normalized()
@@ -263,33 +263,28 @@ int main()
                                                Vec3(0.f, 0.f, 0.f));
                         break;
                     case sb::Key::N:
-                        sim.mBallPathLength = sb::math::clamp(sim.mBallPathLength - 1.0, 0.0, 1000.0);
+                        sim.increaseBallPathLength(-1.0);
                         break;
                     case sb::Key::J:
-                        sim.mBallPathLength = sb::math::clamp(sim.mBallPathLength + 1.0, 0.0, 1000.0);
+                        sim.increaseBallPathLength(1.0);
                         break;
                     case sb::Key::M:
-                        sim.mBallThrowDelay -= 0.1f;
+                        sim.increaseBallThrowDelay(-0.1f);
                         break;
                     case sb::Key::K:
-                        sim.mBallThrowDelay += 0.1f;
+                        sim.increaseBallThrowDelay(0.1f);
                         break;
                     case sb::Key::B:
-                        sim.mAirDensity -= 0.01;
+                        sim.increaseAirDensity(-0.01);
                         break;
                     case sb::Key::H:
-                        sim.mAirDensity += 0.01;
+                        sim.increaseAirDensity(0.01);
                         break;
                     case sb::Key::Comma:
-                        if (sim.mSimType == Sim::Simulation::SimContiniousThrow
-                                && sim.mMaxBalls > 1u) {
-                            sim.mMaxBalls -= 5;
-                        }
+                        sim.increaseMaxBalls(-5);
                         break;
                     case sb::Key::L:
-                        if (sim.mSimType == Sim::Simulation::SimContiniousThrow) {
-                            sim.mMaxBalls += 5;
-                        }
+                        sim.increaseMaxBalls(5);
                         break;
                     case sb::Key::A: strafeSpeed = -SPEED; break;
                     case sb::Key::D: strafeSpeed = SPEED; break;
@@ -298,22 +293,22 @@ int main()
                     case sb::Key::Q: ascendSpeed = SPEED; break;
                     case sb::Key::Z: ascendSpeed = -SPEED; break;
                     case sb::Key::C:
-                        sim.mSloMoFactor -= 0.1f;
+                        sim.increaseSloMoFactor(-0.1f);
                         break;
                     case sb::Key::F:
-                        sim.mSloMoFactor += 0.1f;
+                        sim.increaseSloMoFactor(0.1f);
                         break;
                     case sb::Key::Slash:
-                        sim.mBallRadius -= 0.1f;
+                        sim.increaseBallRadius(-0.1f);
                         break;
                     case sb::Key::Apostrophe:
-                        sim.mBallRadius += 0.1f;
+                        sim.increaseBallRadius(0.1f);
                         break;
                     case sb::Key::Period:
-                        sim.mBallMass -= 0.1f;
+                        sim.increaseBallMass(-0.1f);
                         break;
                     case sb::Key::Colon:
-                        sim.mBallMass += 0.1f;
+                        sim.increaseBallMass(0.1f);
                         break;
                     case sb::Key::Esc:
                         wnd.close();
@@ -343,14 +338,10 @@ int main()
                         sim.togglePause();
                         break;
                     case sb::Key::O:
-                        if (sim.mVectorDisplayType == Sim::Simulation::DisplayForce) {
-                            sim.mVectorDisplayType = Sim::Simulation::DisplayAcceleration;
-                        } else {
-                            sim.mVectorDisplayType = Sim::Simulation::DisplayForce;
-                        }
+                        sim.toggleVectorDisplayType();
                         break;
                     case sb::Key::I:
-                        sim.mPauseOnGroundHit = !sim.mPauseOnGroundHit;
+                        sim.togglePauseOnGroundHit();
                         break;
                     case sb::Key::R:
                         sim = Sim::Simulation(Sim::Simulation::SimContiniousThrow,
@@ -390,7 +381,7 @@ int main()
                         displayBallInfo = !displayBallInfo;
                         break;
                     case sb::Key::F4:
-                        sim.mShowLauncherLines = !sim.mShowLauncherLines;
+                        sim.toggleShowLauncherLines();
                         break;
                     case sb::Key::PrintScreen:
                         {

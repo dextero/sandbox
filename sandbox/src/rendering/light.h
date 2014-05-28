@@ -19,7 +19,10 @@ namespace sb
             LightParallel
         } mType;
 
-        Light(ELightType type, Color color, Vec3 posOrDir, float intensity);
+        Light(ELightType type,
+              Color color,
+              Vec3 posOrDir,
+              float intensity);
     };
 } // namespace sb
 

@@ -10,7 +10,6 @@ namespace sb
 {
     class Image
     {
-        ILuint mId;
     public:
         Image();
         Image(const std::string& file);
@@ -20,6 +19,9 @@ namespace sb
         uint32_t getWidth();
         uint32_t getHeight();
         void* getData();
+
+    private:
+        ILuint mId;
     };
 } // namespace sb
 

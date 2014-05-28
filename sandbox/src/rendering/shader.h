@@ -14,20 +14,18 @@ namespace sb
 {
     class Shader
     {
-        friend class ResourceMgr;
-
     public:
-        Shader(const Shader& copy) = default;
-        Shader& operator =(const Shader& copy) = default;
-        Shader(Shader&&) = default;
-        Shader& operator =(Shader&&) = default;
-
-        template<typename T> bool setUniform(const char* name, const T& value)
+        template<typename T>
+        bool setUniform(const char* name,
+                        const T& value)
         {
             return setUniform(name, &value, 1);
         }
 
-        template<typename T> bool setUniform(const char* name, const T* value_array, uint32_t elements)
+        template<typename T>
+        bool setUniform(const char* name,
+                        const T* value_array,
+                        uint32_t elements)
         {
             (void)name;
             (void)value_array;
@@ -36,12 +34,24 @@ namespace sb
             return false;
         }
 
-        bool setUniform(const char* name, const float* value_array, uint32_t elements);
-        bool setUniform(const char* name, const Vec2* value_array, uint32_t elements);
-        bool setUniform(const char* name, const Vec3* value_array, uint32_t elements);
-        bool setUniform(const char* name, const Color* value_array, uint32_t elements);
-        bool setUniform(const char* name, const Mat44* value_array, uint32_t elements);
-        bool setUniform(const char* name, const int* value_array, uint32_t elements);
+        bool setUniform(const char* name,
+                        const float* value_array,
+                        uint32_t elements);
+        bool setUniform(const char* name,
+                        const Vec2* value_array,
+                        uint32_t elements);
+        bool setUniform(const char* name,
+                        const Vec3* value_array,
+                        uint32_t elements);
+        bool setUniform(const char* name,
+                        const Color* value_array,
+                        uint32_t elements);
+        bool setUniform(const char* name,
+                        const Mat44* value_array,
+                        uint32_t elements);
+        bool setUniform(const char* name,
+                        const int* value_array,
+                        uint32_t elements);
 
         enum ESamplerType {
             SamplerImage = 0,
@@ -71,6 +81,8 @@ namespace sb
                    const std::shared_ptr<ShaderId>& geometry);
 
         static bool shaderLinkSucceeded(ProgramId program);
+
+        friend class ResourceMgr;
     };
 } // namespace sb
 

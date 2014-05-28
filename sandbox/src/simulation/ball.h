@@ -22,35 +22,30 @@ namespace Sim
 
     class Ball
     {
-        std::shared_ptr<sb::Shader> mLineShader;
-        std::list<Vec3d> mPath;
-
-        void attachLines();
-
     public:
         typedef std::pair<Vec3d, sb::Line> ColVec;
 
-        ColVec mVelocity,
-               mAccGravity,
-               mAccDrag,
-               mAccWind,
-               mAccBuoyancy,
-               mAccNet;
+        ColVec mVelocity;
+        ColVec mAccGravity;
+        ColVec mAccDrag;
+        ColVec mAccWind;
+        ColVec mAccBuoyancy;
+        ColVec mAccNet;
 
-        double mMass,
-               mRadius,
-               mArea,
-               mVolume,
-               mDistanceCovered,
-               mHorizontalDistanceCovered,
-               mDeltaDistance,        // used for drawing ball path
-               mTime,
-               mTotalEnergy;
+        double mMass;
+        double mRadius;
+        double mArea;
+        double mVolume;
+        double mDistanceCovered;
+        double mHorizontalDistanceCovered;
+        double mDeltaDistance; // used for drawing ball path
+        double mTime;
+        double mTotalEnergy;
 
         Vec3d mPos;
         sb::Model mModel;
 
-        uint32_t mTimeToLive;    // after how many ball-ground collisions should we erase the ball?
+        uint32_t mTimeToLive; // after how many ball-ground collisions should we erase the ball?
 
         Ball(const Vec3d& pos,
              const Vec3d& velocity,
@@ -62,14 +57,19 @@ namespace Sim
         void set(ColVec& what,
                  const Vec3d& value,
                  bool scaleToForce = false);
-        // 1.204 - mass density of air at 1 atm, 20*C
         bool update(double dt,
                     const Vec3d& gravity,
                     const Vec3d& wind,
-                    double fluidDensity = 1.204,
+                    double fluidDensity = 1.204, // 1.204 - mass density of air at 1 atm, 20*C
                     double maxPathLength = 10.0,
                     bool forces = false); // forces - should it draw forces or accelerations?
         void drawAll(sb::Renderer& r);
+
+    private:
+        std::list<Vec3d> mPath;
+        std::shared_ptr<sb::Shader> mLineShader;
+
+        void attachLines();
     };
 }
 

@@ -9,16 +9,6 @@ namespace sb
 {
     template<typename T> class Singleton
     {
-    private:
-        static T* mPtr;
-
-    protected:
-        Singleton()
-        {
-            // there should be only one instance!
-            assert(!mPtr);
-        }
-
     public:
         static T& get()
         {
@@ -44,6 +34,16 @@ namespace sb
             if (mPtr)
                 delete mPtr;
             mPtr = NULL;
+        }
+
+    private:
+        static T* mPtr;
+
+    protected:
+        Singleton()
+        {
+            // there should be only one instance!
+            assert(!mPtr);
         }
     };
 } // namespace sb

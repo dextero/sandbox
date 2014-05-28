@@ -9,15 +9,15 @@ namespace sb
 {
     class Timer
     {
-    private:
-        timeval mTimeStart;
-
     public:
         Timer();
 
         void reset();
         float getSecsElapsed();
         unsigned long long getMillisecsElapsed();
+
+    private:
+        timeval mTimeStart;
     };
 } // namespace sb
 

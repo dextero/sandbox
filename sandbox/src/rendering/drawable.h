@@ -13,6 +13,25 @@ namespace sb
 {
     class Drawable
     {
+    public:
+        const Vec3& getPosition() const;
+        const Vec3 getRotationAxis() const;
+        Radians getRotationAngle() const;
+        void getRotationAxisAngle(Vec3& axis, Radians& angle) const;
+        const Quat& getRotationQuaternion() const;
+        const Vec3& getScale() const;
+
+        void setPosition(const Vec3& pos);
+        void setPosition(float x, float y, float z);
+        void setRotation(const Vec3& axis, Radians angle);
+        void setRotation(Radians x, Radians y, Radians z);
+        void setScale(const Vec3& scale);
+        void setScale(float x, float y, float z);
+        void setScale(float uniform);
+        void rotate(Radians angle);
+        void rotate(const Vec3& axis, Radians angle);
+        const Mat44& getTransformationMatrix() const;
+
     protected:
         std::shared_ptr<Mesh> mMesh;
         std::shared_ptr<TextureId> mTexture;    // if present, overrides model's own texture
@@ -36,7 +55,6 @@ namespace sb
         Vec3 mScale;
         Quat mRotation;
 
-    protected:
         enum EProjectionType {
             ProjectionOrthographic,
             ProjectionPerspective
@@ -49,26 +67,7 @@ namespace sb
 
         void recalculateMatrices() const;
 
-    public:
-        const Vec3& getPosition() const;
-        const Vec3 getRotationAxis() const;
-        Radians getRotationAngle() const;
-        void getRotationAxisAngle(Vec3& axis, Radians& angle) const;
-        const Quat& getRotationQuaternion() const;
-        const Vec3& getScale() const;
-
-        void setPosition(const Vec3& pos);
-        void setPosition(float x, float y, float z);
-        void setRotation(const Vec3& axis, Radians angle);
-        void setRotation(Radians x, Radians y, Radians z);
-        void setScale(const Vec3& scale);
-        void setScale(float x, float y, float z);
-        void setScale(float uniform);
-        void rotate(Radians angle);
-        void rotate(const Vec3& axis, Radians angle);
-        const Mat44& getTransformationMatrix() const;
-
-    friend class Renderer;
+        friend class Renderer;
     };
 } // namespace sb
 
