@@ -35,7 +35,7 @@ namespace sb
 
     protected:
         std::shared_ptr<Mesh> mMesh;
-        std::shared_ptr<TextureId> mTexture;    // if present, overrides model's own texture
+        std::shared_ptr<Texture> mTexture;    // if present, overrides model's own texture
         std::shared_ptr<Shader> mShader;
         Color mColor;
 
@@ -60,7 +60,7 @@ namespace sb
 
         Drawable(EProjectionType projType,
                  const std::shared_ptr<Mesh>& mesh,
-                 const std::shared_ptr<TextureId>& texture,
+                 const std::shared_ptr<Texture>& texture,
                  const std::shared_ptr<Shader>& shader);
 
         void recalculateMatrices() const;

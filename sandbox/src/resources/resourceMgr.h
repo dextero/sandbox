@@ -3,6 +3,7 @@
 
 #include "rendering/types.h"
 #include "rendering/shader.h"
+#include "rendering/texture.h"
 #include "utils/logger.h"
 #include "utils/singleton.h"
 #include "utils/stringUtils.h"
@@ -120,7 +121,7 @@ namespace sb
 
         const std::string getShaderPath() { return mShaderPath; }
 
-        std::shared_ptr<TextureId> getTexture(const std::string& name);
+        std::shared_ptr<Texture> getTexture(const std::string& name);
         std::shared_ptr<Image> getImage(const std::string& name);
         std::shared_ptr<Mesh> getMesh(const std::string& name);
         std::shared_ptr<Mesh> getTerrain(const std::string& heightmap);
@@ -133,10 +134,10 @@ namespace sb
         std::shared_ptr<Mesh> getQuad();
 
         // default texture, indicating some errors
-        std::shared_ptr<TextureId> getDefaultTexture();
+        std::shared_ptr<Texture> getDefaultTexture();
 
     private:
-        static std::shared_ptr<TextureId> loadTexture(const std::string& path);
+        static std::shared_ptr<Texture> loadTexture(const std::string& path);
         static std::shared_ptr<Image> loadImage(const std::string& path);
         static std::shared_ptr<Mesh> loadMesh(const std::string& path);
         static std::shared_ptr<Mesh> loadTerrain(const std::string& heightmapPath);
@@ -163,26 +164,25 @@ namespace sb
                 { GL_GEOMETRY_SHADER, "geometry" }
             };
 
-            gLog.trace("compiling %s shader: %s\n",
+            gLog.trace("compiling %s shader: %s",
                        SHADERS[ShaderType].c_str(), path.c_str());
             GL_CHECK(glCompileShader(id));
             if (!shaderCompilationSucceeded(id)) {
+                gLog.err("shader compilation failed");
                 return {};
             }
 
             return std::make_shared<ShaderId>(id);
         }
 
-        static void freeTexture(const std::shared_ptr<TextureId>& texture);
         static void freeShader(const std::shared_ptr<ShaderId>& shader);
 
         const std::string mBasePath;
         const std::string mShaderPath;
 
         SpecificResourceMgr<
-            TextureId,
-            &ResourceMgr::loadTexture,
-            &ResourceMgr::freeTexture
+            Texture,
+            &ResourceMgr::loadTexture
         > mTextures;
         SpecificResourceMgr<
             Image,

@@ -31,6 +31,30 @@ namespace sb
                                 float aspectRatio,
                                 float near = Z_NEAR,
                                 float far = Z_FAR);
+
+        namespace detail
+        {
+            template<typename T>
+            struct nextPowerOf2;
+
+            template<>
+            struct nextPowerOf2<uint32_t>
+            {
+                uint32_t operator()(uint32_t value);
+            };
+
+            template<>
+            struct nextPowerOf2<uint64_t>
+            {
+                uint64_t operator()(uint64_t value);
+            };
+        }
+
+        template<typename T>
+        T nextPowerOf2(T value)
+        {
+            return detail::nextPowerOf2<T>()(value);
+        }
     } // namespace Math
 } // namespace sb
 

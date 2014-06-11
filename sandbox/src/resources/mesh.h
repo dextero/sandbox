@@ -6,8 +6,9 @@
 
 #include "rendering/types.h"
 #include "rendering/color.h"
-#include "utils/types.h"
+#include "rendering/texture.h"
 #include "rendering/vertexBuffer.h"
+#include "utils/types.h"
 
 namespace sb
 {
@@ -27,16 +28,16 @@ namespace sb
              const std::vector<Vec2>& texcoords,
              const std::vector<Color>& colors,
              const std::vector<uint32_t>& indices,
-             std::shared_ptr<TextureId> texture);
+             std::shared_ptr<Texture> texture);
 
         VertexBuffer& getVertexBuffer() { return mVertexBuffer; }
         IndexBuffer& getIndexBuffer() { return mIndexBuffer; }
         size_t getIndexBufferSize() { return mIndexBufferSize; }
 
         EShape getShape() { return mShape; }
-        const std::shared_ptr<TextureId>& getTexture() { return mTexture; }
+        const std::shared_ptr<Texture>& getTexture() { return mTexture; }
 
-        void setTexture(const std::shared_ptr<TextureId>& texture)
+        void setTexture(const std::shared_ptr<Texture>& texture)
         {
             mTexture = texture;
         }
@@ -47,7 +48,7 @@ namespace sb
         uint32_t mIndexBufferSize;
 
         EShape mShape;
-        std::shared_ptr<TextureId> mTexture;
+        std::shared_ptr<Texture> mTexture;
 
         friend class ResourceMgr;
     };

@@ -11,7 +11,7 @@ namespace sb
                const std::vector<Vec2>& texcoords,
                const std::vector<Color>& colors,
                const std::vector<uint32_t>& indices,
-               std::shared_ptr<TextureId> texture):
+               std::shared_ptr<Texture> texture):
         mVertexBuffer(vertices, texcoords, colors),
         mIndexBuffer(indices),
         mIndexBufferSize(indices.size()),

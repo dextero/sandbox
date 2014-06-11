@@ -21,14 +21,14 @@ namespace sb
 {
     SINGLETON_INSTANCE(ResourceMgr);
 
-    std::shared_ptr<TextureId> ResourceMgr::getDefaultTexture()
+    std::shared_ptr<Texture> ResourceMgr::getDefaultTexture()
     {
         return getTexture("default.png");
     }
 
     ResourceMgr::ResourceMgr(const std::string& basePath):
         mBasePath(basePath),
-        mTextures(mBasePath + "texture/"),
+        mTextures(""),
         mImages(mBasePath + "image/"),
         mMeshes(mBasePath + "mesh/"),
         mTerrains(""),
@@ -41,6 +41,7 @@ namespace sb
         gLog.trace("max texture size: %d\n", maxTexSize);
 
         ilInit();
+        iluInit();
 
         std::vector<Vec3> lineVertices {
             { 0.f, 0.f, 0.f },
@@ -103,61 +104,10 @@ namespace sb
         return std::make_shared<Image>();
     }
 
-    std::shared_ptr<TextureId> ResourceMgr::loadTexture(const std::string& name)
+    std::shared_ptr<Texture> ResourceMgr::loadTexture(const std::string& name)
     {
         gLog.trace("loading texture %s\n", name.c_str());
-
-        ILuint image = ilGenImage();
-        IL_CHECK_RET(ilBindImage(image), false);
-
-#ifdef PLATFORM_WIN32
-        IL_CHECK_RET(ilLoadImage(utils::toWString(name).c_str()), false);
-#else //PLATFORM_LINUX
-        IL_CHECK_RET(ilLoadImage(name.c_str()), false);
-#endif // PLATFORM_WIN32
-
-        uint32_t maxTexSize;
-        GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, (GLint*)&maxTexSize));
-
-        uint32_t imgWidth = ilGetInteger(IL_IMAGE_WIDTH);
-        uint32_t imgHeight = ilGetInteger(IL_IMAGE_HEIGHT);
-        uint32_t potWidth = 1;
-        uint32_t potHeight = 1;
-
-        while (potWidth < imgWidth && potWidth < maxTexSize) potWidth *= 2;
-        while (potHeight < imgHeight && potHeight < maxTexSize) potHeight *= 2;
-
-        if (potWidth != imgWidth || potHeight != imgHeight)
-        {
-            gLog.trace("scaling texture: %ux%u to %ux%u\n", imgWidth, imgHeight, potWidth, potHeight);
-            iluScale(potWidth, potHeight, 1);
-        }
-
-        GLuint texture;
-        GLuint prevTex;
-        // save current image
-        GL_CHECK(glGetIntegerv(GL_TEXTURE_BINDING_2D, (GLint*)&prevTex));
-
-        // copy image to opengl
-        GL_CHECK_RET(glGenTextures(1, &texture), {});
-        GL_CHECK_RET(glBindTexture(GL_TEXTURE_2D, texture), {});
-        GL_CHECK(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
-
-        GL_CHECK_RET(glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP), potWidth, potHeight, 0, ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_TYPE), ilGetData()), {});
-
-        // generate mipmaps
-        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT), {});
-        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT), {});
-        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR), {});
-        GL_CHECK_RET(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR), {});
-        GL_CHECK_RET(glGenerateMipmap(GL_TEXTURE_2D), {});
-
-        // from this line on, a function failure does not mean that texture has not been loaded
-        GL_CHECK(glBindTexture(GL_TEXTURE_2D, prevTex));
-        // restore previous image
-        IL_CHECK(ilDeleteImage(image));
-
-        return std::make_shared<TextureId>(texture);
+        return std::make_shared<Texture>(gResourceMgr.getImage(name));
     }
 
     std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
@@ -193,7 +143,7 @@ namespace sb
             std::vector<uint32_t> indices;
 
             aiString filename;
-            std::shared_ptr<TextureId> texture;
+            std::shared_ptr<Texture> texture;
 
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
             aiReturn result = material->GetTexture(aiTextureType_DIFFUSE,
@@ -237,7 +187,7 @@ namespace sb
         std::shared_ptr<Image> img = gResourceMgr.getImage(heightmap);
         uint32_t w = img->getWidth();
         uint32_t h = img->getHeight();
-        uint32_t* data = (uint32_t*)img->getData();
+        uint32_t* data = (uint32_t*)img->getRGBAData();
 
         gLog.trace("loading terrain %s: %ux%u vertices\n",
                    heightmap.c_str(), w, h);
@@ -328,12 +278,7 @@ namespace sb
         GL_CHECK(glDeleteShader(*shader));
     }
 
-    void ResourceMgr::freeTexture(const std::shared_ptr<TextureId>& texture)
-    {
-        glDeleteTextures(1, texture.get());
-    }
-
-    std::shared_ptr<TextureId> ResourceMgr::getTexture(const std::string& name)
+    std::shared_ptr<Texture> ResourceMgr::getTexture(const std::string& name)
     {
         return mTextures.get(name);
     }

@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "drawable.h"
 #include "shader.h"
 
@@ -8,10 +10,10 @@ namespace sb
 {
     Drawable::Drawable(EProjectionType projType,
                        const std::shared_ptr<Mesh>& mesh,
-                       const std::shared_ptr<TextureId>& texture,
+                       const std::shared_ptr<Texture>& texture,
                        const std::shared_ptr<Shader>& shader):
         mMesh(mesh),
-        mTexture(texture),
+        mTexture(texture ? texture : gResourceMgr.getDefaultTexture()),
         mShader(shader),
         mColor(Color::White),
         mFlags(0),
