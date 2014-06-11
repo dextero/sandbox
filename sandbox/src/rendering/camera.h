@@ -38,6 +38,15 @@ namespace sb
         }
         Mat44& getViewMatrix();    // updates only if needed
 
+        Mat44 getViewProjectionMatrix(EProjectionType projectionType)
+        {
+            if (projectionType == ProjectionOrthographic) {
+                return getOrthographicProjectionMatrix();
+            }
+
+            return getPerspectiveProjectionMatrix() * getViewMatrix();
+        }
+
         void lookAt(Vec3 pos,
                     Vec3 at,
                     Vec3 up = Vec3(0.f, 1.f, 0.f));

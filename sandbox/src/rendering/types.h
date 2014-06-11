@@ -23,6 +23,11 @@ namespace sb
 #else // 32bit
     typedef IdType ResourceHandle;
 #endif
+
+    enum EProjectionType {
+        ProjectionOrthographic,
+        ProjectionPerspective
+    };
 } // namespace sb
 
 #define SHAPE_POINTS                GL_POINTS

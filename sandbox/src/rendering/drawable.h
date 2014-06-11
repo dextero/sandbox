@@ -1,10 +1,11 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
-#include "types.h"
+#include "rendering/types.h"
+#include "rendering/color.h"
+#include "rendering/shader.h"
+#include "rendering/renderer.h"
 #include "resources/resourceMgr.h"
-#include "color.h"
-#include "shader.h"
 
 #include <vector>
 
@@ -55,10 +56,7 @@ namespace sb
         Vec3 mScale;
         Quat mRotation;
 
-        enum EProjectionType {
-            ProjectionOrthographic,
-            ProjectionPerspective
-        } mProjectionType;
+        EProjectionType mProjectionType;
 
         Drawable(EProjectionType projType,
                  const std::shared_ptr<Mesh>& mesh,
