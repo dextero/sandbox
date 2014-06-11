@@ -3,8 +3,10 @@
 #include "utils/lib.h"
 #include "utils/logger.h"
 #include "utils/misc.h"
+#include "utils/stringUtils.h"
 
 #include <cassert>
+#include <map>
 
 namespace sb
 {
@@ -63,6 +65,25 @@ namespace sb
         }
     }
 
+    namespace
+    {
+        std::string getBufferName(GLuint bufferType)
+        {
+            static const std::map<GLuint, std::string> BUFFER_TYPES {
+#define BUFFER(type) { type, #type }
+                BUFFER(GL_ARRAY_BUFFER),
+                BUFFER(GL_ELEMENT_ARRAY_BUFFER)
+#undef BUFFER
+            };
+
+            auto it = BUFFER_TYPES.find(bufferType);
+            if (it == BUFFER_TYPES.end()) {
+                return utils::makeString(std::hex, bufferType);
+            }
+            return it->second;
+        }
+    } // namespace
+
     void Buffer::bind(GLuint bufferType,
                       GLuint bufferBinding)
     {
@@ -73,12 +94,13 @@ namespace sb
         GL_CHECK(glGetIntegerv(bufferBinding, (GLint*)&prevId));
         GL_CHECK(glBindBuffer(bufferType, id));
 
-        gLog.debug("buffer %x: bind %d (was %d)\n", bufferType, prevId, id);
+        gLog.debug("buffer %s: bind %d (was %d)\n",
+                   getBufferName(bufferType).c_str(), id, prevId);
     }
 
     void Buffer::unbind()
     {
-        gLog.debug("unbind %x\n", bufferType);
+        gLog.debug("unbind %s\n", getBufferName(bufferType).c_str());
 
         GL_CHECK(glBindBuffer(bufferType, prevId));
         bufferType = 0;
