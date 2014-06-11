@@ -61,7 +61,7 @@ int main()
 
     using sb::utils::makeString;
 
-    sb::Window wnd(1200, 900);
+    sb::Window wnd(800, 600);
 
     auto colorShader = gResourceMgr.getShader("proj_basic.vert", "color.frag");
     auto textureShader = gResourceMgr.getShader("proj_texture.vert", "texture.frag");
