@@ -27,6 +27,7 @@ namespace sb
              const std::vector<Vec3>& vertices,
              const std::vector<Vec2>& texcoords,
              const std::vector<Color>& colors,
+             const std::vector<Vec3>& normals,
              const std::vector<uint32_t>& indices,
              std::shared_ptr<Texture> texture);
 

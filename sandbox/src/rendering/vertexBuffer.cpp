@@ -17,6 +17,7 @@ namespace sb
     const VertexBuffer::Type& VertexBuffer::Type::Vertex = { 0, sizeof(Vec3) };
     const VertexBuffer::Type& VertexBuffer::Type::Color = { 1, sizeof(Color) };
     const VertexBuffer::Type& VertexBuffer::Type::Texcoord = { 2, sizeof(Vec2) };
+    const VertexBuffer::Type& VertexBuffer::Type::Normal = { 3, sizeof(Vec3) };
 
     void VertexBuffer::addBuffer(const Type& type,
                                  const void* data,
@@ -35,7 +36,8 @@ namespace sb
 
     VertexBuffer::VertexBuffer(const std::vector<Vec3>& vertices,
                                const std::vector<Vec2>& texcoords,
-                               const std::vector<Color>& colors):
+                               const std::vector<Color>& colors,
+                               const std::vector<Vec3>& normals):
         mVAO(0)
     {
         gLog.trace("creating vertex buffer (%lu, vertices%s%s)\n",
@@ -64,6 +66,22 @@ namespace sb
                           vertices.size(), colors.size());
             }
             addBuffer(Type::Color, &colors[0], colors.size());
+        }
+
+        if (colors.size() > 0) {
+            if (vertices.size() != colors.size()) {
+                gLog.warn("%lu vertices, but %lu colors\n",
+                          vertices.size(), colors.size());
+            }
+            addBuffer(Type::Color, &colors[0], colors.size());
+        }
+
+        if (normals.size() > 0) {
+            if (vertices.size() != normals.size()) {
+                gLog.warn("%lu vertices, but %lu normals\n",
+                          vertices.size(), normals.size());
+            }
+            addBuffer(Type::Normal, &normals[0], normals.size());
         }
     }
 

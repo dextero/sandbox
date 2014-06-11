@@ -22,8 +22,9 @@ namespace sb
             static const Type& Vertex;
             static const Type& Color;
             static const Type& Texcoord;
+            static const Type& Normal;
 
-            static const size_t COUNT = 3;
+            static const size_t COUNT = 4;
 
             const uint32_t attribIdx;
             const size_t elemSize;
@@ -37,7 +38,8 @@ namespace sb
 
         VertexBuffer(const std::vector<Vec3>& vertices,
                      const std::vector<Vec2>& texcoords,
-                     const std::vector<Color>& colors);
+                     const std::vector<Color>& colors,
+                     const std::vector<Vec3>& normals);
         VertexBuffer(const VertexBuffer& copy) = delete;
         ~VertexBuffer();
 

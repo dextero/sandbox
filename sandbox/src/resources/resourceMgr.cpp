@@ -66,9 +66,8 @@ namespace sb
 
         std::vector<uint32_t> quadIndices { 0, 1, 2, 3 };
 
-        Mesh mesh(Mesh::ShapeLine, lineVertices, {}, {}, lineIndices, {});
-        std::shared_ptr<Mesh> line(new Mesh(Mesh::ShapeLine, lineVertices, {}, {}, lineIndices, {}));
-        std::shared_ptr<Mesh> quad(new Mesh(Mesh::ShapeQuad, quadVertices, quadTexcoords, {}, quadIndices, getDefaultTexture()));
+        std::shared_ptr<Mesh> line(new Mesh(Mesh::ShapeLine, lineVertices, {}, {}, {}, lineIndices, {}));
+        std::shared_ptr<Mesh> quad(new Mesh(Mesh::ShapeQuad, quadVertices, quadTexcoords, {}, {}, quadIndices, {}));
 
         mMeshes.addSpecial("line", line);
         mMeshes.addSpecial("quad", quad);
@@ -138,6 +137,12 @@ namespace sb
             std::vector<Vec3> vertices(mesh->mNumVertices);
             memcpy(&vertices[0], mesh->mVertices, mesh->mNumVertices * sizeof(Vec3));
 
+            std::vector<Vec3> normals;
+            if (mesh->HasNormals()) {
+                normals.resize(mesh->mNumVertices);
+                memcpy(&normals[0], mesh->mNormals, mesh->mNumVertices * sizeof(Vec3));
+            }
+
             std::vector<Vec2> texcoords;
             std::vector<Color> colors;
             std::vector<uint32_t> indices;
@@ -174,7 +179,7 @@ namespace sb
                 numIndices += mesh->mFaces[i].mNumIndices;
             }
 
-            return std::shared_ptr<Mesh>(new Mesh(Mesh::ShapeTriangle, vertices, texcoords, {}, indices, texture));
+            return std::shared_ptr<Mesh>(new Mesh(Mesh::ShapeTriangle, vertices, texcoords, {}, normals, indices, texture));
         }
 
         return {};
@@ -244,7 +249,9 @@ namespace sb
             }
         }
 
-        return std::shared_ptr<Mesh>(new Mesh(Mesh::ShapeTriangle, vertices, texcoords, {}, indices, 0));
+        std::vector<Vec3> normals;
+
+        return std::shared_ptr<Mesh>(new Mesh(Mesh::ShapeTriangle, vertices, texcoords, {}, normals, indices, 0));
     }
 
     bool ResourceMgr::shaderCompilationSucceeded(ShaderId shader)
@@ -350,7 +357,7 @@ namespace sb
         auto fragmentShader = mFragmentShaders.get(fragmentShaderName);
         auto geometryShader = hasGeometryShader
                               ? mGeometryShaders.get(geometryShaderName)
-                              : std::make_shared<ShaderId>(0);
+                              : std::shared_ptr<ShaderId>();
 
         if (!vertexShader || !fragmentShader) {
             gLog.err("cannot get shader\n");
@@ -359,7 +366,7 @@ namespace sb
 
         ShaderProgramDef programDef { *vertexShader,
                                       *fragmentShader,
-                                      *geometryShader };
+                                      geometryShader ? *geometryShader : 0 };
 
         auto it = mShaderPrograms.find(programDef);
 

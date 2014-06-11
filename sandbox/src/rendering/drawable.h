@@ -15,6 +15,13 @@ namespace sb
     class Drawable
     {
     public:
+        Drawable() = delete;
+
+        Drawable(const Drawable&) = default;
+        Drawable(Drawable&&) = default;
+        Drawable& operator =(const Drawable&) = default;
+        Drawable& operator =(Drawable&&) = default;
+
         const Vec3& getPosition() const;
         const Vec3 getRotationAxis() const;
         Radians getRotationAngle() const;
@@ -64,6 +71,8 @@ namespace sb
                  const std::shared_ptr<Shader>& shader);
 
         void recalculateMatrices() const;
+
+        void draw(Renderer::State& rendererState) const;
 
         friend class Renderer;
     };

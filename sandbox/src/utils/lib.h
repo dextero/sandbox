@@ -18,7 +18,7 @@ namespace sb
 #ifndef NO_CHECK_MACROS
 #   ifdef _DEBUG
 
-#       define GL_CHECK(funccall)        (funccall), sb::utils::GLCheck(__FILE__, __LINE__, #funccall)
+#       define GL_CHECK(funccall)        (gLog.debug(#funccall), (funccall)), sb::utils::GLCheck(__FILE__, __LINE__, #funccall)
 #       define IL_CHECK(funccall)        (funccall), sb::utils::ILCheck(__FILE__, __LINE__, #funccall)
 
 #   else //NDEBUG

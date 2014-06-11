@@ -45,7 +45,14 @@ namespace sb
         {
             static char buffer[1024];
 
-            vsprintf(buffer, msg, args);
+            int bytes_written = vsnprintf(buffer, sizeof(buffer), msg, args);
+            if (bytes_written > 0
+                    && bytes_written + 1 < (int)sizeof(buffer)
+                    && buffer[bytes_written - 1] != '\n') {
+                buffer[bytes_written] = '\n';
+                buffer[bytes_written + 1] = '\0';
+            }
+
             fprintf(file, "\033\[%dm%s%s\033\[0m", color, prefix, buffer);
             fflush(file);
         }

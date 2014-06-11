@@ -161,6 +161,11 @@ namespace sb
             base_type(v)
         {}
 
+        template<typename T, glm::precision P>
+        explicit TVec4(const glm::detail::tvec3<T, P>& v):
+            base_type(v.x, v.y, v.z, (T)1)
+        {}
+
         inline float length() const
         {
             return glm::length((const base_type&)*this);

@@ -229,7 +229,7 @@ namespace sb
 
     void Window::display()
     {
-        //mRenderer.drawAll();
+        mRenderer.drawAll();
         glXSwapBuffers(mDisplay, mWindow);
     }
 

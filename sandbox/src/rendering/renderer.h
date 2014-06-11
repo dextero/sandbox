@@ -12,16 +12,33 @@
 
 #include "rendering/color.h"
 #include "rendering/shader.h"
+#include "rendering/texture.h"
 #include "rendering/camera.h"
-#include "rendering/drawable.h"
 
 #include <vector>
 
 namespace sb
 {
+    class Drawable;
+
     class Renderer
     {
     public:
+        struct State
+        {
+            std::shared_ptr<Shader> shader;
+            std::shared_ptr<Texture> texture;
+            EProjectionType projectionType;
+            Camera &camera;
+
+        private:
+            State(Camera& camera):
+                camera(camera)
+            {}
+
+            friend class Renderer;
+        };
+
         Renderer();
         ~Renderer();
 
@@ -33,10 +50,7 @@ namespace sb
         void setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy);
 
         void draw(Drawable& d);
-
-#ifdef DRAWABLE_BUFFERING
         void drawAll();
-#endif
 
         enum EFeature {
             FeatureBackfaceCulling = RENDERER_BACKFACE_CULLING,
@@ -51,6 +65,7 @@ namespace sb
         Camera mCamera;
         GLXContext mGLContext;
         ::Display* mDisplay;
+
         std::vector<Drawable> mDrawablesBuffer;
         bool mUseDrawableBuffering;
 
@@ -63,8 +78,65 @@ namespace sb
             FilterProjection,
             FilterShaderTextureProjectionDepth
         };
-        void filterDrawables(EFilterType filter);
 
+        class DrawableComparator
+        {
+        public:
+            typedef std::function<int(const Drawable&, const Drawable&)> Compare;
+
+            template<typename T>
+            static DrawableComparator compareBy(T comparator)
+            {
+                return DrawableComparator().thenBy(comparator);
+            }
+
+            DrawableComparator& thenBy(const Compare& comparator)
+            {
+                mChain.push_back(comparator);
+                return *this;
+            }
+
+            template<typename T>
+            DrawableComparator& thenBy(T Drawable::*field)
+            {
+                return thenBy([field](const Drawable& a, const Drawable& b) {
+                    return a.*field - b.*field;
+                });
+            }
+
+            template<typename T>
+            DrawableComparator& thenBy(const std::shared_ptr<T> Drawable::*ptr)
+            {
+                return thenBy([ptr](const Drawable& a, const Drawable& b) {
+                    return a.*ptr.get() - b.*ptr.get();
+                });
+            }
+
+            operator Compare() const
+            {
+                assert(mChain.size() > 0);
+
+                return [this]() {
+                    std::vector<Compare> chain = mChain;
+
+                    return [chain](const Drawable& a, const Drawable& b) {
+                        for (auto it = chain.begin(); it != chain.end(); ++it) {
+                            int value = (*it)(a, b);
+                            if (value) {
+                                return value;
+                            }
+                        }
+
+                        return 0;
+                    };
+                }();
+            }
+
+        private:
+            DrawableComparator() {}
+
+            std::vector<Compare> mChain;
+        };
     };
 } // namespace sb
 
