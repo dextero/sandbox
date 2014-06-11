@@ -307,14 +307,14 @@ namespace sb
             GL_CHECK_RET(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &retval),
                          false);
 
-            gLog.err("Compilation failed! Log:\n");
+            gLog.err("compilation failed! log:");
             if (retval > 0)
             {
                 std::string buffer;
                 buffer.resize(retval);
                 GL_CHECK_RET(glGetShaderInfoLog(shader, retval - 1,
                                                 &retval, &buffer[0]), false);
-                gLog.printf("%s\n", buffer.c_str());
+                gLog.printf("%s", buffer.c_str());
             }
 
             return false;

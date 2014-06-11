@@ -41,10 +41,11 @@ namespace sb
             GL_CHECK(glAttachShader(id, *geometry));
         }
 
-        gLog.trace("linking shader program...\n");
+        gLog.trace("linking shader program...");
         GL_CHECK(glLinkProgram(id));
 
         if (!shaderLinkSucceeded(id)) {
+            gLog.err("shader link failed");
             return {};
         }
 
@@ -61,7 +62,7 @@ namespace sb
             GL_CHECK_RET(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &retval),
                          false);
 
-            gLog.err("Linking failed! Log:\n");
+            gLog.err("linking failed! log:");
             if (retval > 0)
             {
                 std::string buffer;
@@ -69,7 +70,7 @@ namespace sb
 
                 GL_CHECK_RET(glGetProgramInfoLog(program, retval - 1,
                                                  &retval, &buffer[0]), false);
-                gLog.printf("%s\n", buffer.c_str());
+                gLog.printf("%s", buffer.c_str());
             }
 
             return false;
