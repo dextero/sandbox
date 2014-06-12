@@ -18,6 +18,13 @@ namespace sb
              const Color& col,
              const std::shared_ptr<Shader>& shader);
 
+        Line(const Line&) = default;
+        Line(Line&&) = default;
+        Line& operator =(const Line&) = default;
+        Line& operator =(Line&&) = default;
+
+        virtual ~Line() {}
+
         void set(const Vec3& from,
                  const Vec3& to);
         void attachTo(const Drawable* drawable);

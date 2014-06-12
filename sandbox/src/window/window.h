@@ -19,6 +19,11 @@ namespace sb
         Window(unsigned width, unsigned height);
         ~Window();
 
+        Window(const Window&) = delete;
+        Window(Window&&) = delete;
+        Window& operator =(const Window&) = delete;
+        Window& operator =(Window&&) = delete;
+
         bool create(unsigned width, unsigned height);
         void resize(unsigned width, unsigned height);
         bool setFullscreen(bool fullscreen = true);

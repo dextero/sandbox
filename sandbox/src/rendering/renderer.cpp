@@ -103,8 +103,10 @@ namespace sb
     }
 
     Renderer::Renderer():
+        mCamera(),
         mGLContext(NULL),
         mDisplay(NULL),
+        mDrawablesBuffer(),
         mUseDrawableBuffering(false)
     {
     }

@@ -3,7 +3,8 @@
 
 namespace sb
 {
-    Timer::Timer()
+    Timer::Timer():
+        mTimeStart{0, 0}
     {
         reset();
     }

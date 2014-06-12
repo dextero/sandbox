@@ -33,6 +33,9 @@ namespace sb
 
         private:
             State(Camera& camera):
+                shader(),
+                texture(),
+                projectionType(EProjectionType::ProjectionPerspective),
                 camera(camera)
             {}
 
@@ -41,6 +44,11 @@ namespace sb
 
         Renderer();
         ~Renderer();
+
+        Renderer(const Renderer&) = delete;
+        Renderer(Renderer&&) = delete;
+        Renderer& operator =(const Renderer&) = delete;
+        Renderer& operator =(Renderer&&) = delete;
 
         inline Camera& getCamera() { return mCamera; }
 
@@ -133,7 +141,9 @@ namespace sb
             }
 
         private:
-            DrawableComparator() {}
+            DrawableComparator():
+                mChain()
+            {}
 
             std::vector<Compare> mChain;
         };

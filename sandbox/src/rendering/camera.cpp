@@ -6,6 +6,11 @@
 namespace sb
 {
     Camera::Camera():
+        mOrthographicProjectionMatrix(),
+        mPerspectiveProjectionMatrix(),
+        mViewMatrix(),
+        mRotationMatrix(),
+        mTranslationMatrix(),
         mEye(0.f, 0.f, 0.f),
         mAt(0.f, 0.f, -1.f),
         mUp(0.f, 1.f, 0.f),

@@ -23,12 +23,14 @@ namespace sb
         IL_CHECK(ilDeleteImage(mId));
     }
 
-    Image::Image(const Image& copy)
+    Image::Image(const Image& copy):
+        mId(0)
     {
         *this = copy;
     }
 
-    Image::Image(Image&& source)
+    Image::Image(Image&& source):
+        mId(0)
     {
         *this = std::forward<Image>(source);
     }

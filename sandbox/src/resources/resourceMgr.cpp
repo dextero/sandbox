@@ -34,7 +34,8 @@ namespace sb
         mTerrains(""),
         mVertexShaders(mBasePath + "shader/"),
         mFragmentShaders(mBasePath + "shader/"),
-        mGeometryShaders(mBasePath + "shader/")
+        mGeometryShaders(mBasePath + "shader/"),
+        mShaderPrograms()
     {
         GLint maxTexSize;
         GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize));

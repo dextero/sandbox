@@ -171,7 +171,7 @@ namespace sb
             bool focus;
         } data;
 
-        Event(): type(Empty) {}
+        Event(): type(Empty), data() {}
 
         static Event mouseMovedEvent(unsigned x,
                                      unsigned y)
@@ -223,10 +223,10 @@ namespace sb
               unsigned x = 0,
               unsigned y = 0,
               Mouse::Button btn = Mouse::ButtonNone,
-              int wheelDelta = 0)
+              int wheelDelta = 0):
+            type(type),
+            data()
         {
-            this->type = type;
-
             switch (type)
             {
             case MousePressed:
@@ -250,16 +250,18 @@ namespace sb
         }
 
         Event(Key::Code code,
-              bool pressed)
+              bool pressed):
+            type(pressed ? KeyPressed : KeyReleased),
+            data()
         {
-            type = pressed ? KeyPressed : KeyReleased;
             data.key = code;
         }
 
-        Event(bool focus)
+        Event(bool focus):
+            type(WindowFocus),
+            data()
         {
-            type = WindowFocus;
-            this->data.focus = focus;
+            data.focus = focus;
         }
     };
 } // namespace sb

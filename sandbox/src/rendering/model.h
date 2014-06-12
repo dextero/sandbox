@@ -12,9 +12,6 @@ namespace sb
         Model(const std::string& path,
               const std::shared_ptr<Shader>& shader);
 
-        Model(const Model&) = default;
-        Model& operator =(const Model&) = default;
-
         bool loadFromFile(const std::string& path);
     };
 } // namespace sb

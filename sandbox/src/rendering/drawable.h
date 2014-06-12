@@ -16,6 +16,7 @@ namespace sb
     {
     public:
         Drawable() = delete;
+        virtual ~Drawable() {}
 
         Drawable(const Drawable&) = default;
         Drawable(Drawable&&) = default;

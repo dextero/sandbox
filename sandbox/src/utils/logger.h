@@ -10,7 +10,12 @@ namespace sb
     {
     public:
         Logger(FILE* f = stderr);
-        ~Logger();
+        virtual ~Logger();
+
+        Logger(const Logger&) = delete;
+        Logger(Logger&&) = delete;
+        Logger& operator =(const Logger&) = delete;
+        Logger& operator =(Logger&&) = delete;
 
         void printf(const char* msg, ...);
         void trace(const char* msg, ...);

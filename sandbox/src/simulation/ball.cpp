@@ -49,9 +49,11 @@ namespace Sim
         mHorizontalDistanceCovered(0.),
         mDeltaDistance(0.0),
         mTime(0.0),
+        mTotalEnergy(0.0),
         mPos(pos),
         mModel("sphere.obj", modelShader),
         mTimeToLive(5u),
+        mPath(),
         mLineShader(lineShader)
     {
         mPath.push_back(pos);

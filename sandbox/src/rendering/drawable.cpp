@@ -16,9 +16,14 @@ namespace sb
         mTexture(texture ? texture : gResourceMgr.getDefaultTexture()),
         mShader(shader),
         mColor(Color::White),
+        mTranslationMatrix(),
+        mScaleMatrix(),
+        mRotationMatrix(),
+        mTransformationMatrix(),
         mFlags(0),
         mPosition(0.f, 0.f, 0.f),
         mScale(1.f, 1.f, 1.f),
+        mRotation(),
         mProjectionType(projType)
     {}
 

@@ -38,7 +38,8 @@ namespace sb
                                const std::vector<Vec2>& texcoords,
                                const std::vector<Color>& colors,
                                const std::vector<Vec3>& normals):
-        mVAO(0)
+        mVAO(0),
+        mBuffers()
     {
         gLog.trace("creating vertex buffer (%lu, vertices%s%s)\n",
                    vertices.size(),

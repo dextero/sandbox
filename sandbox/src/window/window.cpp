@@ -12,7 +12,10 @@ namespace sb
         mDisplay(NULL),
         mWindow(0),
         mLockCursor(false),
-        mFullscreen(false)
+        mFullscreen(false),
+        mRenderer(),
+        mEvents()
+
     {
         create(width, height);
         mRenderer.setViewport(0, 0, width, height);

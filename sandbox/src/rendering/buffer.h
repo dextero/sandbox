@@ -17,7 +17,7 @@ namespace sb
         Buffer(Buffer&& old);
         Buffer& operator =(Buffer&& old);
 
-        ~Buffer();
+        virtual ~Buffer();
 
         void bind(GLuint bufferType,
                   GLuint bufferBinding);

@@ -10,6 +10,8 @@ namespace sb
     template<typename T> class Singleton
     {
     public:
+        virtual ~Singleton() {}
+
         static T& get()
         {
             if (mPtr) return *mPtr;

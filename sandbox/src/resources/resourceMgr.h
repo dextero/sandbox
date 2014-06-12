@@ -32,7 +32,8 @@ namespace sb
     {
     public:
         SpecificResourceMgr(const std::string& basePath):
-            mBasePath(basePath)
+            mBasePath(basePath),
+            mResources()
         {
             if (mBasePath != ""
                     && mBasePath[mBasePath.size() - 1] != '/') {
@@ -119,8 +120,6 @@ namespace sb
         void freeUnused();
         void freeAll();
 
-        const std::string getShaderPath() { return mShaderPath; }
-
         std::shared_ptr<Texture> getTexture(const std::string& name);
         std::shared_ptr<Image> getImage(const std::string& name);
         std::shared_ptr<Mesh> getMesh(const std::string& name);
@@ -178,7 +177,6 @@ namespace sb
         static void freeShader(const std::shared_ptr<ShaderId>& shader);
 
         const std::string mBasePath;
-        const std::string mShaderPath;
 
         SpecificResourceMgr<
             Texture,
