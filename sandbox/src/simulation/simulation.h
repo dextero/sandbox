@@ -30,7 +30,6 @@ namespace Sim
         Simulation(ESimType type,
                    const std::shared_ptr<sb::Shader>& ballShader,
                    const std::shared_ptr<sb::Shader>& lineShader);
-        ~Simulation();
 
         void update(float dt);
         void setThrowStart(const Vec3d& pos, const Vec3d& v);
@@ -44,9 +43,9 @@ namespace Sim
         uint32_t printParametersToScreen(float x = 0.f,
                                          float y = 0.f,
                                          uint32_t line = 0u);
-        const Ball* raycast(const Vec3& rayOrig,
-                            const Vec3& rayDir);
-        uint32_t printBallParametersToScreen(const Ball* ball,
+        const std::shared_ptr<Ball> raycast(const Vec3& rayOrig,
+                                            const Vec3& rayDir);
+        uint32_t printBallParametersToScreen(const std::shared_ptr<Ball> &ball,
                                              float x = 0.f,
                                              float y = 0.f,
                                              uint32_t line = 0u);
@@ -84,16 +83,15 @@ namespace Sim
         std::shared_ptr<sb::Shader> mBallShader;
         std::shared_ptr<sb::Shader> mLineShader;
 
-        std::list<Ball*> mBalls;
-        std::list<std::list<Ball*>::iterator> mMarkedForDelete;
+        std::list<std::shared_ptr<Ball>> mBalls;
 
         Vec3d mThrowStartPos;
         Vec3d mThrowStartVelocity;
         Vec3d mGravity;
         Vec3d mWindVelocity;
-        sb::Line mThrowStartLine;
-        sb::Line mGravityLine;
-        sb::Line mWindVelocityLine;
+        std::shared_ptr<sb::Line> mThrowStartLine;
+        std::shared_ptr<sb::Line> mGravityLine;
+        std::shared_ptr<sb::Line> mWindVelocityLine;
 
         double mAirDensity;
         ESimType mSimType;

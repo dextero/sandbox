@@ -43,7 +43,7 @@ namespace Sim
         double mTotalEnergy;
 
         Vec3d mPos;
-        sb::Model mModel;
+        std::shared_ptr<sb::Model> mModel;
 
         uint32_t mTimeToLive; // after how many ball-ground collisions should we erase the ball?
 

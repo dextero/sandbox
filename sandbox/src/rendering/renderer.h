@@ -58,6 +58,7 @@ namespace sb
         void setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy);
 
         void draw(Drawable& d);
+        void draw(const std::shared_ptr<Drawable>& d) { draw(*d); }
         void drawAll();
 
         enum EFeature {

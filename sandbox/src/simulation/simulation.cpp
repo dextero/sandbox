@@ -15,20 +15,19 @@ namespace Sim
         mBallShader(ballShader),
         mLineShader(lineShader),
         mBalls(),
-        mMarkedForDelete(),
         mThrowStartPos(Vec3d(0., 0., 0.)),
         mThrowStartVelocity(Vec3d(0., 0., 0.)),
         mGravity(),
         mWindVelocity(),
-        mThrowStartLine(Vec3(1.f, 1.f, 1.f),
-                        sb::Color(ColorThrow, 0.4f),
-                        lineShader),
-        mGravityLine(Vec3(1.f, 1.f, 1.f),
-                     sb::Color(ColorGravity, 0.4f),
-                     lineShader),
-        mWindVelocityLine(Vec3(1.f, 1.f, 1.f),
-                          sb::Color(ColorWind, 0.4f),
-                          lineShader),
+        mThrowStartLine(std::make_shared<sb::Line>(Vec3(1.f, 1.f, 1.f),
+                                                   sb::Color(ColorThrow, 0.4f),
+                                                   lineShader)),
+        mGravityLine(std::make_shared<sb::Line>(Vec3(1.f, 1.f, 1.f),
+                                                sb::Color(ColorGravity, 0.4f),
+                                                lineShader)),
+        mWindVelocityLine(std::make_shared<sb::Line>(Vec3(1.f, 1.f, 1.f),
+                                                     sb::Color(ColorWind, 0.4f),
+                                                     lineShader)),
         mAirDensity(1.204),
         mSimType(type),
         mBallThrowDelay(0.f),
@@ -68,12 +67,6 @@ namespace Sim
         setWind(Vec3d(0., 0., 0.));
     }
 
-    Simulation::~Simulation()
-    {
-        for (std::list<Ball*>::iterator it = mBalls.begin(); it != mBalls.end(); ++it)
-            delete (*it);
-    }
-
     void Simulation::update(float dt)
     {
         if (mPaused)
@@ -84,34 +77,28 @@ namespace Sim
             mBallThrowAccumulator += dt;
             if (mBallThrowAccumulator >= mBallThrowDelay && mBalls.size() < mMaxBalls)
             {
-                mBalls.push_back(new Ball(mThrowStartPos,
-                                          mThrowStartVelocity,
-                                          mBallMass,
-                                          mBallRadius,
-                                          mBallShader,
-                                          mLineShader));
+                mBalls.push_back(std::make_shared<Ball>(mThrowStartPos,
+                                                        mThrowStartVelocity,
+                                                        mBallMass,
+                                                        mBallRadius,
+                                                        mBallShader,
+                                                        mLineShader));
                 mBallThrowAccumulator = 0.f;
             }
         }
 
         dt *= mSloMoFactor;
 
-        for (std::list<Ball*>::iterator it = mBalls.begin(); it != mBalls.end(); ++it)
-            if ((*it)->update(dt, mGravity, mWindVelocity, mAirDensity, mBallPathLength, mVectorDisplayType == DisplayForce)) // returns true on collision with ground
-            {
-                mMarkedForDelete.push_back(it);
+        for (auto it = mBalls.begin(); it != mBalls.end();) {
+            // returns true on collision with ground
+            if ((*it)->update(dt, mGravity, mWindVelocity, mAirDensity,
+                              mBallPathLength, mVectorDisplayType == DisplayForce)) {
+                it = mBalls.erase(it);
                 if (mPauseOnGroundHit)
                     mPaused = true;
+            } else {
+                ++it;
             }
-
-        if (!mPaused)
-        {
-            for(std::list<std::list<Ball*>::iterator>::iterator it = mMarkedForDelete.begin(); it != mMarkedForDelete.end(); ++it)
-            {
-                SAFE_RELEASE(*(*it));
-                mBalls.erase(*it);
-            }
-            mMarkedForDelete.clear();
         }
     }
 
@@ -119,22 +106,22 @@ namespace Sim
     {
         gLog.info("simulation: throw_start set to %s\n", toString(v).c_str());
 
-        mThrowStartLine.setPosition(pos);
-        mThrowStartLine.setScale(v);
+        mThrowStartLine->setPosition(pos);
+        mThrowStartLine->setScale(v);
         mThrowStartPos = pos;
         mThrowStartVelocity = v;
 
-        mGravityLine.attachTo(&mThrowStartLine);
-        mWindVelocityLine.attachTo(&mThrowStartLine);
-        mGravityLine.update();
-        mWindVelocityLine.update();
+        mGravityLine->attachTo(mThrowStartLine);
+        mWindVelocityLine->attachTo(mThrowStartLine);
+        mGravityLine->update();
+        mWindVelocityLine->update();
     }
 
     void Simulation::setGravity(const Vec3d& g)
     {
         gLog.info("simulation: gravity set to %s\n", toString(g).c_str());
 
-        mGravityLine.setScale(g);
+        mGravityLine->setScale(g);
         mGravity = g;
     }
 
@@ -142,21 +129,21 @@ namespace Sim
     {
         gLog.info("simulation: wind set to %s\n", toString(w).c_str());
 
-        mWindVelocityLine.setScale(w);
+        mWindVelocityLine->setScale(w);
         mWindVelocity = w;
     }
 
     void Simulation::drawAll(sb::Renderer& renderer)
     {
-        if (mShowLauncherLines)
-        {
-            renderer.draw(mThrowStartLine);
-            renderer.draw(mGravityLine);
-            renderer.draw(mWindVelocityLine);
+        if (mShowLauncherLines) {
+            renderer.draw(*mThrowStartLine);
+            renderer.draw(*mGravityLine);
+            renderer.draw(*mWindVelocityLine);
         }
 
-        for (std::list<Ball*>::iterator it = mBalls.begin(); it != mBalls.end(); ++it)
-            (*it)->drawAll(renderer);
+        for (auto &ball_ptr: mBalls) {
+            ball_ptr->drawAll(renderer);
+        }
     }
 
     void Simulation::togglePause()
@@ -166,9 +153,6 @@ namespace Sim
 
     void Simulation::reset()
     {
-        for (std::list<Ball*>::iterator it = mBalls.begin(); it != mBalls.end(); ++it)
-            delete (*it);
-
         mBalls.clear();
     }
 
@@ -216,19 +200,21 @@ namespace Sim
         return line;
     }
 
-    const Ball* Simulation::raycast(const Vec3& rayOrig, const Vec3& rayDir)
+    const std::shared_ptr<Ball> Simulation::raycast(const Vec3& rayOrig,
+                                                    const Vec3& rayDir)
     {
         Vec3d orig = Vec3d(rayOrig);
         Vec3d dir = Vec3d(rayDir);
         dir = dir.normalized();
 
         double intersection = std::numeric_limits<double>::infinity();
-        Ball* ret = NULL;
-        for (std::list<Ball*>::iterator it = mBalls.begin(); it != mBalls.end(); ++it)
+        std::shared_ptr<Ball> ret;
+        for (auto &ball_ptr: mBalls)
         {
-            Vec3d origToCenter(orig - (*it)->mPos);
+            Vec3d origToCenter(orig - ball_ptr->mPos);
             double b = -dir.dot(origToCenter);
-            double det = b * b - origToCenter.dot(origToCenter) + (*it)->mRadius * (*it)->mRadius;
+            double det = b * b - origToCenter.dot(origToCenter)
+                         + ball_ptr->mRadius * ball_ptr->mRadius;
 
             if (det < 0.)
                 continue;
@@ -245,14 +231,18 @@ namespace Sim
             if (minVal < intersection)
             {
                 intersection = minVal;
-                ret = *it;
+                ret = ball_ptr;
             }
         }
 
         return ret;
     }
 
-    uint32_t Simulation::printBallParametersToScreen(const Ball* ball, float x, float y, uint32_t line)
+    uint32_t Simulation::printBallParametersToScreen(
+            const std::shared_ptr<Ball> &ball,
+            float x,
+            float y,
+            uint32_t line)
     {
         using sb::utils::makeString;
 

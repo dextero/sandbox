@@ -1,6 +1,8 @@
 #ifndef LINE_H
 #define LINE_H
 
+#include <memory>
+
 #include "types.h"
 #include "drawable.h"
 
@@ -27,11 +29,11 @@ namespace sb
 
         void set(const Vec3& from,
                  const Vec3& to);
-        void attachTo(const Drawable* drawable);
+        void attachTo(const std::shared_ptr<Drawable> &drawable);
         void update();    // synchronize position with attached drawable
 
     private:
-        const Drawable* mAttachedTo;
+        std::shared_ptr<const Drawable> mAttachedTo;
     };
 } // namespace sb
 

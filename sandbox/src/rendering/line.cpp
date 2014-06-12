@@ -37,7 +37,7 @@ namespace sb
         setRotation(0.0_rad, 0.0_rad, 0.0_rad);
     }
 
-    void Line::attachTo(const Drawable* drawable)
+    void Line::attachTo(const std::shared_ptr<Drawable> &drawable)
     {
         mAttachedTo = drawable;
     }

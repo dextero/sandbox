@@ -51,15 +51,15 @@ namespace Sim
         mTime(0.0),
         mTotalEnergy(0.0),
         mPos(pos),
-        mModel("sphere.obj", modelShader),
+        mModel(std::make_shared<sb::Model>("sphere.obj", modelShader)),
         mTimeToLive(5u),
         mPath(),
         mLineShader(lineShader)
     {
         mPath.push_back(pos);
 
-        mModel.setPosition(0.f, 0.f, 0.f);
-        mModel.setScale((float)(mRadius * 2.));
+        mModel->setPosition(0.f, 0.f, 0.f);
+        mModel->setScale((float)(mRadius * 2.));
 
         set(mVelocity, velocity);
         set(mAccNet, mAccGravity.first + mAccDrag.first + mAccWind.first);
@@ -111,7 +111,7 @@ namespace Sim
             set(mVelocity, Vec3d(0., 0., 0.));
         }
 
-        mModel.setPosition(mPos);
+        mModel->setPosition(mPos);
 
         // updating velocity
         set(mVelocity, mVelocity.first + mAccNet.first * dt, force);
@@ -178,7 +178,7 @@ namespace Sim
 
     void Ball::drawAll(sb::Renderer& r)
     {
-        r.draw(mModel);
+        r.draw(*mModel);
 
         // temporarily disable depth testing, to make lines fully visible
         r.enableFeature(sb::Renderer::FeatureDepthTest, false);
@@ -210,11 +210,11 @@ namespace Sim
 
     void Ball::attachLines()
     {
-        mVelocity.second.attachTo(&mModel);
-        mAccGravity.second.attachTo(&mModel);
-        mAccDrag.second.attachTo(&mModel);
-        mAccWind.second.attachTo(&mModel);
-        mAccBuoyancy.second.attachTo(&mModel);
-        mAccNet.second.attachTo(&mModel);
+        mVelocity.second.attachTo(mModel);
+        mAccGravity.second.attachTo(mModel);
+        mAccDrag.second.attachTo(mModel);
+        mAccWind.second.attachTo(mModel);
+        mAccBuoyancy.second.attachTo(mModel);
+        mAccNet.second.attachTo(mModel);
     }
 }
