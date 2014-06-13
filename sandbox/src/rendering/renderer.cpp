@@ -106,8 +106,7 @@ namespace sb
         mCamera(),
         mGLContext(NULL),
         mDisplay(NULL),
-        mDrawablesBuffer(),
-        mUseDrawableBuffering(false)
+        mDrawablesBuffer()
     {
     }
 
@@ -207,52 +206,7 @@ namespace sb
             return;
         }
 
-#if 0
-        if (mUseDrawableBuffering) {
-#endif
-            mDrawablesBuffer.push_back(d);
-#if 0
-        } else {
-            std::shared_ptr<TextureId> texture = d.mTexture;
-            std::shared_ptr<Mesh> mesh = d.mMesh;
-            std::shared_ptr<Shader> shader = d.mShader;
-
-            if (!mesh) {
-                mesh = gResourceMgr.getQuad();
-            }
-
-            if (!texture) {
-                texture = mesh->getTexture();
-            }
-
-            // should be before Shader::use to ensure that glBindAttribLocation calls are correct
-            auto vaoBind = make_bind(mesh->getVertexBuffer());
-            mesh->getVertexBuffer().debug();
-            auto shaderBind = make_bind(*shader);
-
-            shader->setUniform("texture", (int)Shader::SamplerImage);
-            GL_CHECK(glActiveTexture(GL_TEXTURE0 + Shader::SamplerImage));
-            GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture ? *texture : 0));
-
-            shader->setUniform("color", d.mColor);
-
-            if (d.mProjectionType == Drawable::ProjectionOrthographic) {
-                shader->setUniform("matViewProjection",
-                                   mCamera.getOrthographicProjectionMatrix());
-            } else {
-                Mat44 viewProj = mCamera.getPerspectiveProjectionMatrix()
-                                 * mCamera.getViewMatrix();
-                shader->setUniform("matViewProjection", viewProj);
-            }
-
-            shader->setUniform("matModel", d.getTransformationMatrix());
-
-            auto indexBind = make_bind(mesh->getIndexBuffer());
-            GL_CHECK(glDrawElements(mesh->getShape(),
-                                    mesh->getIndexBufferSize(),
-                                    GL_UNSIGNED_INT, 0));
-        }
-#endif
+        mDrawablesBuffer.push_back(std::make_shared<Drawable>(d));
     }
 
     void Renderer::drawAll()
@@ -261,25 +215,15 @@ namespace sb
             return;
         }
 
-        static const auto COMPARATOR =
-                DrawableComparator::compareBy(
-                    [](const Drawable& a, const Drawable& b) {
-                        return a.mShader.get() - b.mShader.get();
-                    }).thenBy(
-                    [](const Drawable& a, const Drawable& b) {
-                        return a.mTexture.get() - b.mTexture.get();
-                    })
-                    .thenBy(&Drawable::mProjectionType)
-                    .thenBy([](const Drawable& a, const Drawable& b) {
-                        return (a.getTransformationMatrix() * Vec4(a.getPosition())).z
-                                - (b.getTransformationMatrix() * Vec4(b.getPosition())).z;
-                    });
-
-        std::sort(mDrawablesBuffer, DrawableComparator::Compare(COMPARATOR));
+        std::sort(mDrawablesBuffer.begin(), mDrawablesBuffer.end(),
+                  [](const std::shared_ptr<Drawable>& a,
+                     const std::shared_ptr<Drawable>& b) {
+                      return *a < *b;
+                  });
 
         State rendererState(mCamera);
-        for (const Drawable& d: mDrawablesBuffer) {
-            d.draw(rendererState);
+        for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
+            d->draw(rendererState);
         }
 
         mDrawablesBuffer.clear();

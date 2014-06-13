@@ -41,6 +41,8 @@ namespace sb
         void rotate(const Vec3& axis, Radians angle);
         const Mat44& getTransformationMatrix() const;
 
+        bool operator <(const Drawable& d) const;
+
     protected:
         std::shared_ptr<Mesh> mMesh;
         std::shared_ptr<Texture> mTexture;    // if present, overrides model's own texture

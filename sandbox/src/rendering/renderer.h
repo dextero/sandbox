@@ -75,8 +75,7 @@ namespace sb
         GLXContext mGLContext;
         ::Display* mDisplay;
 
-        std::vector<Drawable> mDrawablesBuffer;
-        bool mUseDrawableBuffering;
+        std::vector<std::shared_ptr<Drawable>> mDrawablesBuffer;
 
         bool initGLEW();
 

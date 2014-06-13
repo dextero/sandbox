@@ -139,6 +139,23 @@ namespace sb
         return mTransformationMatrix;
     }
 
+    bool Drawable::operator <(const Drawable& d) const {
+        int diff = mShader.get() - d.mShader.get();
+        if (diff) {
+            return diff < 0;
+        }
+
+        diff = mTexture.get() - d.mTexture.get();
+        if (diff) {
+            return diff < 0;
+        }
+
+        float zDiff = (mRotation * mPosition).z
+                      - (d.mRotation * mPosition).z;
+        return zDiff < 0;
+    }
+
+
     void Drawable::draw(Renderer::State& state) const
     {
         if (mShader != state.shader) {
