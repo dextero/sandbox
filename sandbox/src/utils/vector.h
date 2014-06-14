@@ -40,7 +40,6 @@ namespace sb
     OP2_CONST_T(VecType, bool, const VecType&, !=)
 
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wno-non-virtual-dtor"
     template<typename ElemT>
@@ -94,7 +93,6 @@ namespace sb
     };
 
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wno-non-virtual-dtor"
     template<typename ElemT>
@@ -149,7 +147,6 @@ namespace sb
     };
 
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wno-non-virtual-dtor"
     template<typename ElemT>
