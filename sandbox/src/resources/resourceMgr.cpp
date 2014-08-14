@@ -255,6 +255,10 @@ namespace sb
         return std::shared_ptr<Mesh>(new Mesh(Mesh::ShapeTriangle, vertices, texcoords, {}, normals, indices, 0));
     }
 
+    std::map<std::string, std::string> getInputs(const std::string& code)
+    {
+    }
+
     bool ResourceMgr::shaderCompilationSucceeded(ShaderId shader)
     {
         GLint retval;

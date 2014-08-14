@@ -80,11 +80,15 @@ namespace sb
         for (size_t i = 0; i < sizeof(functions) / sizeof(functions[0]); ++i)
         {
             if (functions[i].func != NULL)
+            {
                 gLog.info("%-40sOK\n", functions[i].name);
+            }
             else
             {
                 if (functions[i].severity == GLFunc::SevOptional)
+                {
                     gLog.warn("%-40sNOT AVAILABLE\n", functions[i].name);
+                }
                 else
                 {
                     gLog.err("%-40sNOT AVAILABLE\n", functions[i].name);
@@ -92,7 +96,9 @@ namespace sb
                 }
 
                 if (functions[i].errMsg != NULL)
+                {
                     gLog.info(functions[i].errMsg);
+                }
             }
         }
 

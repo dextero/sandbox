@@ -79,42 +79,22 @@ namespace sb
         return true;
     }
 
-    #define SET_UNIFORM(funccall) \
-        if (!mProgram) return false; \
-        GLint loc = glGetUniformLocation(*mProgram, name); \
-        if (loc == -1) return false; \
-        GL_CHECK(funccall); \
-        return true
+    #define DEFINE_UNIFORM_SETTER(Type, funccall) \
+        bool Shader::setUniform(const char* name, const Type* value_array, uint32_t elements) \
+        { \
+            if (!mProgram) return false; \
+            GLint loc = glGetUniformLocation(*mProgram, name); \
+            if (loc == -1) return false; \
+            GL_CHECK(funccall); \
+            return true; \
+        }
 
-    bool Shader::setUniform(const char* name, const float* value_array, uint32_t elements)
-    {
-        SET_UNIFORM(glUniform1fv(loc, elements, (const GLfloat*)value_array));
-    }
-
-    bool Shader::setUniform(const char* name, const Vec2* value_array, uint32_t elements)
-    {
-        SET_UNIFORM(glUniform2fv(loc, elements, (const GLfloat*)value_array));
-    }
-
-    bool Shader::setUniform(const char* name, const Vec3* value_array, uint32_t elements)
-    {
-        SET_UNIFORM(glUniform3fv(loc, elements, (const GLfloat*)value_array));
-    }
-
-    bool Shader::setUniform(const char* name, const Color* value_array, uint32_t elements)
-    {
-        SET_UNIFORM(glUniform4fv(loc, elements, (const GLfloat*)value_array));
-    }
-
-    bool Shader::setUniform(const char* name, const Mat44* value_array, uint32_t elements)
-    {
-        SET_UNIFORM(glUniformMatrix4fv(loc, elements, GL_FALSE, (const GLfloat*)value_array));
-    }
-
-    bool Shader::setUniform(const char* name, const int* value_array, uint32_t elements)
-    {
-        SET_UNIFORM(glUniform1iv(loc, elements, (const GLint*)value_array));
-    }
+    DEFINE_UNIFORM_SETTER(float, glUniform1fv)
+    DEFINE_UNIFORM_SETTER(Vec2, glUniform2fv)
+    DEFINE_UNIFORM_SETTER(Vec3, glUniform3fv)
+    DEFINE_UNIFORM_SETTER(Color, glUniform4fv)
+    DEFINE_UNIFORM_SETTER(Mat44, glUniformMatrix4fv)
+    DEFINE_UNIFORM_SETTER(int, glUniform1iv)
 
     void Shader::bind()
     {

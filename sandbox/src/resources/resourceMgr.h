@@ -141,6 +141,7 @@ namespace sb
         static std::shared_ptr<Mesh> loadMesh(const std::string& path);
         static std::shared_ptr<Mesh> loadTerrain(const std::string& heightmapPath);
 
+        static std::map<std::string, std::string> getInputs(const std::string& code);
         static bool shaderCompilationSucceeded(ShaderId id);
 
         template<GLuint ShaderType>
