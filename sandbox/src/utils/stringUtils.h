@@ -8,6 +8,7 @@
 
 #include "utils/types.h"
 #include "utils/lexical_cast.h"
+#include "utils/logger.h"
 
 namespace sb {
 namespace utils {
@@ -109,9 +110,9 @@ namespace detail {
 
 struct FormatArg
 {
-    size_t startOffset;
-    size_t endOffset;
-    size_t number;
+    size_t startOffset = (size_t)-1;
+    size_t endOffset = (size_t)-1;
+    size_t number = (size_t)-1;
 };
 
 std::string unescape(const std::string& str);
@@ -142,8 +143,9 @@ std::string format(const std::string& format,
 
     for (const auto &fmtArg: fmtArgs) {
         if (fmtArg.number >= argsAsStrings.size()) {
-            PKE_Assert(false, "insufficient arguments to format(): found index "
-                              + lexical_cast<std::string>(fmtArg.number));
+            gLog.err("insufficient arguments to format(): found index %u",
+                     (unsigned)fmtArg.number);
+            assert(false);
             continue;
         }
 

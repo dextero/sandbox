@@ -79,22 +79,23 @@ namespace sb
         return true;
     }
 
-    #define DEFINE_UNIFORM_SETTER(Type, funccall) \
+    #define DEFINE_UNIFORM_SETTER(Type, GLType, glSetter, ...) \
         bool Shader::setUniform(const char* name, const Type* value_array, uint32_t elements) \
         { \
             if (!mProgram) return false; \
             GLint loc = glGetUniformLocation(*mProgram, name); \
             if (loc == -1) return false; \
-            GL_CHECK(funccall); \
+            GL_CHECK(glSetter(loc, elements, ##__VA_ARGS__, (const GLType*)value_array)); \
             return true; \
         }
 
-    DEFINE_UNIFORM_SETTER(float, glUniform1fv)
-    DEFINE_UNIFORM_SETTER(Vec2, glUniform2fv)
-    DEFINE_UNIFORM_SETTER(Vec3, glUniform3fv)
-    DEFINE_UNIFORM_SETTER(Color, glUniform4fv)
-    DEFINE_UNIFORM_SETTER(Mat44, glUniformMatrix4fv)
-    DEFINE_UNIFORM_SETTER(int, glUniform1iv)
+    DEFINE_UNIFORM_SETTER(float, GLfloat, glUniform1fv)
+    DEFINE_UNIFORM_SETTER(Vec2, GLfloat, glUniform2fv)
+    DEFINE_UNIFORM_SETTER(Vec3, GLfloat, glUniform3fv)
+    DEFINE_UNIFORM_SETTER(Color, GLfloat, glUniform4fv)
+    DEFINE_UNIFORM_SETTER(int, GLint, glUniform1iv)
+
+    DEFINE_UNIFORM_SETTER(Mat44, GLfloat, glUniformMatrix4fv, GL_FALSE)
 
     void Shader::bind()
     {

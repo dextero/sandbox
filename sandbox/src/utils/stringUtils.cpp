@@ -2,6 +2,7 @@
 #include "utils/logger.h"
 
 #include <fstream>
+#include <algorithm>
 
 namespace sb {
 namespace utils {
@@ -270,5 +271,6 @@ std::vector<FormatArg> parseFormatString(const std::string& format)
     return ret;
 }
 
+} // namespace detail
 } // namespace utils
 } // namespace sb
