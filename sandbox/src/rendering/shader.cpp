@@ -6,18 +6,19 @@
 #include "utils/logger.h"
 
 #include <cstring>
+#include <algorithm>
 
 namespace sb {
 namespace {
 
-void extractInput(std::map<Attrib::Kind, Attrib>& outInputs,
+void extractInput(std::map<Attrib::Kind, Input>& outInputs,
                   const std::string& line)
 {
     std::vector<std::string> words = utils::split(line);
 
     if (line.size() == 0
             || words[0] != "in"
-            || line.size() < 5) {
+            || words.size() < 5) {
         return;
     }
 
@@ -46,15 +47,16 @@ void extractInput(std::map<Attrib::Kind, Attrib>& outInputs,
 
     gLog.trace("input (%s): %s %s",
                kind_str.c_str(), type.c_str(), name.c_str());
-    outInputs[kind] = { type, name };
+
+    outInputs[kind] = { kind, type, name };
 }
 
 } // namespace
 
-std::map<Attrib::Kind, Attrib>
+std::map<Attrib::Kind, Input>
 ConcreteShader::getInputs(const std::string& code)
 {
-    std::map<Attrib::Kind, Attrib> ret;
+    std::map<Attrib::Kind, Input> ret;
     std::vector<std::string> lines = utils::split(code, "\n");
 
     for (const std::string& line: lines) {
@@ -94,7 +96,7 @@ Shader::Shader(const std::shared_ptr<ConcreteShader>& vertex,
                const std::shared_ptr<ConcreteShader>& fragment,
                const std::shared_ptr<ConcreteShader>& geometry):
     mProgram(linkShader(vertex, fragment, geometry)),
-    mInputs(vertex->getAttribs())
+    mInputs(vertex->getInputs())
 {}
 
 ProgramId Shader::linkShader(const std::shared_ptr<ConcreteShader>& vertex,
@@ -173,16 +175,38 @@ DEFINE_UNIFORM_SETTER(int, GLint, glUniform1iv)
 
 DEFINE_UNIFORM_SETTER(Mat44, GLfloat, glUniformMatrix4fv, GL_FALSE)
 
-void Shader::bind()
+void Shader::bind(const VertexBuffer& vb)
 {
     gLog.debug("bind program %d\n", mProgram);
     GL_CHECK(glUseProgram(mProgram));
 
-    for (size_t i = 0; i < mAttribs.size(); ++i) {
-        const std::string& name = mAttribs[i];
-        gLog.debug("- enable attrib %lu (%s)\n", i, name.c_str());
-        GL_CHECK(glEnableVertexAttribArray((GLuint)i));
-        GL_CHECK(glBindAttribLocation(mProgram, (GLuint)i, name.c_str()));
+    GLuint i = 0;
+    for (const BufferKindPair& pair: vb.getBuffers()) {
+        const Input& input = mInputs[pair.kind];
+
+        gLog.debug("- enable attrib %lu (%s)\n", i, input.name.c_str());
+        GL_CHECK(glBindAttribLocation(mProgram, i, input.name.c_str()));
+        ++i;
+    }
+
+    if (i != mInputs.size()) {
+        std::vector<std::string> expected;
+        std::vector<std::string> actual;
+
+        std::transform(mInputs.begin(), mInputs.end(),
+                       std::back_inserter(expected),
+                       [](const std::pair<Attrib::Kind, Input>& p) {
+                           return ATTRIBS.find(p.first)->second.kindAsString;
+                       });
+        std::transform(vb.getBuffers().begin(), vb.getBuffers().end(),
+                       std::back_inserter(actual),
+                       [](const BufferKindPair& p) {
+                           return ATTRIBS.find(p.kind)->second.kindAsString;
+                       });
+        sbFail("%s", utils::format(
+                   "not all inputs available in buffer, expected {0}, got {1}",
+                   utils::join(expected, ", "),
+                   utils::join(actual, ", ")).c_str());
     }
 }
 
@@ -190,12 +214,6 @@ void Shader::unbind()
 {
     gLog.debug("unbind program\n");
     GL_CHECK(glUseProgram(0));
-
-    for (size_t i = 0; i < mAttribs.size(); ++i) {
-        const std::string& name = mAttribs[i];
-        gLog.debug("- disable attrib %lu (%s)\n", i, name.c_str());
-        GL_CHECK(glDisableVertexAttribArray((GLuint)i));
-    }
 }
 
 } // namespace sb

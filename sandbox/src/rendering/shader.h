@@ -8,20 +8,16 @@
 
 #include "types.h"
 #include "color.h"
+#include "vertexBuffer.h"
 #include "../utils/types.h"
 #include "../utils/stringUtils.h"
 #include "../utils/lib.h"
 
 namespace sb
 {
-    struct Attrib {
-        enum class Kind {
-            Position,
-            Texcoord,
-            Color,
-            Normal,
-        };
-
+    struct Input
+    {
+        Attrib::Kind kind;
         std::string type;
         std::string name;
     };
@@ -52,7 +48,7 @@ namespace sb
                 sbFail("shader compilation failed");
             }
 
-            mAttribs = getInputs(code);
+            mInputs = getInputs(code);
         }
 
         ~ConcreteShader()
@@ -63,17 +59,17 @@ namespace sb
         }
 
         GLuint getShader() const { return mShader; }
-        const std::map<Attrib::Kind, Attrib>& getAttribs() const
+        const std::map<Attrib::Kind, Input>& getInputs() const
         {
-            return mAttribs;
+            return mInputs;
         }
 
     private:
         bool shaderCompilationSucceeded();
-        static std::map<Attrib::Kind, Attrib> getInputs(const std::string& code);
+        static std::map<Attrib::Kind, Input> getInputs(const std::string& code);
 
         GLuint mShader;
-        std::map<Attrib::Kind, Attrib> mAttribs;
+        std::map<Attrib::Kind, Input> mInputs;
     };
 
     class Shader
@@ -117,10 +113,10 @@ namespace sb
             SamplerShadowmap = 2
         };
 
-        void bind();
+        void bind(const VertexBuffer& vb);
         void unbind();
 
-        const std::map<Attrib::Kind, Attrib>& getInputs() {
+        const std::map<Attrib::Kind, Input>& getInputs() {
             return mInputs;
         }
 
@@ -133,9 +129,7 @@ namespace sb
 
     private:
         ProgramId mProgram;
-        std::map<Attrib::Kind, Attrib> mInputs;
-
-        std::vector<std::string> mAttribs;
+        std::map<Attrib::Kind, Input> mInputs;
 
         Shader(const std::shared_ptr<ConcreteShader>& vertex,
                const std::shared_ptr<ConcreteShader>& fragment,
