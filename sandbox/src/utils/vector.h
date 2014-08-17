@@ -39,13 +39,9 @@ namespace sb
     OP2_CONST_T(VecType, bool, const VecType&, ==) \
     OP2_CONST_T(VecType, bool, const VecType&, !=)
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Weffc++"
-#pragma GCC diagnostic ignored "-Wno-non-virtual-dtor"
     template<typename ElemT>
     struct TVec2: public glm::detail::tvec2<ElemT, glm::highp>
     {
-#pragma GCC diagnostic pop
         typedef glm::detail::tvec2<ElemT, glm::highp> base_type;
 
         TVec2() {}
@@ -92,13 +88,9 @@ namespace sb
         OPERATORS(glm::detail::tvec2, TVec2, ElemT)
     };
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Weffc++"
-#pragma GCC diagnostic ignored "-Wno-non-virtual-dtor"
     template<typename ElemT>
     struct TVec3: public glm::detail::tvec3<ElemT, glm::highp>
     {
-#pragma GCC diagnostic pop
         typedef glm::detail::tvec3<ElemT, glm::highp> base_type;
 
         TVec3() {}
@@ -146,13 +138,9 @@ namespace sb
         OPERATORS(glm::detail::tvec3, TVec3, ElemT)
     };
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Weffc++"
-#pragma GCC diagnostic ignored "-Wno-non-virtual-dtor"
     template<typename ElemT>
     struct TVec4: public glm::detail::tvec4<ElemT, glm::highp>
     {
-#pragma GCC diagnostic pop
         typedef glm::detail::tvec4<ElemT, glm::highp> base_type;
 
         TVec4() {}
