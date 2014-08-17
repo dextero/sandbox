@@ -3,8 +3,8 @@
 
 #include "utils/lib.h"
 #include "utils/logger.h"
+#include "utils/debug.h"
 
-#include <cassert>
 #include <algorithm>
 
 // damn you windows.h
@@ -49,7 +49,7 @@ namespace sb
         GL_CHECK(glGenVertexArrays(1, &mVAO));
         GL_CHECK(glBindVertexArray(mVAO));
 
-        assert(vertices.size() > 0 && "vertex buffer must have some vertices");
+        sbAssert(vertices.size() > 0, "vertex buffer must have some vertices");
 
         addBuffer(Type::Vertex, &vertices[0], vertices.size());
 

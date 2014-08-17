@@ -1,6 +1,8 @@
 #ifndef LIBUTILS_H
 #define LIBUTILS_H
 
+#include "utils/logger.h"
+
 namespace sb
 {
     namespace utils

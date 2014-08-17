@@ -8,6 +8,7 @@
 #include "utils/stringUtils.h"
 #include "utils/logger.h"
 #include "utils/stl.h"
+#include "utils/debug.h"
 #include "resources/mesh.h"
 #include "resources/image.h"
 
@@ -136,7 +137,7 @@ namespace sb
 
     bool Renderer::init(::Display* display, ::Window window, GLXFBConfig& fbc)
     {
-        assert(display);
+        sbAssert(display, "display is null");
 
         mDisplay = display;
 
@@ -208,7 +209,7 @@ namespace sb
         if (!d.mMesh && !d.mTexture)
         {
             gLog.err("Renderer::draw: invalid call, mMesh == NULL\n");
-            assert(!"Renderer::draw: invalid call");
+            sbFail("Renderer::draw: invalid call");
             return;
         }
 

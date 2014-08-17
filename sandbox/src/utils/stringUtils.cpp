@@ -1,5 +1,6 @@
 #include "utils/stringUtils.h"
 #include "utils/logger.h"
+#include "utils/debug.h"
 
 #include <fstream>
 #include <algorithm>
@@ -66,14 +67,12 @@ std::string readFile(const std::string& path)
     std::ifstream file(path);
 
     if (!file.is_open()) {
-        return "";
+        sbFail("cannot open file: %s", path.c_str());
     }
 
     file.get();
     if (!file) {
-        gLog.err("invalid file: %s, maybe it is a directory?\n",
-                   path.c_str());
-        return "";
+        sbFail("invalid file: %s, maybe it is a directory?\n", path.c_str());
     }
 
     file.unget();
@@ -81,8 +80,7 @@ std::string readFile(const std::string& path)
     file.seekg(0, std::ios::end);
     size_t filesize = file.tellg();
 
-    gLog.debug("reading %lu bytes from file %s\n",
-               filesize, path.c_str());
+    gLog.debug("reading %lu bytes from file %s\n", filesize, path.c_str());
 
     std::string contents;
     contents.resize(filesize);
@@ -245,10 +243,8 @@ bool findNextFormatArg(const std::string& str,
     insideBraces = str.substr(start + 1, end - start - 1);
     
     if (!std::all_of(insideBraces.begin(), insideBraces.end(), isdigit)) {
-        gLog.err("invalid format specifier: expected a positive integer, got "
-                 "'%s'", insideBraces.c_str());
-        assert(false);
-        return false;
+        sbFail("invalid format specifier: expected a positive integer, got "
+               "'%s'", insideBraces.c_str());
     }
 
     out.startOffset = start;

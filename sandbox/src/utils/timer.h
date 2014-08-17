@@ -3,8 +3,6 @@
 
 #include <sys/time.h>
 
-#include <cassert>
-
 namespace sb
 {
     class Timer

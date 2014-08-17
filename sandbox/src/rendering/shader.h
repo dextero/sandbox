@@ -23,15 +23,9 @@ namespace sb
         }
 
         template<typename T>
-        bool setUniform(const char* name,
-                        const T* value_array,
-                        uint32_t elements)
+        bool setUniform(const char*, const T*, uint32_t)
         {
-            (void)name;
-            (void)value_array;
-            (void)elements;
-            assert(!"Wrong overload called!");
-            return false;
+            sbFail("Wrong overload called!");
         }
 
         bool setUniform(const char* name,

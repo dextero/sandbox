@@ -2,6 +2,7 @@
 
 #include "utils/stringUtils.h"
 #include "utils/logger.h"
+#include "utils/debug.h"
 
 #include <X11/Xutil.h>
 #include <cstring>
@@ -110,12 +111,12 @@ namespace sb
     {
         (void)width;
         (void)height;
-        assert(0);
+        sbFail("Window::resize not implemented");
     }
 
     bool Window::setFullscreen(bool fullscreen)
     {
-        assert(!"Window::setFullscreen not implemented!");
+        sbFail("Window::setFullscreen not implemented");
 
         mFullscreen = fullscreen;
         return true;

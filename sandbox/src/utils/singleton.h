@@ -1,9 +1,8 @@
 #ifndef SINGLETON_H
 #define SINGLETON_H
 
-#include <cassert>
 #include <cstdlib>
-
+#include <cassert>
 
 namespace sb
 {
@@ -45,7 +44,7 @@ namespace sb
         Singleton()
         {
             // there should be only one instance!
-            assert(!mPtr);
+            assert(!mPtr && "multiple singleton instances detected");
         }
     };
 } // namespace sb

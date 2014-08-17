@@ -4,8 +4,8 @@
 #include "utils/logger.h"
 #include "utils/misc.h"
 #include "utils/stringUtils.h"
+#include "utils/debug.h"
 
-#include <cassert>
 #include <map>
 
 namespace sb
@@ -16,7 +16,7 @@ namespace sb
         bufferType(0),
         prevId(0)
     {
-        assert(bytes > 0 && "added buffer must not be empty");
+        sbAssert(bytes > 0, "added buffer must not be empty");
 
         gLog.trace("creating buffer: %lu bytes\n", bytes);
 
@@ -87,9 +87,8 @@ namespace sb
     void Buffer::bind(GLuint bufferType,
                       GLuint bufferBinding)
     {
-        assert(this->prevId == 0
-               && this->bufferType == 0
-               && "recursive bind? this should never happen");
+        sbAssert(this->prevId == 0 && this->bufferType == 0,
+                 "recursive bind? this should never happen");
         this->bufferType = bufferType;
         GL_CHECK(glGetIntegerv(bufferBinding, (GLint*)&prevId));
         GL_CHECK(glBindBuffer(bufferType, id));

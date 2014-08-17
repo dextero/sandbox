@@ -3,7 +3,8 @@
 
 #include <sstream>
 #include <string>
-#include <cassert>
+
+#include "utils/debug.h"
 
 namespace detail
 {
@@ -53,7 +54,7 @@ DstT detail::lexical_cast_helper<DstT, SrcT>::cast(const SrcT& src)
     ss << src;
     DstT ret;
     ss >> ret;
-    assert(ss.eof() && "not all data converted");
+    sbAssert(ss.eof(), "not all data converted");
     return ret;
 }
 
@@ -63,7 +64,7 @@ DstT detail::lexical_cast_helper<DstT, std::string>::cast(const std::string& src
     std::stringstream ss(src);
     DstT ret;
     ss >> ret;
-    assert(ss.eof() && "not all data converted");
+    sbAssert(ss.eof(), "not all data converted");
     return ret;
 }
 

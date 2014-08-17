@@ -9,6 +9,7 @@
 #include "utils/types.h"
 #include "utils/lexical_cast.h"
 #include "utils/logger.h"
+#include "utils/debug.h"
 
 namespace sb {
 namespace utils {
@@ -143,10 +144,8 @@ std::string format(const std::string& format,
 
     for (const auto &fmtArg: fmtArgs) {
         if (fmtArg.number >= argsAsStrings.size()) {
-            gLog.err("insufficient arguments to format(): found index %u",
-                     (unsigned)fmtArg.number);
-            assert(false);
-            continue;
+            sbFail("insufficient arguments to format(): found index %u",
+                   (unsigned)fmtArg.number);
         }
 
         size_t chunkLength = fmtArg.startOffset - lastEnd;

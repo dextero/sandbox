@@ -8,11 +8,11 @@
 #include "utils/singleton.h"
 #include "utils/stringUtils.h"
 #include "utils/lib.h"
+#include "utils/debug.h"
 
 #include <map>
 #include <vector>
 #include <string>
-#include <cassert>
 #include <memory>
 
 namespace sb

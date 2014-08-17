@@ -1,5 +1,3 @@
-#include <cassert>
-
 #include "drawable.h"
 #include "shader.h"
 
@@ -161,7 +159,7 @@ namespace sb
         if (mShader != state.shader) {
             state.shader = mShader;
 
-            assert(state.shader != nullptr);
+            sbAssert(state.shader, "shader not set");
 
             state.shader->bind();
             state.shader->setUniform("texture", (int)Shader::SamplerImage);
@@ -170,7 +168,7 @@ namespace sb
         if (mTexture != state.texture) {
             state.texture = mTexture;
 
-            assert(state.texture != nullptr);
+            sbAssert(state.texture, "texture not set");
 
             state.texture->bind(0);
         }

@@ -2,6 +2,7 @@
 #include "utils/math.h"
 #include "utils/logger.h"
 #include "utils/stringUtils.h"
+#include "utils/debug.h"
 
 namespace sb
 {
@@ -101,9 +102,9 @@ namespace sb
 
         mUpReal = mRight.cross(mFront); // normalized, since mRight & mFront are normalized
 
-        assert(mFront.dot(mFront) > 0.0f);
-        assert(mRight.dot(mRight) > 0.0f);
-        assert(mUpReal.dot(mUpReal) > 0.0f);
+        sbAssert(mFront.dot(mFront) > 0.0f, "zero front vector");
+        sbAssert(mRight.dot(mRight) > 0.0f, "zero right vector");
+        sbAssert(mUpReal.dot(mUpReal) > 0.0f, "zero upReal vector");
 
         mMatrixUpdateFlags |= MatrixTranslationUpdated | MatrixRotationUpdated;
         updateAngles();
@@ -208,7 +209,7 @@ namespace sb
     void Camera::updateAngles()
     {
         if (std::abs(mFront.x) >= math::EPSILON
-                || std::abs(mFront.z >= math::EPSILON)) {
+                || std::abs(mFront.z) >= math::EPSILON) {
             mXZAngle = Radians(std::atan2(mFront.x, mFront.z));
 
         }
