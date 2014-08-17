@@ -142,40 +142,12 @@ namespace sb
         static std::shared_ptr<Mesh> loadTerrain(const std::string& heightmapPath);
 
         static std::map<std::string, std::string> getInputs(const std::string& code);
-        static bool shaderCompilationSucceeded(ShaderId id);
 
         template<GLuint ShaderType>
-        static std::shared_ptr<ShaderId> loadShader(const std::string& path)
+        static std::shared_ptr<ConcreteShader> loadShader(const std::string& path)
         {
-            std::string code = utils::readFile(path);
-            if (code.size() == 0) {
-                return {};
-            }
-
-            ShaderId id;
-            GL_CHECK_RET(id = glCreateShader(ShaderType), {});
-
-            const GLchar* codePtr = (const GLchar*)&code[0];
-            GL_CHECK_RET(glShaderSource(id, 1, &codePtr, NULL), {});
-
-            static std::map<GLuint, std::string> SHADERS {
-                { GL_VERTEX_SHADER, "vertex" },
-                { GL_FRAGMENT_SHADER, "fragment" },
-                { GL_GEOMETRY_SHADER, "geometry" }
-            };
-
-            gLog.trace("compiling %s shader: %s",
-                       SHADERS[ShaderType].c_str(), path.c_str());
-            GL_CHECK(glCompileShader(id));
-            if (!shaderCompilationSucceeded(id)) {
-                gLog.err("shader compilation failed");
-                return {};
-            }
-
-            return std::make_shared<ShaderId>(id);
+            return std::make_shared<ConcreteShader>(ShaderType, path);
         }
-
-        static void freeShader(const std::shared_ptr<ShaderId>& shader);
 
         const std::string mBasePath;
 
@@ -197,36 +169,28 @@ namespace sb
         > mTerrains;
 
         SpecificResourceMgr<
-            ShaderId,
-            &ResourceMgr::loadShader<GL_VERTEX_SHADER>,
-            &ResourceMgr::freeShader
+            ConcreteShader,
+            &ResourceMgr::loadShader<GL_VERTEX_SHADER>
         > mVertexShaders;
         SpecificResourceMgr<
-            ShaderId,
-            &ResourceMgr::loadShader<GL_FRAGMENT_SHADER>,
-            &ResourceMgr::freeShader
+            ConcreteShader,
+            &ResourceMgr::loadShader<GL_FRAGMENT_SHADER>
         > mFragmentShaders;
         SpecificResourceMgr<
-            ShaderId,
-            &ResourceMgr::loadShader<GL_GEOMETRY_SHADER>,
-            &ResourceMgr::freeShader
+            ConcreteShader,
+            &ResourceMgr::loadShader<GL_GEOMETRY_SHADER>
         > mGeometryShaders;
 
         struct ShaderProgramDef
         {
-            ShaderId vertex;
-            ShaderId fragment;
-            ShaderId geometry;
+            std::shared_ptr<ConcreteShader> vertex;
+            std::shared_ptr<ConcreteShader> fragment;
+            std::shared_ptr<ConcreteShader> geometry;
 
             bool operator <(const ShaderProgramDef& s) const
             {
-                if (vertex < s.vertex) {
-                    return true;
-                }
-                if (fragment < s.fragment) {
-                    return true;
-                }
-                return geometry < s.geometry;
+                return std::make_tuple(vertex, fragment, geometry)
+                        < std::make_tuple(s.vertex, s.fragment, s.geometry);
             }
 
             bool operator ==(const ShaderProgramDef& s) const

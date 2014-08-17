@@ -62,6 +62,22 @@ split(const std::string& str,
     return ret;
 }
 
+std::string strip(const std::string& text,
+                  const std::string& chars)
+{
+    size_t first = text.find_first_not_of(chars);
+    if (first == std::string::npos) {
+        return "";
+    }
+
+    size_t last = text.find_last_not_of(chars);
+    if (last == std::string::npos) {
+        return "";
+    }
+
+    return text.substr(first, last - first + 1);
+}
+
 std::string readFile(const std::string& path)
 {
     std::ifstream file(path);

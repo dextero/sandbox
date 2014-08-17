@@ -84,6 +84,9 @@ static inline std::vector<std::string> split(
     return split(text, std::vector<std::string>(separators));
 }
 
+std::string strip(const std::string& text,
+                  const std::string& chars = " \t\v\r\n");
+
 template<typename Iterable>
 std::string join(const Iterable& iterable,
                  const std::string& separator)

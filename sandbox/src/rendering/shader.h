@@ -9,9 +9,73 @@
 #include "types.h"
 #include "color.h"
 #include "../utils/types.h"
+#include "../utils/stringUtils.h"
+#include "../utils/lib.h"
 
 namespace sb
 {
+    struct Attrib {
+        enum class Kind {
+            Position,
+            Texcoord,
+            Color,
+            Normal,
+        };
+
+        std::string type;
+        std::string name;
+    };
+
+    class ConcreteShader
+    {
+    public:
+        ConcreteShader(GLuint shaderType,
+                       const std::string& path):
+            mShader(0)
+        {
+            std::string code = utils::readFile(path);
+            GL_CHECK(mShader = glCreateShader(shaderType));
+
+            const GLchar* codePtr = (const GLchar*)&code[0];
+            GL_CHECK(glShaderSource(mShader, 1, &codePtr, NULL));
+
+            static std::map<GLuint, std::string> SHADERS {
+                { GL_VERTEX_SHADER, "vertex" },
+                { GL_FRAGMENT_SHADER, "fragment" },
+                { GL_GEOMETRY_SHADER, "geometry" }
+            };
+
+            gLog.trace("compiling %s shader: %s",
+                       SHADERS[shaderType].c_str(), path.c_str());
+            GL_CHECK(glCompileShader(mShader));
+            if (!shaderCompilationSucceeded()) {
+                sbFail("shader compilation failed");
+            }
+
+            mAttribs = getInputs(code);
+        }
+
+        ~ConcreteShader()
+        {
+            if (mShader) {
+                GL_CHECK(glDeleteShader(mShader));
+            }
+        }
+
+        GLuint getShader() const { return mShader; }
+        const std::map<Attrib::Kind, Attrib>& getAttribs() const
+        {
+            return mAttribs;
+        }
+
+    private:
+        bool shaderCompilationSucceeded();
+        static std::map<Attrib::Kind, Attrib> getInputs(const std::string& code);
+
+        GLuint mShader;
+        std::map<Attrib::Kind, Attrib> mAttribs;
+    };
+
     class Shader
     {
     public:
@@ -56,23 +120,30 @@ namespace sb
         void bind();
         void unbind();
 
+        const std::map<Attrib::Kind, Attrib>& getInputs() {
+            return mInputs;
+        }
+
+        ~Shader()
+        {
+            if (mProgram) {
+                GL_CHECK(glDeleteProgram(mProgram));
+            }
+        }
+
     private:
-        std::shared_ptr<ProgramId> mProgram;
-        std::shared_ptr<ShaderId> mVertexShader;
-        std::shared_ptr<ShaderId> mFragmentShader;
-        std::shared_ptr<ShaderId> mGeometryShader;
+        ProgramId mProgram;
+        std::map<Attrib::Kind, Attrib> mInputs;
 
         std::vector<std::string> mAttribs;
 
-        Shader(const std::shared_ptr<ShaderId>& vertex,
-               const std::shared_ptr<ShaderId>& fragment,
-               const std::shared_ptr<ShaderId>& geometry,
-               const std::vector<std::string>& attribs);
+        Shader(const std::shared_ptr<ConcreteShader>& vertex,
+               const std::shared_ptr<ConcreteShader>& fragment,
+               const std::shared_ptr<ConcreteShader>& geometry);
 
-        std::shared_ptr<ProgramId>
-        linkShader(const std::shared_ptr<ShaderId>& vertex,
-                   const std::shared_ptr<ShaderId>& fragment,
-                   const std::shared_ptr<ShaderId>& geometry);
+        ProgramId linkShader(const std::shared_ptr<ConcreteShader>& vertex,
+                             const std::shared_ptr<ConcreteShader>& fragment,
+                             const std::shared_ptr<ConcreteShader>& geometry);
 
         static bool shaderLinkSucceeded(ProgramId program);
 
