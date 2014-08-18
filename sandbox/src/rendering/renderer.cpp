@@ -174,11 +174,13 @@ void Renderer::drawAll()
         return;
     }
 
+#if 0
     std::sort(mDrawablesBuffer.begin(), mDrawablesBuffer.end(),
               [](const std::shared_ptr<Drawable>& a,
                  const std::shared_ptr<Drawable>& b) {
                   return *a < *b;
               });
+#endif
 
     State rendererState(mCamera);
     for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
