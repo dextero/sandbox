@@ -23,14 +23,13 @@ Texture::Texture(std::shared_ptr<Image> image):
         image = copy;
     }
 
-    GLuint texture;
     GLuint prevTex;
     // save current image
     GL_CHECK(glGetIntegerv(GL_TEXTURE_BINDING_2D, (GLint*)&prevTex));
 
     // copy image to opengl
-    GL_CHECK(glGenTextures(1, &texture));
-    GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture));
+    GL_CHECK(glGenTextures(1, &mId));
+    GL_CHECK(glBindTexture(GL_TEXTURE_2D, mId));
     GL_CHECK(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 
     GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0,
