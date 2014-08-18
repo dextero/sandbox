@@ -17,7 +17,7 @@ uniform uint numPointLights;
 uniform ParallelLight parallelLights[];
 uniform uint numParallelLights;
 
-uniform vec3 eye_pos;
+uniform vec3 eyePos;
 
 uniform sampler2D texture;
 uniform vec4 color;
@@ -31,19 +31,27 @@ in vec2 ps_texcoord;
 out vec4 out_color;
 
 vec4 phong(vec3 position,
-           vec3 normal,
-           vec4 color)
+           vec3 normal)
 {
     vec3 eye_dir = normalize(position - eye_pos);
     vec4 out_color = vec4(0.0, 0.0, 0.0, 1.0);
 
-    for (uint i = 0u; i < num_lights; ++i) {
-        vec3 light_dir = normalize(lights[i].position - position);
+    for (uint i = 0u; i < numParallelLights; ++i) {
+        vec3 light_dir = -parallelLights[i].direction;
 
         float diffuse = dot(light_dir, normal);
         float specular = pow(dot(light_dir, reflect(eye_dir, normal)), specular_exp);
 
-        out_color.xyz += lights[i].intensity * lights[i].color * (1.0 + diffuse + specular);
+        out_color.xyz += parallelLights[i].intensity * parallelLights[i].color * (1.0 + diffuse + specular);
+    }
+
+    for (uint i = 0u; i < numPointLights; ++i) {
+        vec3 light_dir = normalize(pointLights[i].position - position);
+
+        float diffuse = dot(light_dir, normal);
+        float specular = pow(dot(light_dir, reflect(eye_dir, normal)), specular_exp);
+
+        out_color.xyz += pointLights[i].intensity * pointLights[i].color * (1.0 + diffuse + specular);
     }
 
     return out_color;
@@ -51,6 +59,6 @@ vec4 phong(vec3 position,
 
 void main()
 {
-    out_color = color * texture2D(texture, ps_texcoord);
+    out_color = color * texture2D(texture, ps_texcoord) * phong(ps_position.xyz, ps_normal);
 }
 

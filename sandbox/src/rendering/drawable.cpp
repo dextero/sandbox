@@ -158,6 +158,10 @@ namespace {
 void setLightUniforms(const Renderer::State& state,
                       const std::shared_ptr<Shader>& shader)
 {
+    if (shader->hasUniform("eyePos")) {
+        shader->setUniform("eyePos", state.camera.getEye());
+    }
+
     if (shader->hasUniform("ambientLightColor")) {
         shader->setUniform("ambientLightColor", state.ambientLightColor);
     }

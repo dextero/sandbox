@@ -20,7 +20,7 @@ namespace sb
 
         static Light point(const Vec3& pos,
                            float intensity,
-                           const Color& color) {
+                           const Color& color = Color::White) {
             return Light(Type::Point, pos, intensity, color);
         }
 

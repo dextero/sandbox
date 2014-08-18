@@ -72,7 +72,7 @@ namespace sb
         void setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy);
 
         void setAmbientLightColor(const Color& color) { mAmbientLightColor = color; }
-        void addLight(const Light& light);
+        void addLight(const Light& light) { mLights.push_back(light); }
 
         void draw(Drawable& d);
         void draw(const std::shared_ptr<Drawable>& d) { draw(*d); }

@@ -187,6 +187,8 @@ void Renderer::drawAll()
         d->draw(rendererState);
     }
 
+    mAmbientLightColor = Color::White;
+    mLights.clear();
     mDrawablesBuffer.clear();
 }
 

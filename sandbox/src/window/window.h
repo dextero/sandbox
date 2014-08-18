@@ -35,6 +35,8 @@ namespace sb
         void setTitle(const std::string& str);
 
         void clear(const Color& c);
+        void setAmbientLightColor(const Color& color) { mRenderer.setAmbientLightColor(color); }
+        void addLight(const Light& light) { mRenderer.addLight(light); }
         void draw(Drawable& d);
         void display();
         void hideCursor(bool hide = true);

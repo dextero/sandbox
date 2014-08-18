@@ -470,6 +470,10 @@ int main()
 
         wnd.clear(sb::Color(0.f, 0.f, 0.5f));
 
+        wnd.setAmbientLightColor(sb::Color(0.2f, 0.2f, 0.2f));
+        wnd.addLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f));
+        wnd.addLight(sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f));
+
         // environment
         wnd.draw(skybox);
         wnd.draw(terrain);
