@@ -115,6 +115,9 @@ namespace sb
         bool setUniform(const char* name,
                         const int* value_array,
                         uint32_t elements);
+        bool setUniform(const char* name,
+                        const unsigned* value_array,
+                        uint32_t elements);
 
         template<typename T>
         inline bool setUniform(const std::string& name,
@@ -154,6 +157,7 @@ namespace sb
             mProgram = prev.mProgram;
             prev.mProgram = 0;
             mInputs.swap(prev.mInputs);
+            mUniforms.swap(prev.mUniforms);
             return *this;
         }
 

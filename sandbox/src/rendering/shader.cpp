@@ -273,6 +273,7 @@ DEFINE_UNIFORM_SETTER(Vec2, GLfloat, glUniform2fv)
 DEFINE_UNIFORM_SETTER(Vec3, GLfloat, glUniform3fv)
 DEFINE_UNIFORM_SETTER(Color, GLfloat, glUniform4fv)
 DEFINE_UNIFORM_SETTER(int, GLint, glUniform1iv)
+DEFINE_UNIFORM_SETTER(unsigned, GLuint, glUniform1uiv)
 
 DEFINE_UNIFORM_SETTER(Mat44, GLfloat, glUniformMatrix4fv, GL_FALSE)
 

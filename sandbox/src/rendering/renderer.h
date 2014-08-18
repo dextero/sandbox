@@ -47,7 +47,7 @@ namespace sb
                                  return l.type == Light::Type::Point;
                              });
                 std::copy_if(allLights.begin(), allLights.end(),
-                             std::back_inserter(pointLights),
+                             std::back_inserter(parallelLights),
                              [](const Light& l) {
                                  return l.type == Light::Type::Parallel;
                              });

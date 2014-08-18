@@ -11,7 +11,7 @@ struct ParallelLight {
     float intensity;
 };
 
-uniform vec3 ambientLightColor;
+uniform vec4 ambientLightColor;
 uniform PointLight pointLights[8]; 
 uniform uint numPointLights;
 uniform ParallelLight parallelLights[8];
@@ -22,7 +22,7 @@ uniform vec3 eyePos;
 uniform sampler2D texture;
 uniform vec4 color;
 
-const uint specular_exp = 16u;
+const uint specularExp = 16u;
 
 in vec4 ps_position;
 in vec3 ps_normal;
@@ -30,31 +30,52 @@ in vec2 ps_texcoord;
 
 out vec4 out_color;
 
-vec4 phong(vec3 position,
-           vec3 normal)
+vec4 diffuse(vec3 position,
+             vec3 normal)
 {
-    vec3 eye_dir = normalize(position - eyePos);
-    vec4 out_color = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 outColor = vec4(0.0, 0.0, 0.0, 1.0);
 
     for (uint i = 0u; i < numParallelLights; ++i) {
-        vec3 light_dir = -parallelLights[i].direction;
-
-        float diffuse = dot(light_dir, normal);
-        float specular = pow(dot(light_dir, reflect(eye_dir, normal)), specular_exp);
-
-        out_color.rgb += (parallelLights[i].intensity * parallelLights[i].color * (1.0 + diffuse + specular)).rgb;
+        vec3 lightDir = -parallelLights[i].direction;
+        outColor.rgb += parallelLights[i].intensity * dot(lightDir, normal);
     }
 
     for (uint i = 0u; i < numPointLights; ++i) {
-        vec3 light_dir = normalize(pointLights[i].position - position);
-
-        float diffuse = dot(light_dir, normal);
-        float specular = pow(dot(light_dir, reflect(eye_dir, normal)), specular_exp);
-
-        out_color.rgb += (pointLights[i].intensity * pointLights[i].color * (1.0 + diffuse + specular)).rgb;
+        vec3 diff = position - pointLights[i].position;
+        vec3 lightDir = normalize(diff);
+        float distSquared = dot(diff, diff);
+        outColor.rgb += pointLights[i].intensity * dot(lightDir, normal);
     }
 
-    return out_color;
+    return clamp(outColor, 0.0, 1.0);
+}
+
+vec4 specular(vec3 position,
+              vec3 normal)
+{
+    vec4 outColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+    for (uint i = 0u; i < numPointLights; ++i) {
+        vec3 lightDir = normalize(position - pointLights[i].position);
+        vec3 eyeDir = normalize(eyePos - position);
+        outColor.rgb += pointLights[i].intensity * pow(dot(lightDir, reflect(eyeDir, normal)), specularExp);
+    }
+
+    return clamp(outColor, 0.0, 1.0);
+}
+
+vec4 phong(vec3 position,
+           vec3 normal)
+{
+#if 0
+    return clamp(ambientLightColor + diffuse(position, normal) + specular(position, normal), 0.0, 1.0);
+#else
+#  if 1
+    return clamp(ambientLightColor + diffuse(position, normal), 0.0, 1.0);
+#  else
+    return clamp(ambientLightColor, 0.0, 1.0);
+#  endif
+#endif
 }
 
 void main()
