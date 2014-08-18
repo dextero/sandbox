@@ -2,12 +2,12 @@
 
 uniform vec4 color;
 
-in vec4 in_color;
+in vec4 ps_color;
 
 out vec4 out_color;
 
 void main()
 {
-	out_color = color * in_color;
+    out_color = color * ps_color;
 }
 

@@ -3,20 +3,20 @@
 uniform mat4 matViewProjection;
 uniform mat4 matModel;
 
-in vec3 in_position; // POSITION
-in vec3 in_normal;   // NORMAL
-in vec4 in_color;    // COLOR
+in vec3 position; // POSITION
+in vec3 normal;   // NORMAL
+in vec4 color;    // COLOR
 
-out vec3 position;
-out vec3 normal;
-out vec4 color;
+out vec4 ps_position;
+out vec3 ps_normal;
+out vec4 ps_color;
 
 void main()
 {
-	position = matViewProjection * matModel * vec4(in_position, 1.0);
-    normal = in_normal;
-	color = in_color;
+    ps_position = matViewProjection * matModel * vec4(in_position, 1.0);
+    ps_normal = normalize(mat3(matModel) * in_normal);
+    ps_color = in_color;
 
-    gl_Position = position;
+    gl_Position = ps_position;
 }
 

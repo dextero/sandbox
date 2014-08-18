@@ -7,6 +7,6 @@ in vec3 position; // POSITION
 
 void main()
 {
-	gl_Position = matViewProjection * matModel * vec4(position, 1.0);
+    gl_Position = matViewProjection * matModel * vec4(position, 1.0);
 }
 

@@ -4,13 +4,19 @@ uniform mat4 matViewProjection;
 uniform mat4 matModel;
 
 in vec3 position; // POSITION
+in vec3 normal;   // NORMAL
 in vec2 texcoord; // TEXCOORD
 
-out vec2 out_texcoord;
+out vec4 ps_position;
+out vec3 ps_normal;
+out vec2 ps_texcoord;
 
 void main()
 {
-	out_texcoord = texcoord;
-	gl_Position = matViewProjection * matModel * vec4(position, 1.0);
+    ps_position = matViewProjection * matModel * vec4(position, 1.0);
+    ps_normal = normalize(mat3(matModel) * ps_normal);
+    ps_texcoord = texcoord;
+
+    gl_Position = ps_position;
 }
 

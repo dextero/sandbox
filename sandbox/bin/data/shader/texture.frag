@@ -17,9 +17,9 @@ uniform vec4 color;
 
 const uint specular_exp = 16u;
 
-in vec3 position;
-in vec3 normal;
-in vec2 texcoord;
+in vec4 ps_position;
+in vec3 ps_normal;
+in vec2 ps_texcoord;
 
 out vec4 out_color;
 
@@ -46,6 +46,6 @@ vec4 phong(vec3 position,
 
 void main()
 {
-	out_color = color * texture2D(texture, texcoord);
+    out_color = color * texture2D(texture, ps_texcoord);
 }
 
