@@ -123,10 +123,10 @@ bool Renderer::init(::Display* display, ::Window window, GLXFBConfig& fbc)
     GL_CHECK(glEnable(GL_CULL_FACE));
     GL_CHECK(glCullFace(GL_BACK));
 
-#if 0
     GL_CHECK(glEnable(GL_BLEND));
     GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+#if 0
     GL_CHECK(glEnable(GL_TEXTURE_2D));
 
     String::init(mDisplay);
