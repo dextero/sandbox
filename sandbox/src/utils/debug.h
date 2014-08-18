@@ -10,7 +10,7 @@ namespace sb {
 # define sbFail(message, ...) \
     do { \
         gLog.err(message, ##__VA_ARGS__); \
-        printTrace(); \
+        ::sb::printTrace(); \
         abort(); \
     } while (0)
 

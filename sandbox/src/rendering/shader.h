@@ -48,7 +48,7 @@ namespace sb
                 sbFail("shader compilation failed");
             }
 
-            mInputs = getInputs(code);
+            mInputs = parseInputs(code, shaderType == GL_VERTEX_SHADER);
         }
 
         ~ConcreteShader()
@@ -66,7 +66,8 @@ namespace sb
 
     private:
         bool shaderCompilationSucceeded();
-        static std::map<Attrib::Kind, Input> getInputs(const std::string& code);
+        static std::map<Attrib::Kind, Input> parseInputs(const std::string& code,
+                                                         bool warnOnUntagged);
 
         GLuint mShader;
         std::map<Attrib::Kind, Input> mInputs;
@@ -118,6 +119,15 @@ namespace sb
 
         const std::map<Attrib::Kind, Input>& getInputs() {
             return mInputs;
+        }
+
+        Shader(Shader&& prev) { *this = std::move(prev); }
+        Shader& operator =(Shader&& prev)
+        {
+            mProgram = prev.mProgram;
+            prev.mProgram = 0;
+            mInputs.swap(prev.mInputs);
+            return *this;
         }
 
         ~Shader()

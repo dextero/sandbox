@@ -3,9 +3,9 @@
 uniform mat4 matViewProjection;
 uniform mat4 matModel;
 
-in vec3 in_position;
-in vec3 in_normal;
-in vec4 in_color;
+in vec3 in_position; // POSITION
+in vec3 in_normal;   // NORMAL
+in vec4 in_color;    // COLOR
 
 out vec3 position;
 out vec3 normal;

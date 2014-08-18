@@ -14,6 +14,12 @@ namespace sb
         static const uint32_t MAX_TEXTURE_UNITS = 4;
 
         Texture(std::shared_ptr<Image> image);
+        ~Texture();
+
+        Texture(Texture&&) = delete;
+        Texture& operator =(Texture&&) = delete;
+        Texture(const Texture&) = delete;
+        Texture& operator =(const Texture&) = delete;
 
         void bind(uint32_t textureUnit) const;
         void unbind() const;

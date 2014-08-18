@@ -92,15 +92,10 @@ namespace sb
         this->bufferType = bufferType;
         GL_CHECK(glGetIntegerv(bufferBinding, (GLint*)&prevId));
         GL_CHECK(glBindBuffer(bufferType, id));
-
-        gLog.debug("buffer %s: bind %d (was %d)\n",
-                   getBufferName(bufferType).c_str(), id, prevId);
     }
 
     void Buffer::unbind()
     {
-        gLog.debug("unbind %s\n", getBufferName(bufferType).c_str());
-
         GL_CHECK(glBindBuffer(bufferType, prevId));
         bufferType = 0;
         prevId = 0;

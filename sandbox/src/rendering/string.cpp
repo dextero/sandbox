@@ -1,3 +1,4 @@
+#include "rendering/includeGL.h"
 #include "rendering/string.h"
 #include "rendering/shader.h"
 #include "utils/lib.h"
@@ -5,9 +6,8 @@
 #include "utils/logger.h"
 
 #include <X11/Xlib.h>
-#include <GL/gl.h>
-#include <GL/glx.h>
 
+#if 0
 namespace sb
 {
     GLuint String::mBase = 0u;
@@ -91,3 +91,4 @@ namespace sb
             printLine(lines[0], x, y - (float)line * mLineHeight, color);
     }
 } // namespace sb
+#endif

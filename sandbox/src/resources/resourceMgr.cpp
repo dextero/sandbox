@@ -37,9 +37,11 @@ ResourceMgr::ResourceMgr(const std::string& basePath):
     mGeometryShaders(mBasePath + "shader/"),
     mShaderPrograms()
 {
+#if 0
     GLint maxTexSize;
     GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize));
     gLog.trace("max texture size: %d\n", maxTexSize);
+#endif
 
     ilInit();
     iluInit();

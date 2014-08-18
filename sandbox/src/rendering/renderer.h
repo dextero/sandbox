@@ -1,11 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glx.h>
-
+#include "rendering/includeGL.h"
 #include <X11/Xlib.h>
 
 #include "rendering/color.h"

@@ -156,31 +156,19 @@ namespace sb
 
     void Drawable::draw(Renderer::State& state) const
     {
-        if (mTexture != state.texture) {
-            state.texture = mTexture;
-
-            sbAssert(state.texture, "texture not set");
-
-            state.texture->bind(0);
-        }
-
-        auto bind = make_bind(mMesh->getVertexBuffer());
+        auto vaoBind = make_bind(mMesh->getVertexBuffer());
         auto indexBind = make_bind(mMesh->getIndexBuffer());
+        auto shaderBind = make_bind(*mShader, mMesh->getVertexBuffer());
+        auto textureBind = make_bind(*mTexture, 0);
 
-        state.shader = mShader;
-        sbAssert(state.shader, "shader not set");
-
-        state.shader->bind(mMesh->getVertexBuffer());
-        state.shader->setUniform("texture", (int)Shader::SamplerImage);
-
-        state.shader->setUniform("matViewProjection",
+        mShader->setUniform("texture", 0);
+        mShader->setUniform("matViewProjection",
                 state.camera.getViewProjectionMatrix(mProjectionType));
+        mShader->setUniform("matModel", getTransformationMatrix());
+        mShader->setUniform("color", mColor);
 
-        state.shader->setUniform("matModel", getTransformationMatrix());
-        state.shader->setUniform("color", mColor);
-
-        GL_CHECK(glDrawElements(mMesh->getShape(),
+        GL_CHECK(glDrawElements((GLuint)mMesh->getShape(),
                                 mMesh->getIndexBufferSize(),
-                                GL_UNSIGNED_INT, NULL));
+                                GL_UNSIGNED_INT, (void*)NULL));
     }
 }

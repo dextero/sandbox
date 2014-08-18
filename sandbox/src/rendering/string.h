@@ -10,6 +10,7 @@
 
 namespace sb
 {
+#if 0
     class String
     {
         static GLuint mBase;
@@ -33,6 +34,7 @@ namespace sb
                           const Color& color = Color(1.f, 1.f, 1.f),
                           uint32_t line = 0u);
     };
+    #endif
 } // namespace sb
 
 #endif // STRING_H

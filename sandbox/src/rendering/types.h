@@ -6,9 +6,7 @@
 #   include <Windows.h>
 #endif // PLATFORM_WIN32
 
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include "rendering/includeGL.h"
 
 namespace sb
 {

@@ -152,7 +152,7 @@ int main()
         "/' - decrease/increase ball radius**\n"
         "* hold button to adjust value\n"
         "** doesn't affect existing balls";
-    const uint32_t helpStringLines = 27u;
+    //const uint32_t helpStringLines = 27u;
 
     gLog.info("entering main loop\n");
 
@@ -469,28 +469,23 @@ int main()
         wnd.clear(sb::Color(0.f, 0.f, 0.5f));
 
         // environment
-        gLog.debug("drawing skybox\n");
         wnd.draw(skybox);
-        gLog.debug("drawing terrain\n");
         wnd.draw(terrain);
 
         // axes - disable edpth test to prevent blinking
         wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest, false);
-        gLog.debug("drawing axes\n");
         wnd.draw(xaxis);
         wnd.draw(yaxis);
         wnd.draw(zaxis);
         wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest);
 
         // balls & forces
-        gLog.debug("drawing sim\n");
         sim.drawAll(wnd.getRenderer());
 
         // crosshair
-        gLog.debug("drawing crosshair\n");
         wnd.draw(crosshair);
 
-        gLog.debug("drawing strings\n");
+#if 0
         // info strings
         uint32_t nextLine = 0u;
         sb::String::print(fpsString, 0.f, 0.f,
@@ -532,7 +527,7 @@ int main()
                     sim.raycast(wnd.getCamera().getEye(),
                                 wnd.getCamera().getFront().normalized()),
                     0.f, 0.0f, nextLine);
-
+#endif
         wnd.display();
     }
 

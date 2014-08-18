@@ -29,6 +29,7 @@ void VertexBuffer::addBuffer(const Attrib::Kind& kind,
     Buffer buffer(data, numElements * attrib.elemSizeBytes);
 
     buffer.bind(GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING);
+    GL_CHECK(glEnableVertexAttribArray(mBuffers.size()));
     GL_CHECK(glVertexAttribPointer(mBuffers.size(),
                                    attrib.numComponents, GL_FLOAT,
                                    GL_FALSE, 0, NULL));
@@ -50,10 +51,9 @@ VertexBuffer::VertexBuffer(const std::vector<Vec3>& vertices,
                colors.size() > 0 ? " colors" : "");
 
     GL_CHECK(glGenVertexArrays(1, &mVAO));
-    GL_CHECK(glBindVertexArray(mVAO));
+    auto vaoBind = make_bind(*this);
 
     sbAssert(vertices.size() > 0, "vertex buffer must have some vertices");
-
     addBuffer(Attrib::Kind::Position, &vertices[0], vertices.size());
 
     if (texcoords.size() > 0) {
@@ -103,13 +103,11 @@ VertexBuffer::~VertexBuffer()
 
 void VertexBuffer::bind() const
 {
-    gLog.debug("binding VAO: %d\n", mVAO);
     GL_CHECK(glBindVertexArray(mVAO));
 }
 
 void VertexBuffer::unbind() const
 {
-    gLog.debug("unbinding VAO\n");
     GL_CHECK(glBindVertexArray(0));
 }
 

@@ -1,17 +1,19 @@
 #version 330
 
+/*
 struct Light {
     vec3 position;
     vec3 color;
     float intensity;
 };
 
-uniform sampler2D texture;
-uniform vec4 color;
-uniform vec3 eye_pos;
-
 uniform Light lights[];
 uniform uint num_lights;
+uniform vec3 eye_pos;
+*/
+
+uniform sampler2D texture;
+uniform vec4 color;
 
 const uint specular_exp = 16u;
 
@@ -21,6 +23,7 @@ in vec2 texcoord;
 
 out vec4 out_color;
 
+/*
 vec4 phong(vec3 position,
            vec3 normal,
            vec4 color)
@@ -39,6 +42,7 @@ vec4 phong(vec3 position,
 
     return out_color;
 }
+*/
 
 void main()
 {

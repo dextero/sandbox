@@ -3,7 +3,7 @@
 uniform mat4 matViewProjection;
 uniform mat4 matModel;
 
-in vec3 position;
+in vec3 position; // POSITION
 
 void main()
 {

@@ -156,6 +156,7 @@ namespace Sim
         mBalls.clear();
     }
 
+#if 0
     // returns lines displayed
     uint32_t Simulation::printParametersToScreen(float x, float y, uint32_t line)
     {
@@ -199,6 +200,7 @@ namespace Sim
         line += 15;
         return line;
     }
+#endif
 
     const std::shared_ptr<Ball> Simulation::raycast(const Vec3& rayOrig,
                                                     const Vec3& rayDir)
@@ -238,6 +240,7 @@ namespace Sim
         return ret;
     }
 
+#if 0
     uint32_t Simulation::printBallParametersToScreen(
             const std::shared_ptr<Ball> &ball,
             float x,
@@ -286,4 +289,6 @@ namespace Sim
 
         return line;
     }
+#endif
+
 }

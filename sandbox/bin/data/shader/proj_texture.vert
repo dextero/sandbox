@@ -3,8 +3,8 @@
 uniform mat4 matViewProjection;
 uniform mat4 matModel;
 
-in vec3 position;
-in vec2 texcoord;
+in vec3 position; // POSITION
+in vec2 texcoord; // TEXCOORD
 
 out vec2 out_texcoord;
 
