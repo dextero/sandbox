@@ -44,7 +44,7 @@ namespace sb
             gLog.trace("compiling %s shader: %s",
                        SHADERS[shaderType].c_str(), path.c_str());
             GL_CHECK(glCompileShader(mShader));
-            if (!shaderCompilationSucceeded()) {
+            if (!shaderCompilationSucceeded(code)) {
                 sbFail("shader compilation failed");
             }
 
@@ -65,7 +65,7 @@ namespace sb
         }
 
     private:
-        bool shaderCompilationSucceeded();
+        bool shaderCompilationSucceeded(const std::string& source);
         static std::map<Attrib::Kind, Input> parseInputs(const std::string& code,
                                                          bool warnOnUntagged);
 

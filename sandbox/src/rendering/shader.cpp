@@ -18,6 +18,49 @@ const std::map<std::string, Attrib::Kind> ATTRIB_KINDS {
     { "NORMAL", Attrib::Kind::Normal }
 };
 
+ssize_t extractLineNum(const std::string& logLine)
+{
+    size_t numStart = logLine.find('(');
+    if (numStart == std::string::npos) {
+        return -1;
+    }
+
+    ++numStart;
+    size_t numEnd = logLine.find(')', numStart);
+
+    return lexical_cast<ssize_t>(logLine.substr(numStart, numEnd - numStart));
+}
+
+void printWithContext(const std::vector<std::string>& sourceLines,
+                      size_t lineNum,
+                      size_t contextLines = 3)
+{
+    size_t start = (size_t)std::max((ssize_t)lineNum - (ssize_t)contextLines,
+                                    (ssize_t)0);
+    size_t end = std::min(lineNum + contextLines, sourceLines.size());
+
+    for (size_t i = start; i < end; ++i) {
+        gLog.printf("%s % 4u: %s\n",
+                    (i == lineNum ? ">>" : "  "), (unsigned)i,
+                    sourceLines[i].c_str());
+    }
+}
+
+void printPreprocessedCompileLog(const std::string& log,
+                                 const std::string& source)
+{
+    std::vector<std::string> sourceLines = utils::split(source, "\n");
+    std::vector<std::string> logLines = utils::split(log, "\n");
+
+    for (const auto& logLine: logLines) {
+        ssize_t lineNum = extractLineNum(logLine);
+        gLog.printf("%s", logLine.c_str());
+        if (lineNum >= 0) {
+            printWithContext(sourceLines, (size_t)lineNum - 1);
+        }
+    }
+}
+
 bool isInputLine(const std::string& line,
                  const std::vector<std::string>& words,
                  bool warnOnUntagged) {
@@ -93,7 +136,7 @@ ConcreteShader::parseInputs(const std::string& code,
     return ret;
 }
 
-bool ConcreteShader::shaderCompilationSucceeded()
+bool ConcreteShader::shaderCompilationSucceeded(const std::string& source)
 {
     GLint retval;
     GL_CHECK_RET(glGetShaderiv(mShader, GL_COMPILE_STATUS, &retval), false);
@@ -110,7 +153,7 @@ bool ConcreteShader::shaderCompilationSucceeded()
             buffer.resize(retval);
             GL_CHECK_RET(glGetShaderInfoLog(mShader, retval - 1,
                                             &retval, &buffer[0]), false);
-            gLog.printf("%s", buffer.c_str());
+            printPreprocessedCompileLog(buffer, source); 
         }
 
         return false;
