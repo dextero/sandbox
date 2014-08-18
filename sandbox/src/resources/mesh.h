@@ -19,7 +19,6 @@ namespace sb
             ShapePoint = SHAPE_POINTS,
             ShapeLine = SHAPE_LINES,
             ShapeTriangle = SHAPE_TRIANGLES,
-            ShapeQuad = SHAPE_QUADS,
             ShapeTriangleStrip = SHAPE_TRIANGLE_STRIP
         };
 

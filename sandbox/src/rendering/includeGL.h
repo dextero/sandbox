@@ -7,7 +7,7 @@
 #include <GL/glx.h>
 
 #ifndef TRACE_GL_CALLS
-#   define TRACE_GL_CALLS 1
+#   define TRACE_GL_CALLS 0
 #endif // TRACE_GL_CALLS
 
 #if _DEBUG && TRACE_GL_CALLS

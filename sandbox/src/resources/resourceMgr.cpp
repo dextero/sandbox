@@ -37,11 +37,9 @@ ResourceMgr::ResourceMgr(const std::string& basePath):
     mGeometryShaders(mBasePath + "shader/"),
     mShaderPrograms()
 {
-#if 0
     GLint maxTexSize;
     GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize));
     gLog.trace("max texture size: %d\n", maxTexSize);
-#endif
 
     ilInit();
     iluInit();
@@ -70,7 +68,7 @@ ResourceMgr::ResourceMgr(const std::string& basePath):
     std::vector<uint32_t> quadIndices { 0, 1, 2, 3 };
 
     std::shared_ptr<Mesh> line(new Mesh(Mesh::ShapeLine, lineVertices, {}, {}, {}, lineIndices, {}));
-    std::shared_ptr<Mesh> quad(new Mesh(Mesh::ShapeQuad, quadVertices, quadTexcoords, {}, {}, quadIndices, {}));
+    std::shared_ptr<Mesh> quad(new Mesh(Mesh::ShapeTriangleStrip, quadVertices, quadTexcoords, {}, {}, quadIndices, {}));
 
     mMeshes.addSpecial("line", line);
     mMeshes.addSpecial("quad", quad);

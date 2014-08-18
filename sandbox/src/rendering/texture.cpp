@@ -34,7 +34,7 @@ Texture::Texture(std::shared_ptr<Image> image):
     GL_CHECK(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 
     GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0,
-                          ilGetInteger(IL_IMAGE_BPP),
+                          ilGetInteger(IL_IMAGE_FORMAT),
                           potWidth, potHeight,
                           0, ilGetInteger(IL_IMAGE_FORMAT),
                           ilGetInteger(IL_IMAGE_TYPE), ilGetData()));
