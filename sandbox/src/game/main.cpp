@@ -89,7 +89,9 @@ int main()
                    sb::Color(0.f, 1.f, 0.f),
                    colorShader);
 
-    sb::Model skybox("skybox.obj", textureShader);
+    sb::Model skybox("skybox.obj",
+                     textureShader,
+                     gResourceMgr.getTexture("miramar.jpg"));
     skybox.setScale(1000.f);
 
     sb::Terrain terrain("hmap_flat.jpg", "ground.jpg", textureShader);

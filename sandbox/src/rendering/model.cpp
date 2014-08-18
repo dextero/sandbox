@@ -3,10 +3,11 @@
 namespace sb
 {
     Model::Model(const std::string& path,
-                 const std::shared_ptr<Shader>& shader):
+                 const std::shared_ptr<Shader>& shader,
+                 const std::shared_ptr<Texture>& texture):
         Drawable(ProjectionPerspective,
                  gResourceMgr.getMesh(path),
-                 nullptr,
+                 texture,
                  shader)
     {}
 

@@ -51,7 +51,10 @@ namespace Sim
         mTime(0.0),
         mTotalEnergy(0.0),
         mPos(pos),
-        mModel(std::make_shared<sb::Model>("sphere.obj", modelShader)),
+        mModel(std::make_shared<sb::Model>(
+                   "sphere.obj",
+                   modelShader,
+                   gResourceMgr.getTexture("blue_marble.jpg"))),
         mTimeToLive(5u),
         mPath(),
         mLineShader(lineShader)

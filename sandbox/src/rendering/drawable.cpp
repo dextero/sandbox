@@ -153,7 +153,6 @@ namespace sb
         return zDiff < 0;
     }
 
-
     void Drawable::draw(Renderer::State& state) const
     {
         auto vaoBind = make_bind(mMesh->getVertexBuffer());

@@ -10,7 +10,8 @@ namespace sb
     {
     public:
         Model(const std::string& path,
-              const std::shared_ptr<Shader>& shader);
+              const std::shared_ptr<Shader>& shader,
+              const std::shared_ptr<Texture>& texture = {});
 
         bool loadFromFile(const std::string& path);
     };
