@@ -99,7 +99,7 @@ void extractInput(std::map<Attrib::Kind, Input>& outInputs,
     }
 
     const std::string& type = words[1];
-    const std::string& name = utils::strip(words[2], ";");
+    const std::string& name = utils::strip(words[2], "[]0123456789;");
     const std::string& kind_str = words[4];
 
     auto kindIt = ATTRIB_KINDS.find(kind_str);
@@ -145,7 +145,9 @@ std::set<std::string> ConcreteShader::parseUniforms(const std::string& code)
         std::vector<std::string> words = utils::split(line);
         if (words.size() > 2
                 && words[0] == "uniform") {
-            ret.insert(utils::strip(words[2], ";"));
+            std::string uniformName = utils::strip(words[2], "[]0123456789;");
+            ret.insert(uniformName);
+            gLog.trace("uniform: %s", uniformName.c_str());
         }
     }
 

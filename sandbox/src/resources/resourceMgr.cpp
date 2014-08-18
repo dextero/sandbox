@@ -115,7 +115,8 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
     const uint32_t importerFlags = aiProcess_CalcTangentSpace
                                    | aiProcess_Triangulate
                                    | aiProcess_JoinIdenticalVertices
-                                   | aiProcess_SortByPType;
+                                   | aiProcess_SortByPType
+                                   | aiProcess_GenNormals;
     const aiScene* scene = importer.ReadFile(name, importerFlags);
 
     if (!scene || !scene->HasMeshes()) {

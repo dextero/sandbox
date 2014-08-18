@@ -9,12 +9,12 @@ struct ParallelLight {
     vec3 direction;
     vec4 color;
     float intensity;
-}
+};
 
 uniform vec3 ambientLightColor;
-uniform PointLight pointLights[]; 
+uniform PointLight pointLights[8]; 
 uniform uint numPointLights;
-uniform ParallelLight parallelLights[];
+uniform ParallelLight parallelLights[8];
 uniform uint numParallelLights;
 
 uniform vec3 eyePos;
@@ -33,7 +33,7 @@ out vec4 out_color;
 vec4 phong(vec3 position,
            vec3 normal)
 {
-    vec3 eye_dir = normalize(position - eye_pos);
+    vec3 eye_dir = normalize(position - eyePos);
     vec4 out_color = vec4(0.0, 0.0, 0.0, 1.0);
 
     for (uint i = 0u; i < numParallelLights; ++i) {
@@ -42,7 +42,7 @@ vec4 phong(vec3 position,
         float diffuse = dot(light_dir, normal);
         float specular = pow(dot(light_dir, reflect(eye_dir, normal)), specular_exp);
 
-        out_color.xyz += parallelLights[i].intensity * parallelLights[i].color * (1.0 + diffuse + specular);
+        out_color.rgb += (parallelLights[i].intensity * parallelLights[i].color * (1.0 + diffuse + specular)).rgb;
     }
 
     for (uint i = 0u; i < numPointLights; ++i) {
@@ -51,7 +51,7 @@ vec4 phong(vec3 position,
         float diffuse = dot(light_dir, normal);
         float specular = pow(dot(light_dir, reflect(eye_dir, normal)), specular_exp);
 
-        out_color.xyz += pointLights[i].intensity * pointLights[i].color * (1.0 + diffuse + specular);
+        out_color.rgb += (pointLights[i].intensity * pointLights[i].color * (1.0 + diffuse + specular)).rgb;
     }
 
     return out_color;

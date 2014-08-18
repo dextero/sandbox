@@ -65,13 +65,14 @@ int main()
 
     auto colorShader = gResourceMgr.getShader("proj_basic.vert", "color.frag");
     auto textureShader = gResourceMgr.getShader("proj_texture.vert", "texture.frag");
+    auto textureLightShader = gResourceMgr.getShader("proj_texture_normal.vert", "texture_normal.frag");
 
     wnd.setTitle("Sandbox");
     wnd.lockCursor();
     wnd.hideCursor();
 
     Sim::Simulation sim(Sim::Simulation::SimSingleThrow,
-                        textureShader,
+                        textureLightShader,
                         colorShader);
     sim.setThrowStart(Vec3d(0., 1., 0.), Vec3d(30., 30., 0.));
 

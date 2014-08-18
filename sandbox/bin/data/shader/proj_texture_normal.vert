@@ -14,7 +14,7 @@ out vec2 ps_texcoord;
 void main()
 {
     ps_position = matViewProjection * matModel * vec4(position, 1.0);
-    ps_normal = normalize(mat3(matModel) * ps_normal);
+    ps_normal = normalize(mat3(matModel) * normal);
     ps_texcoord = texcoord;
 
     gl_Position = ps_position;
