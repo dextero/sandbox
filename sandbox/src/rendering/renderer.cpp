@@ -62,7 +62,8 @@ Renderer::Renderer():
     mCamera(),
     mGLContext(NULL),
     mDisplay(NULL),
-    mDrawablesBuffer()
+    mDrawablesBuffer(),
+    mAmbientLightColor(Color::White)
 {
 }
 
@@ -158,11 +159,8 @@ void Renderer::setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy)
 
 void Renderer::draw(Drawable& d)
 {
-    if (!d.mMesh && !d.mTexture)
-    {
-        gLog.err("Renderer::draw: invalid call, mMesh == NULL\n");
-        sbFail("Renderer::draw: invalid call");
-        return;
+    if (!d.mMesh && !d.mTexture) {
+        sbFail("Renderer::draw: invalid call, mMesh == NULL");
     }
 
     mDrawablesBuffer.push_back(std::make_shared<Drawable>(d));
@@ -182,7 +180,9 @@ void Renderer::drawAll()
               });
 #endif
 
-    State rendererState(mCamera);
+    State rendererState(mCamera,
+                        mAmbientLightColor,
+                        mLights);
     for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
         d->draw(rendererState);
     }

@@ -136,6 +136,22 @@ ConcreteShader::parseInputs(const std::string& code,
     return ret;
 }
 
+std::set<std::string> ConcreteShader::parseUniforms(const std::string& code)
+{
+    std::set<std::string> ret;
+    std::vector<std::string> lines = utils::split(code, "\n");
+
+    for (const std::string& line: lines) {
+        std::vector<std::string> words = utils::split(line);
+        if (words.size() > 2
+                && words[0] == "uniform") {
+            ret.insert(utils::strip(words[2], ";"));
+        }
+    }
+
+    return ret;
+}
+
 bool ConcreteShader::shaderCompilationSucceeded(const std::string& source)
 {
     GLint retval;
@@ -167,7 +183,17 @@ Shader::Shader(const std::shared_ptr<ConcreteShader>& vertex,
                const std::shared_ptr<ConcreteShader>& geometry):
     mProgram(linkShader(vertex, fragment, geometry)),
     mInputs(vertex->getInputs())
-{}
+{
+    std::copy(vertex->getUniforms().begin(), vertex->getUniforms().end(),
+              std::inserter(mUniforms, mUniforms.end()));
+    std::copy(fragment->getUniforms().begin(), fragment->getUniforms().end(),
+              std::inserter(mUniforms, mUniforms.end()));
+
+    if (geometry) {
+        std::copy(geometry->getUniforms().begin(), geometry->getUniforms().end(),
+                  std::inserter(mUniforms, mUniforms.end()));
+    }
+}
 
 ProgramId Shader::linkShader(const std::shared_ptr<ConcreteShader>& vertex,
                              const std::shared_ptr<ConcreteShader>& fragment,

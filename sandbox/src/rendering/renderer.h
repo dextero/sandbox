@@ -8,8 +8,10 @@
 #include "rendering/shader.h"
 #include "rendering/texture.h"
 #include "rendering/camera.h"
+#include "rendering/light.h"
 
 #include <vector>
+#include <algorithm>
 
 namespace sb
 {
@@ -25,13 +27,31 @@ namespace sb
             EProjectionType projectionType;
             Camera &camera;
 
+            Color ambientLightColor;
+            std::vector<Light> pointLights;
+            std::vector<Light> parallelLights;
+
         private:
-            State(Camera& camera):
+            State(Camera& camera,
+                  const Color& ambientLightColor,
+                  const std::vector<Light>& allLights):
                 shader(),
                 texture(),
                 projectionType(EProjectionType::ProjectionPerspective),
-                camera(camera)
-            {}
+                camera(camera),
+                ambientLightColor(ambientLightColor)
+            {
+                std::copy_if(allLights.begin(), allLights.end(),
+                             std::back_inserter(pointLights),
+                             [](const Light& l) {
+                                 return l.type == Light::Type::Point;
+                             });
+                std::copy_if(allLights.begin(), allLights.end(),
+                             std::back_inserter(pointLights),
+                             [](const Light& l) {
+                                 return l.type == Light::Type::Parallel;
+                             });
+            }
 
             friend class Renderer;
         };
@@ -50,6 +70,9 @@ namespace sb
         void setClearColor(const Color& c);
         void clear();
         void setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy);
+
+        void setAmbientLightColor(const Color& color) { mAmbientLightColor = color; }
+        void addLight(const Light& light);
 
         void draw(Drawable& d);
         void draw(const std::shared_ptr<Drawable>& d) { draw(*d); }
@@ -70,6 +93,8 @@ namespace sb
         ::Display* mDisplay;
 
         std::vector<std::shared_ptr<Drawable>> mDrawablesBuffer;
+        Color mAmbientLightColor;
+        std::vector<Light> mLights;
 
         bool initGLEW();
 

@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <set>
 #include <memory>
 
 #include "types.h"
@@ -49,6 +50,7 @@ namespace sb
             }
 
             mInputs = parseInputs(code, shaderType == GL_VERTEX_SHADER);
+            mUniforms = parseUniforms(code);
         }
 
         ~ConcreteShader()
@@ -63,14 +65,20 @@ namespace sb
         {
             return mInputs;
         }
+        const std::set<std::string> getUniforms() const
+        {
+            return mUniforms;
+        }
 
     private:
         bool shaderCompilationSucceeded(const std::string& source);
         static std::map<Attrib::Kind, Input> parseInputs(const std::string& code,
                                                          bool warnOnUntagged);
+        static std::set<std::string> parseUniforms(const std::string& code);
 
         GLuint mShader;
         std::map<Attrib::Kind, Input> mInputs;
+        std::set<std::string> mUniforms;
     };
 
     class Shader
@@ -108,6 +116,21 @@ namespace sb
                         const int* value_array,
                         uint32_t elements);
 
+        template<typename T>
+        inline bool setUniform(const std::string& name,
+                               const T& value)
+        {
+            return setUniform(name.c_str(), value);
+        }
+
+        template<typename T>
+        inline bool setUniform(const std::string& name,
+                               const T* value_array,
+                               uint32_t elements)
+        {
+            return setUniform(name.c_str(), value_array, elements);
+        }
+
         enum ESamplerType {
             SamplerImage = 0,
             SamplerNormalmap = 1,
@@ -119,6 +142,10 @@ namespace sb
 
         const std::map<Attrib::Kind, Input>& getInputs() {
             return mInputs;
+        }
+
+        bool hasUniform(const std::string& name) {
+            return mUniforms.count(name) > 0;
         }
 
         Shader(Shader&& prev) { *this = std::move(prev); }
@@ -140,6 +167,7 @@ namespace sb
     private:
         ProgramId mProgram;
         std::map<Attrib::Kind, Input> mInputs;
+        std::set<std::string> mUniforms;
 
         Shader(const std::shared_ptr<ConcreteShader>& vertex,
                const std::shared_ptr<ConcreteShader>& fragment,
