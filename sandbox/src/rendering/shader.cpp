@@ -184,14 +184,17 @@ Shader::Shader(const std::shared_ptr<ConcreteShader>& vertex,
     mProgram(linkShader(vertex, fragment, geometry)),
     mInputs(vertex->getInputs())
 {
-    std::copy(vertex->getUniforms().begin(), vertex->getUniforms().end(),
-              std::inserter(mUniforms, mUniforms.end()));
-    std::copy(fragment->getUniforms().begin(), fragment->getUniforms().end(),
-              std::inserter(mUniforms, mUniforms.end()));
+    for (const std::string& uniform: vertex->getUniforms()) {
+        mUniforms.insert(uniform);
+    }
+    for (const std::string& uniform: fragment->getUniforms()) {
+        mUniforms.insert(uniform);
+    }
 
     if (geometry) {
-        std::copy(geometry->getUniforms().begin(), geometry->getUniforms().end(),
-                  std::inserter(mUniforms, mUniforms.end()));
+        for (const std::string& uniform: geometry->getUniforms()) {
+            mUniforms.insert(uniform);
+        }
     }
 }
 
