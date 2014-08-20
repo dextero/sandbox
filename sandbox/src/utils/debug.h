@@ -21,8 +21,7 @@ void printTrace();
 #  define sbAssert(condition, message, ...) \
     do { \
         if (!(condition)) { \
-            gLog.err(message, ##__VA_ARGS__); \
-            ::sb::printTrace(); \
+            sbFail(message, ##__VA_ARGS__); \
         } \
     } while (0)
 
