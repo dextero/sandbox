@@ -112,12 +112,14 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
 
     // TODO: wiele tekstur
     Assimp::Importer importer;
-    const uint32_t importerFlags = aiProcess_CalcTangentSpace
-                                   | aiProcess_Triangulate
+    const uint32_t importerFlags = aiProcess_Triangulate
                                    | aiProcess_JoinIdenticalVertices
                                    | aiProcess_SortByPType
-                                   | aiProcess_GenNormals;
+                                   | aiProcess_GenSmoothNormals;
     const aiScene* scene = importer.ReadFile(name, importerFlags);
+
+    sbAssert(scene != nullptr, "cannot load mesh: %s", name.c_str());
+    sbAssert(scene->HasMeshes(), "no meshes in file: %s", name.c_str());
 
     if (!scene || !scene->HasMeshes()) {
         return {};
@@ -142,8 +144,13 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
         }
 
         std::vector<Vec2> texcoords;
-        std::vector<Color> colors;
-        std::vector<uint32_t> indices;
+        if (mesh->HasTextureCoords(0)) {
+            texcoords.reserve(mesh->mNumVertices);
+            for (uint32_t i = 0; i < mesh->mNumVertices; ++i) {
+                texcoords.emplace_back(Vec2(mesh->mTextureCoords[0][i].x,
+                                            mesh->mTextureCoords[0][i].y));
+            }
+        }
 
         aiString filename;
         std::shared_ptr<Texture> texture;
@@ -152,21 +159,15 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
         aiReturn result = material->GetTexture(aiTextureType_DIFFUSE,
                                                0, &filename);
         if (result == AI_SUCCESS) {
+            gLog.info("%s: got texture %s\n", name.c_str(), filename.data);
             texture = gResourceMgr.getTexture(filename.data);
-
-            texcoords.reserve(mesh->mNumVertices);
-            for (uint32_t i = 0; i < mesh->mNumVertices; ++i) {
-                texcoords.emplace_back(Vec2(mesh->mTextureCoords[0][i].x,
-                                            mesh->mTextureCoords[0][i].y));
-            }
-        } else {
-            gLog.err("%s: texture not loaded\n", name.c_str());
         }
 
-        // indices
         uint32_t numIndices = 0;
-        for (uint32_t i = 0; i < mesh->mNumFaces; ++i)
+        std::vector<uint32_t> indices;
+        for (uint32_t i = 0; i < mesh->mNumFaces; ++i) {
             numIndices += mesh->mFaces[i].mNumIndices;
+        }
 
         indices.resize(numIndices);
         numIndices = 0;
