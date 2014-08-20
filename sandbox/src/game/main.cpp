@@ -95,6 +95,11 @@ int main()
                      gResourceMgr.getTexture("miramar.jpg"));
     skybox.setScale(1000.f);
 
+    sb::Model tower("Tower_Mats.obj",
+                     textureShader,
+                     gResourceMgr.getTexture("miramar.jpg"));
+    tower.setPosition(0.f, 0.f, 0.f);
+
     sb::Terrain terrain("hmap_flat.jpg", "ground.jpg", textureShader);
     terrain.setScale(10.f, 1.f, 10.f);
     terrain.setPosition(-640.f, 0.f, -640.f);
@@ -478,7 +483,8 @@ int main()
         // environment
         wnd.draw(skybox);
         wnd.draw(terrain);
-
+        wnd.draw(tower);
+        
         // axes - disable edpth test to prevent blinking
         wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest, false);
         wnd.draw(xaxis);
