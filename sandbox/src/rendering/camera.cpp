@@ -92,19 +92,30 @@ namespace sb
         mFront = (mAt - mEye).normalized();
 
         Vec3 oldRight = mRight;
-        mRight = mFront.cross(mUp);     // normalized, since mFront & mUp are normalized
+        mRight = mFront.cross(mUp);
 
         if (mRight.isZero()) {
             oldRight.y = 0;
-            mRight = oldRight.normalized();
+            mRight = oldRight;
             gLog.trace("right was zero, reverted to %s\n", utils::toString(mRight).c_str());
         }
 
-        mUpReal = mRight.cross(mFront); // normalized, since mRight & mFront are normalized
+        mRight = mRight.normalized();
+        mUpReal = mRight.cross(mFront).normalized();
 
         sbAssert(mFront.dot(mFront) > 0.0f, "zero front vector");
         sbAssert(mRight.dot(mRight) > 0.0f, "zero right vector");
         sbAssert(mUpReal.dot(mUpReal) > 0.0f, "zero upReal vector");
+
+        sbAssert(std::abs(mRight.length() - 1.0f) < 0.001f,
+                 "mRight (%f, %f, %f; length = %f) not normalized",
+                 mRight.x, mRight.y, mRight.z, mRight.length());
+        sbAssert(std::abs(mUpReal.length() - 1.0f) < 0.001f,
+                 "mUpReal (%f, %f, %f; length = %f) not normalized",
+                 mUpReal.x, mUpReal.y, mUpReal.z, mUpReal.length());
+        sbAssert(std::abs(mFront.length() - 1.0f) < 0.001f,
+                 "mFront (%f, %f, %f; length = %f) not normalized",
+                 mFront.x, mFront.y, mFront.z, mFront.length());
 
         mMatrixUpdateFlags |= MatrixTranslationUpdated | MatrixRotationUpdated;
         updateAngles();
@@ -114,8 +125,8 @@ namespace sb
     {
         Quat rot = glm::angleAxis(angle.value(), mUpReal);
 
-        mFront = rot * mFront;
-        mRight = rot * mRight;
+        mFront = Vec3(rot * mFront).normalized();
+        mRight = Vec3(rot * mRight).normalized();
 
         mMatrixUpdateFlags |= MatrixRotationUpdated;
         updateAngles();
@@ -203,7 +214,6 @@ namespace sb
         mAt += d;
 
         mMatrixUpdateFlags |= MatrixTranslationUpdated;
-
     }
 
     void Camera::updateAngles()
@@ -211,7 +221,6 @@ namespace sb
         if (std::abs(mFront.x) >= math::EPSILON
                 || std::abs(mFront.z) >= math::EPSILON) {
             mXZAngle = Radians(std::atan2(mFront.x, mFront.z));
-
         }
 
         mYAngle = Radians(std::asin(mFront.y / mFront.length()));
