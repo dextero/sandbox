@@ -204,7 +204,7 @@ void Renderer::drawAll()
         if (light.makesShadows) {
             sbAssert(light.type == Light::Type::Parallel, "TODO: shadows for point lights");
 
-            Camera camera = Camera::orthographic(-10.0, 10.0, -10.0, 10.0, -1000.0, 1000.0);
+            Camera camera = Camera::orthographic(-100.0, 100.0, -100.0, 100.0, -1000.0, 1000.0);
             camera.lookAt(-light.pos, Vec3());
 
             drawTo(*light.shadowFramebuffer, camera);

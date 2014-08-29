@@ -2,6 +2,7 @@
 
 #include "utils/lib.h"
 #include "utils/misc.h"
+#include "utils/debug.h"
 
 namespace sb {
 
@@ -15,8 +16,18 @@ Framebuffer::Framebuffer(unsigned width,
 
     auto bind = make_bind(*this);
 
+	GL_CHECK(glDrawBuffer(GL_NONE));
+	GL_CHECK(glReadBuffer(GL_NONE));
     GL_CHECK(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                     GL_TEXTURE_2D, texture->getId(), 0));
+
+    GLenum fboStatus;
+    GL_CHECK(fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER));
+    if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+        sbFail("framebuffer not ready");
+    }
+
+    gLog.debug("framebuffer %u ready", id);
 }
 
 Framebuffer::~Framebuffer()
