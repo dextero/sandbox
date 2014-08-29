@@ -65,6 +65,8 @@ namespace sb
         }
     }
 
+#if 0
+    // TODO TODO TODO
     namespace
     {
         std::string getBufferName(GLuint bufferType)
@@ -83,9 +85,10 @@ namespace sb
             return it->second;
         }
     } // namespace
+#endif
 
     void Buffer::bind(GLuint bufferType,
-                      GLuint bufferBinding)
+                      GLuint bufferBinding) const
     {
         sbAssert(this->prevId == 0 && this->bufferType == 0,
                  "recursive bind? this should never happen");
@@ -94,7 +97,7 @@ namespace sb
         GL_CHECK(glBindBuffer(bufferType, id));
     }
 
-    void Buffer::unbind()
+    void Buffer::unbind() const
     {
         GL_CHECK(glBindBuffer(bufferType, prevId));
         bufferType = 0;

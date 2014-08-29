@@ -20,13 +20,13 @@ const std::map<std::string, Attrib::Kind> ATTRIB_KINDS {
 
 ssize_t extractLineNum(const std::string& logLine)
 {
-    size_t numStart = logLine.find('(');
+    size_t numStart = logLine.find(':');
     if (numStart == std::string::npos) {
         return -1;
     }
 
     ++numStart;
-    size_t numEnd = logLine.find(')', numStart);
+    size_t numEnd = logLine.find('(', numStart);
 
     return lexical_cast<ssize_t>(logLine.substr(numStart, numEnd - numStart));
 }
@@ -52,12 +52,20 @@ void printPreprocessedCompileLog(const std::string& log,
     std::vector<std::string> sourceLines = utils::split(source, "\n");
     std::vector<std::string> logLines = utils::split(log, "\n");
 
+    ssize_t lineNum = -1;
     for (const auto& logLine: logLines) {
-        ssize_t lineNum = extractLineNum(logLine);
-        gLog.printf("%s", logLine.c_str());
-        if (lineNum >= 0) {
-            printWithContext(sourceLines, (size_t)lineNum - 1);
+        ssize_t newLineNum = extractLineNum(logLine);
+        if (newLineNum >= 0 && newLineNum != lineNum) {
+            if (lineNum >= 0) {
+                printWithContext(sourceLines, (size_t)lineNum - 1);
+            }
+            lineNum = newLineNum;
         }
+        gLog.printf("%s", logLine.c_str());
+    }
+
+    if (lineNum >= 0) {
+        printWithContext(sourceLines, (size_t)lineNum - 1);
     }
 }
 
@@ -259,7 +267,9 @@ bool Shader::shaderLinkSucceeded(ProgramId program)
 }
 
 #define DEFINE_UNIFORM_SETTER(Type, GLType, glSetter, ...) \
-    bool Shader::setUniform(const char* name, const Type* value_array, uint32_t elements) \
+    bool Shader::setUniform(const char* name, \
+                            const Type* value_array, \
+                            uint32_t elements) const \
     { \
         if (!mProgram) return false; \
         GLint loc = glGetUniformLocation(mProgram, name); \
@@ -277,7 +287,7 @@ DEFINE_UNIFORM_SETTER(unsigned, GLuint, glUniform1uiv)
 
 DEFINE_UNIFORM_SETTER(Mat44, GLfloat, glUniformMatrix4fv, GL_FALSE)
 
-void Shader::bind(const VertexBuffer& vb)
+void Shader::bind(const VertexBuffer& vb) const
 {
     GL_CHECK(glUseProgram(mProgram));
 
@@ -316,7 +326,7 @@ void Shader::bind(const VertexBuffer& vb)
     }
 }
 
-void Shader::unbind()
+void Shader::unbind() const
 {
     GL_CHECK(glUseProgram(0));
 }

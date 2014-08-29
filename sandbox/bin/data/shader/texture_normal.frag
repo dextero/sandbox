@@ -19,7 +19,7 @@ uniform uint numParallelLights;
 
 uniform vec3 eyePos;
 
-uniform sampler2D texture;
+uniform sampler2D tex;
 uniform vec4 color;
 
 const uint specularExp = 16u;
@@ -80,6 +80,6 @@ vec4 phong(vec3 position,
 
 void main()
 {
-    out_color = color * texture2D(texture, ps_texcoord) * phong(ps_position.xyz, ps_normal);
+    out_color = color * texture2D(tex, ps_texcoord) * phong(ps_position.xyz, ps_normal);
 }
 

@@ -12,7 +12,7 @@ namespace sb
     {
     public:
         template<typename... Args>
-        bind_guard(T& object, Args&&... args):
+        bind_guard(const T& object, Args&&... args):
             object(&object)
         {
             object.bind(std::forward<Args>(args)...);
@@ -42,14 +42,14 @@ namespace sb
         }
 
     private:
-        T* object;
+        const T* object;
     };
 
     template<
         typename T,
         typename... Args
     >
-    bind_guard<T> make_bind(T& obj, Args&&... args)
+    bind_guard<T> make_bind(const T& obj, Args&&... args)
     {
         return bind_guard<T>(obj, std::forward<Args>(args)...);
     }

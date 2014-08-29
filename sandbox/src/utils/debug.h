@@ -10,13 +10,10 @@ namespace sb {
 # define sbFail(message, ...) \
     do { \
         gLog.err(message, ##__VA_ARGS__); \
-        ::sb::printTrace(); \
         abort(); \
     } while (0)
 
 # ifdef _DEBUG
-
-void printTrace();
 
 #  define sbAssert(condition, message, ...) \
     do { \
@@ -26,8 +23,6 @@ void printTrace();
     } while (0)
 
 # else // _DEBUG
-
-inline void printTrace() {}
 
 #  define sbAssert(condition, ...) (void)condition
 

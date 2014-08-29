@@ -59,7 +59,8 @@ bool Renderer::initGLEW()
 }
 
 Renderer::Renderer():
-    mCamera(),
+    mCamera(Camera::perspective()),
+    mSpriteCamera(Camera::orthographic()),
     mGLContext(NULL),
     mDisplay(NULL),
     mDrawablesBuffer(),
@@ -133,9 +134,6 @@ bool Renderer::init(::Display* display, ::Window window, GLXFBConfig& fbc)
     String::init(mDisplay);
 #endif
 
-    mCamera.setPerspectiveMatrix();
-    mCamera.setOrthographicMatrix();
-
     return true;
 }
 
@@ -154,7 +152,7 @@ void Renderer::setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy)
     glViewport(x, y, cx, cy);
 
     // adjust aspect ratio
-    mCamera.setPerspectiveMatrix(PI_3, (float)cx / (float)cy);
+    mCamera.updateViewport(cx, cy);
 }
 
 void Renderer::draw(Drawable& d)
@@ -164,6 +162,25 @@ void Renderer::draw(Drawable& d)
     }
 
     mDrawablesBuffer.push_back(std::make_shared<Drawable>(d));
+}
+
+void Renderer::drawTo(Framebuffer& framebuffer,
+                      Camera& camera) const
+{
+    GL_CHECK(glClear(GL_DEPTH_BUFFER_BIT));
+    //GL_CHECK(glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE)); 
+
+    auto fbBind = make_bind(framebuffer);
+
+    State rendererState(camera, Color::White, {});
+    rendererState.isRenderingShadow = true;
+    rendererState.projectionType = ProjectionType::Orthographic; // TODO
+
+    for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
+        d->draw(rendererState);
+    }
+
+    //GL_CHECK(glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE));
 }
 
 void Renderer::drawAll()
@@ -179,11 +196,33 @@ void Renderer::drawAll()
                   return *a < *b;
               });
 #endif
-
     State rendererState(mCamera,
                         mAmbientLightColor,
                         mLights);
+
+    for (const Light& light: mLights) {
+        if (light.makesShadows) {
+            sbAssert(light.type == Light::Type::Parallel, "TODO: shadows for point lights");
+
+            Camera camera = Camera::orthographic(-10.0, 10.0, -10.0, 10.0, -1000.0, 1000.0);
+            camera.lookAt(-light.pos, Vec3());
+
+            drawTo(*light.shadowFramebuffer, camera);
+
+            rendererState.shadows.push_back({
+                light.shadowFramebuffer->getTexture(),
+                camera.getViewProjectionMatrix()
+            });
+        }
+    }
+
     for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
+        if (d->mProjectionType == ProjectionType::Perspective) {
+            rendererState.camera = &mCamera;
+        } else {
+            rendererState.camera = &mSpriteCamera;
+        }
+
         d->draw(rendererState);
     }
 

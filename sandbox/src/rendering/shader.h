@@ -86,42 +86,42 @@ namespace sb
     public:
         template<typename T>
         bool setUniform(const char* name,
-                        const T& value)
+                        const T& value) const
         {
             return setUniform(name, &value, 1);
         }
 
         template<typename T>
-        bool setUniform(const char*, const T*, uint32_t)
+        bool setUniform(const char*, const T*, uint32_t) const
         {
             sbFail("Wrong overload called!");
         }
 
         bool setUniform(const char* name,
                         const float* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const Vec2* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const Vec3* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const Color* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const Mat44* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const int* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const unsigned* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
 
         template<typename T>
         inline bool setUniform(const std::string& name,
-                               const T& value)
+                               const T& value) const
         {
             return setUniform(name.c_str(), value);
         }
@@ -129,7 +129,7 @@ namespace sb
         template<typename T>
         inline bool setUniform(const std::string& name,
                                const T* value_array,
-                               uint32_t elements)
+                               uint32_t elements) const
         {
             return setUniform(name.c_str(), value_array, elements);
         }
@@ -140,14 +140,14 @@ namespace sb
             SamplerShadowmap = 2
         };
 
-        void bind(const VertexBuffer& vb);
-        void unbind();
+        void bind(const VertexBuffer& vb) const;
+        void unbind() const;
 
-        const std::map<Attrib::Kind, Input>& getInputs() {
+        const std::map<Attrib::Kind, Input>& getInputs() const {
             return mInputs;
         }
 
-        bool hasUniform(const std::string& name) {
+        bool hasUniform(const std::string& name) const {
             return mUniforms.count(name) > 0;
         }
 

@@ -6,7 +6,7 @@
 
 namespace sb {
 
-Drawable::Drawable(EProjectionType projType,
+Drawable::Drawable(ProjectionType projType,
                    const std::shared_ptr<Mesh>& mesh,
                    const std::shared_ptr<Texture>& texture,
                    const std::shared_ptr<Shader>& shader):
@@ -159,7 +159,7 @@ void setLightUniforms(const Renderer::State& state,
                       const std::shared_ptr<Shader>& shader)
 {
     if (shader->hasUniform("eyePos")) {
-        shader->setUniform("eyePos", state.camera.getEye());
+        shader->setUniform("eyePos", state.camera->getEye());
     }
 
     if (shader->hasUniform("ambientLightColor")) {
@@ -197,6 +197,31 @@ void setLightUniforms(const Renderer::State& state,
     }
 }
 
+void setShadowUniforms(Renderer::State& state,
+                       const std::shared_ptr<const Shader>& shader,
+                       size_t firstTextureUnit,
+                       std::vector<bind_guard<Texture>>& outBinds)
+{
+    sbAssert(shader->hasUniform("shadows") == shader->hasUniform("numShadows"),
+             "shadows and numShadows must both be present");
+
+    if (shader->hasUniform("numShadows")) {
+        shader->setUniform("numShadows", (unsigned)state.shadows.size());
+
+        outBinds.clear();
+        outBinds.reserve(state.shadows.size());
+
+        for (size_t i = 0; i < state.shadows.size(); ++i) {
+            std::string base = utils::format("shadows[{0}]", i);
+            const Renderer::Shadow& s = state.shadows[i];
+
+            outBinds.emplace_back(*s.shadowMap, firstTextureUnit + i);
+            shader->setUniform(base + ".perspectiveMatrix", s.perspectiveMatrix);
+            shader->setUniform(base + ".map", (GLint)(firstTextureUnit + i));
+        }
+    }
+}
+
 } // namespace
 
 void Drawable::draw(Renderer::State& state) const
@@ -206,13 +231,24 @@ void Drawable::draw(Renderer::State& state) const
     auto shaderBind = make_bind(*mShader, mMesh->getVertexBuffer());
     auto textureBind = make_bind(*mTexture, 0);
 
-    mShader->setUniform("texture", 0);
-    mShader->setUniform("matViewProjection",
-            state.camera.getViewProjectionMatrix(mProjectionType));
-    mShader->setUniform("matModel", getTransformationMatrix());
-    mShader->setUniform("color", mColor);
+    ProjectionType projection = mProjectionType;
+    if (state.isRenderingShadow) {
+        projection = state.shadowProjectionType;
+    }
 
-    setLightUniforms(state, mShader);
+    mShader->setUniform("matViewProjection",
+                        state.camera->getViewProjectionMatrix());
+    mShader->setUniform("matModel", getTransformationMatrix());
+
+    std::vector<bind_guard<Texture>> shadowBinds;
+    if (!state.isRenderingShadow) {
+        mShader->setUniform("color", mColor);
+        mShader->setUniform("tex", 0);
+        constexpr size_t BOUND_TEXTURES = 1;
+
+        setLightUniforms(state, mShader);
+        setShadowUniforms(state, mShader, BOUND_TEXTURES, shadowBinds);
+    }
 
     GL_CHECK(glDrawElements((GLuint)mMesh->getShape(),
                             mMesh->getIndexBufferSize(),

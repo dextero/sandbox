@@ -66,6 +66,7 @@ int main()
     auto colorShader = gResourceMgr.getShader("proj_basic.vert", "color.frag");
     auto textureShader = gResourceMgr.getShader("proj_texture.vert", "texture.frag");
     auto textureLightShader = gResourceMgr.getShader("proj_texture_normal.vert", "texture_normal.frag");
+    auto shadowShader = gResourceMgr.getShader("proj_shadow.vert", "shadow.frag");
 
     wnd.setTitle("Sandbox");
     wnd.lockCursor();
@@ -95,7 +96,7 @@ int main()
                      gResourceMgr.getTexture("miramar.jpg"));
     skybox.setScale(1000.f);
 
-    sb::Terrain terrain("hmap_flat.jpg", "ground.jpg", textureShader);
+    sb::Terrain terrain("hmap_flat.jpg", "ground.jpg", shadowShader);
     terrain.setScale(10.f, 1.f, 10.f);
     terrain.setPosition(-640.f, 0.f, -640.f);
 
@@ -471,9 +472,11 @@ int main()
 
         wnd.clear(sb::Color(0.f, 0.f, 0.5f));
 
+        static sb::Light pointLight = sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f);
+        static sb::Light parallelLight = sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f);
         wnd.setAmbientLightColor(sb::Color(0.2f, 0.2f, 0.2f));
-        wnd.addLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f));
-        wnd.addLight(sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f));
+        wnd.addLight(pointLight);
+        wnd.addLight(parallelLight);
 
         // environment
         wnd.draw(skybox);

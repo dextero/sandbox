@@ -9,6 +9,7 @@
 #include "rendering/texture.h"
 #include "rendering/camera.h"
 #include "rendering/light.h"
+#include "rendering/framebuffer.h"
 
 #include <vector>
 #include <algorithm>
@@ -20,16 +21,26 @@ namespace sb
     class Renderer
     {
     public:
+        struct Shadow
+        {
+            std::shared_ptr<const Texture> shadowMap;
+            Mat44 perspectiveMatrix;
+        };
+
         struct State
         {
             std::shared_ptr<Shader> shader;
             std::shared_ptr<Texture> texture;
-            EProjectionType projectionType;
-            Camera &camera;
+            ProjectionType projectionType;
+            Camera* camera;
 
             Color ambientLightColor;
             std::vector<Light> pointLights;
             std::vector<Light> parallelLights;
+            std::vector<Shadow> shadows;
+
+            bool isRenderingShadow;
+            ProjectionType shadowProjectionType;
 
         private:
             State(Camera& camera,
@@ -37,9 +48,10 @@ namespace sb
                   const std::vector<Light>& allLights):
                 shader(),
                 texture(),
-                projectionType(EProjectionType::ProjectionPerspective),
-                camera(camera),
-                ambientLightColor(ambientLightColor)
+                projectionType(ProjectionType::Perspective),
+                camera(&camera),
+                ambientLightColor(ambientLightColor),
+                isRenderingShadow(false)
             {
                 std::copy_if(allLights.begin(), allLights.end(),
                              std::back_inserter(pointLights),
@@ -89,6 +101,7 @@ namespace sb
 
     private:
         Camera mCamera;
+        Camera mSpriteCamera;
         GLXContext mGLContext;
         ::Display* mDisplay;
 
@@ -105,6 +118,9 @@ namespace sb
             FilterProjection,
             FilterShaderTextureProjectionDepth
         };
+
+        void drawTo(Framebuffer& framebuffer,
+                    Camera& camera) const;
     };
 } // namespace sb
 

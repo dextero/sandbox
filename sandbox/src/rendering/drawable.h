@@ -66,9 +66,9 @@ namespace sb
         Vec3 mScale;
         Quat mRotation;
 
-        EProjectionType mProjectionType;
+        ProjectionType mProjectionType;
 
-        Drawable(EProjectionType projType,
+        Drawable(ProjectionType projType,
                  const std::shared_ptr<Mesh>& mesh,
                  const std::shared_ptr<Texture>& texture,
                  const std::shared_ptr<Shader>& shader);

@@ -20,16 +20,16 @@ namespace sb
         virtual ~Buffer();
 
         void bind(GLuint bufferType,
-                  GLuint bufferBinding);
-        void unbind();
+                  GLuint bufferBinding) const;
+        void unbind() const;
 
         BufferId getId() const { return id; }
 
     private:
         BufferId id;
 
-        GLuint bufferType;
-        BufferId prevId;
+        mutable GLuint bufferType;
+        mutable BufferId prevId;
     };
 } // namespace sb
 

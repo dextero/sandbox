@@ -14,7 +14,7 @@ namespace sb
             Buffer(&indices[0], indices.size() * sizeof(uint32_t))
         {}
 
-        void bind()
+        void bind() const
         {
             Buffer::bind(GL_ELEMENT_ARRAY_BUFFER,
                          GL_ELEMENT_ARRAY_BUFFER_BINDING);

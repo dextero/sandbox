@@ -4,7 +4,7 @@
 namespace sb
 {
     Sprite::Sprite(const std::shared_ptr<Shader>& shader):
-        Drawable(ProjectionOrthographic,
+        Drawable(ProjectionType::Orthographic,
                  gResourceMgr.getQuad(),
                  gResourceMgr.getTexture("default.png"),
                  shader)
@@ -12,7 +12,7 @@ namespace sb
 
     Sprite::Sprite(const std::string& image,
                    const std::shared_ptr<Shader>& shader):
-        Drawable(ProjectionOrthographic,
+        Drawable(ProjectionType::Orthographic,
                  gResourceMgr.getQuad(),
                  gResourceMgr.getTexture(image),
                  shader)

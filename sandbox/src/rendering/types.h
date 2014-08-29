@@ -22,9 +22,9 @@ namespace sb
     typedef IdType ResourceHandle;
 #endif
 
-    enum EProjectionType {
-        ProjectionOrthographic,
-        ProjectionPerspective
+    enum class ProjectionType {
+        Orthographic,
+        Perspective
     };
 } // namespace sb
 
