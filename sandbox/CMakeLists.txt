@@ -4,7 +4,10 @@ set(CMAKE_CXX_COMPILER clang++)
 
 project(sandbox)
 
-include(${CMAKE_SOURCE_DIR}/utils.cmake)
+file(GLOB CUSTOM_MODULES "${CMAKE_SOURCE_DIR}/cmake/*")
+foreach(MODULE ${CUSTOM_MODULES})
+    include(${MODULE})
+endforeach()
 
 # setup library directories
 if(DEFINED ENV{SDK_DIR})
@@ -13,14 +16,14 @@ if(DEFINED ENV{SDK_DIR})
     find_library_dir(${SDK_DIR} "glew")
 endif()
 
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR} ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -export-dynamic")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # project properties
-set(ROOT_DIR ${PROJECT_SOURCE_DIR}/..)
+set(ROOT_DIR ${PROJECT_SOURCE_DIR})
 set(LIBRARY_OUTPUT_PATH ${ROOT_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${ROOT_DIR}/bin)
 set(CMAKE_BUILD_TYPE Debug)
