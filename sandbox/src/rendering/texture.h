@@ -8,6 +8,12 @@
 
 namespace sb
 {
+    enum MagFilter
+    {
+        Linear,
+        Nearest
+    };
+
     class Texture
     {
     public:
@@ -29,6 +35,8 @@ namespace sb
         void unbind() const;
 
         TextureId getId() const { return mId; }
+
+        void setMagFilter(MagFilter filter) const;
 
     private:
         TextureId mId;

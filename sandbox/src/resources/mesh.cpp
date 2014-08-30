@@ -6,7 +6,7 @@
 
 namespace sb
 {
-    Mesh::Mesh(EShape shape,
+    Mesh::Mesh(Shape shape,
                const std::vector<Vec3>& vertices,
                const std::vector<Vec2>& texcoords,
                const std::vector<Color>& colors,

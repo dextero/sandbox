@@ -61,18 +61,13 @@ std::string makeString(Args&&... args)
 std::string toString(const std::wstring& wstr);
 std::wstring toWString(const std::string& str);
 
-std::vector<std::string>
-split(const std::string& str, char c);
-
-std::vector<std::string>
-split(const std::string& str,
-      const std::function<bool(char)>& isSeparator);
-
 std::string readFile(const std::string& path);
 
+std::vector<std::string> split(const std::string& str, char c);
 std::vector<std::string> split(const std::string& text,
-                           const std::string& separator);
-
+                               const std::string& separator);
+std::vector<std::string> split(const std::string& str,
+                               const std::function<bool(char)>& isSeparator);
 std::vector<std::string> split(
         const std::string& text,
         const std::vector<std::string>& separators = { " ", "\t", "\n", "\r" });

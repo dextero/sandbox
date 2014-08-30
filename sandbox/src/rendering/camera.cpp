@@ -230,6 +230,9 @@ namespace sb
             mProjectionMatrix = math::matrixPerspective(
                     mPerspectiveFov, (float)width / (float)height, 
                     mPerspectiveNear, mPerspectiveFar);
+        } else {
+            mProjectionMatrix = math::matrixOrthographic(
+                    0.0f, (float)width, (float)height, 0.0f, -100.0f, 100.0f);
         }
     }
 

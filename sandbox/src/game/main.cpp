@@ -6,6 +6,7 @@
 #include "rendering/model.h"
 #include "rendering/string.h"
 #include "rendering/terrain.h"
+#include "rendering/text.h"
 #include "utils/logger.h"
 #include "utils/stringUtils.h"
 #include "utils/lib.h"
@@ -99,6 +100,9 @@ int main()
     sb::Terrain terrain("hmap_flat.jpg", "ground.jpg", shadowShader);
     terrain.setScale(10.f, 1.f, 10.f);
     terrain.setPosition(-640.f, 0.f, -640.f);
+
+    sb::Text text("dupa\ndupaa\nduuuuuuuupa dupa dupa asdasd12$%$#^%", gResourceMgr.getFont("font.txt"), textureShader);
+    text.setColor(sb::Color::Blue);
 
     gLog.info("all data loaded!\n");
 
@@ -488,6 +492,8 @@ int main()
         wnd.draw(yaxis);
         wnd.draw(zaxis);
         wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest);
+
+        wnd.draw(text);
 
         // balls & forces
         sim.drawAll(wnd.getRenderer());

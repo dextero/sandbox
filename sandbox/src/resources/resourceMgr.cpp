@@ -1,4 +1,5 @@
 #include <fstream>
+#include <array>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -16,6 +17,7 @@
 
 #include "mesh.h"
 #include "image.h"
+#include "font.h"
 
 namespace sb {
 
@@ -32,6 +34,7 @@ ResourceMgr::ResourceMgr(const std::string& basePath):
     mImages(mBasePath + "image/"),
     mMeshes(mBasePath + "mesh/"),
     mTerrains(""),
+    mFonts(mBasePath + "font/"),
     mVertexShaders(mBasePath + "shader/"),
     mFragmentShaders(mBasePath + "shader/"),
     mGeometryShaders(mBasePath + "shader/"),
@@ -67,11 +70,18 @@ ResourceMgr::ResourceMgr(const std::string& basePath):
 
     std::vector<uint32_t> quadIndices { 0, 1, 2, 3 };
 
-    std::shared_ptr<Mesh> line(new Mesh(Mesh::ShapeLine, lineVertices, {}, {}, {}, lineIndices, {}));
-    std::shared_ptr<Mesh> quad(new Mesh(Mesh::ShapeTriangleStrip, quadVertices, quadTexcoords, {}, {}, quadIndices, {}));
-
+    auto line = std::make_shared<Mesh>(Mesh::Shape::Line,
+                                       lineVertices, std::vector<Vec2>(),
+                                       std::vector<Color>(), std::vector<Vec3>(),
+                                       lineIndices, std::shared_ptr<Texture>());
     mMeshes.addSpecial("line", line);
+
+    auto quad = std::make_shared<Mesh>(Mesh::Shape::TriangleStrip,
+                                       quadVertices, quadTexcoords,
+                                       std::vector<Color>(), std::vector<Vec3>(),
+                                       quadIndices, std::shared_ptr<Texture>());
     mMeshes.addSpecial("quad", quad);
+
 }
 
 void ResourceMgr::freeAll()
@@ -178,7 +188,10 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
             numIndices += mesh->mFaces[i].mNumIndices;
         }
 
-        return std::shared_ptr<Mesh>(new Mesh(Mesh::ShapeTriangle, vertices, texcoords, {}, normals, indices, texture));
+        return std::make_shared<Mesh>(Mesh::Shape::Triangle,
+                                      vertices, texcoords,
+                                      std::vector<Color>(), normals,
+                                      indices, texture);
     }
 
     return {};
@@ -248,9 +261,80 @@ std::shared_ptr<Mesh> ResourceMgr::loadTerrain(const std::string& heightmap)
         }
     }
 
-    std::vector<Vec3> normals;
+    std::vector<Vec3> normals; // TODO
 
-    return std::shared_ptr<Mesh>(new Mesh(Mesh::ShapeTriangle, vertices, texcoords, {}, normals, indices, 0));
+    return std::make_shared<Mesh>(Mesh::Shape::Triangle,
+                                  vertices, texcoords,
+                                  std::vector<Color>(), normals,
+                                  indices, std::shared_ptr<Texture>());
+}
+
+std::shared_ptr<Font> ResourceMgr::loadFont(const std::string& path)
+{
+    gLog.info("loading font: %s", path.c_str());
+
+    std::ifstream file(path);
+    sbAssert(file.is_open(), "cannot open font file");
+
+    size_t charsLoaded = 0;
+    uint32_t textureWidth = 0;
+    uint32_t textureHeight = 0;
+
+    std::shared_ptr<Texture> texture;
+    std::array<Font::Letter, 256> letters;
+
+    std::string line;
+    while (std::getline(file, line)) {
+        if (line.empty() || line[0] == '#') {
+            continue;
+        }
+
+        std::vector<std::string> words = utils::split(line);
+
+        if (words[0] == "texture") {
+            sbAssert(!texture, "multiple textures found in font def %s");
+
+            std::string texFile = utils::strip(line.substr(words[0].size()));
+            gLog.debug("line = <%s>, texFile = <%s>", line.c_str(), texFile.c_str());
+            texture = gResourceMgr.getTexture(texFile);
+            texture->setMagFilter(MagFilter::Nearest);
+
+            std::shared_ptr<Image> img = gResourceMgr.getImage(texFile);
+            textureWidth = img->getWidth();
+            textureHeight = img->getHeight();
+        } else {
+            sbAssert(texture, "specify a texture first");
+            sbAssert(words.size() == 5,
+                     "invalid line format, expected <idx> <left> <right> "
+                     "<top> <bottom>: %s", line.c_str());
+            int idx = lexical_cast<int>(words[0]);
+
+            sbAssert(0 <= idx && (size_t)idx <= letters.size(),
+                     "invalid char index: %d", idx);
+            sbAssert(!letters[idx].isInitialized(),
+                     "duplicate entry for char %s", words[0].c_str());
+
+            Font::Letter& letter = letters[idx];
+
+            gLog.debug("line = %s", line.c_str());
+            uint32_t left = lexical_cast<uint32_t>(words[1]);
+            uint32_t right = lexical_cast<uint32_t>(words[2]);
+            uint32_t bottom = lexical_cast<uint32_t>(words[3]);
+            uint32_t top = lexical_cast<uint32_t>(words[4]);
+
+            letter.widthPixels = right - left;
+            letter.heightPixels = top - bottom;
+
+            letter.texcoords = FloatRect((float)left / (float)textureWidth,
+                                         (float)right / (float)textureWidth,
+                                         (float)bottom / (float)textureHeight,
+                                         (float)top / (float)textureHeight);
+            ++charsLoaded;
+        }
+    }
+
+    gLog.info("font %s loaded: %u characters found", path.c_str(), charsLoaded);
+    return std::make_shared<Font>(texture, letters);
 }
 
 std::shared_ptr<Texture> ResourceMgr::getTexture(const std::string& name)
@@ -271,6 +355,11 @@ std::shared_ptr<Mesh> ResourceMgr::getMesh(const std::string& name)
 std::shared_ptr<Mesh> ResourceMgr::getTerrain(const std::string& heightmap)
 {
     return mTerrains.get(heightmap);
+}
+
+std::shared_ptr<Font> ResourceMgr::getFont(const std::string& name)
+{
+    return mFonts.get(name);
 }
 
 std::vector<std::string> extractAttributes(const std::string& filename)

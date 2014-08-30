@@ -197,6 +197,24 @@ namespace sb
 #undef OP2
 #undef OP1
 
+template<typename T>
+std::ostream& operator <<(std::ostream& os, const TVec2<T>& v)
+{
+    return os << "(" << v.x << ", " << v.y << ")";
+}
+
+template<typename T>
+std::ostream& operator <<(std::ostream& os, const TVec3<T>& v)
+{
+    return os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+}
+
+template<typename T>
+std::ostream& operator <<(std::ostream& os, const TVec4<T>& v)
+{
+    return os << "(" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")";
+}
+
 } // namespace sb
 
 #endif /* UTILS_VECTOR_H */

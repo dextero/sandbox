@@ -153,6 +153,7 @@ void Renderer::setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy)
 
     // adjust aspect ratio
     mCamera.updateViewport(cx, cy);
+    mSpriteCamera.updateViewport(cx, cy);
 }
 
 void Renderer::draw(Drawable& d)

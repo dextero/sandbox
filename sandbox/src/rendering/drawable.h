@@ -39,7 +39,11 @@ namespace sb
         void setScale(float uniform);
         void rotate(Radians angle);
         void rotate(const Vec3& axis, Radians angle);
+
         const Mat44& getTransformationMatrix() const;
+
+        const Color& getColor() const { return mColor; }
+        void setColor(const Color& color) { mColor = color; }
 
         bool operator <(const Drawable& d) const;
 
@@ -75,7 +79,7 @@ namespace sb
 
         void recalculateMatrices() const;
 
-        void draw(Renderer::State& rendererState) const;
+        virtual void draw(Renderer::State& rendererState) const;
 
         friend class Renderer;
     };

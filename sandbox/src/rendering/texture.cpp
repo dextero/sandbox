@@ -3,6 +3,7 @@
 #include "utils/logger.h"
 #include "utils/lib.h"
 #include "utils/math.h"
+#include "utils/misc.h"
 
 namespace sb {
 namespace {
@@ -54,6 +55,8 @@ Texture::Texture(std::shared_ptr<Image> image):
 
     uint32_t imgWidth = image->getWidth();
     uint32_t imgHeight = image->getHeight();
+
+#if NO_NON_POT_TEXTURES
     uint32_t potWidth = math::nextPowerOf2(imgWidth);
     uint32_t potHeight = math::nextPowerOf2(imgHeight);
 
@@ -61,7 +64,10 @@ Texture::Texture(std::shared_ptr<Image> image):
         auto copy = std::make_shared<Image>(*image);
         copy->scale(potWidth, potHeight);
         image = copy;
+        imgWidth = potWidth;
+        imgHeight = potHeight;
     }
+#endif
 
     GLuint prevTex;
     // save current image
@@ -90,6 +96,14 @@ void Texture::bind(uint32_t textureUnit) const
 void Texture::unbind() const
 {
     GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
+}
+
+void Texture::setMagFilter(MagFilter filter) const
+{
+    GLuint magFilter = filter == MagFilter::Nearest ? GL_NEAREST : GL_LINEAR;
+
+    auto bind = make_bind(*this, 0);
+    GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter));
 }
 
 } // namespace sb
