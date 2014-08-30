@@ -295,7 +295,6 @@ std::shared_ptr<Font> ResourceMgr::loadFont(const std::string& path)
             sbAssert(!texture, "multiple textures found in font def %s");
 
             std::string texFile = utils::strip(line.substr(words[0].size()));
-            gLog.debug("line = <%s>, texFile = <%s>", line.c_str(), texFile.c_str());
             texture = gResourceMgr.getTexture(texFile);
             texture->setMagFilter(MagFilter::Nearest);
 
@@ -316,7 +315,6 @@ std::shared_ptr<Font> ResourceMgr::loadFont(const std::string& path)
 
             Font::Letter& letter = letters[idx];
 
-            gLog.debug("line = %s", line.c_str());
             uint32_t left = lexical_cast<uint32_t>(words[1]);
             uint32_t right = lexical_cast<uint32_t>(words[2]);
             uint32_t bottom = lexical_cast<uint32_t>(words[3]);
