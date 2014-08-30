@@ -11,8 +11,8 @@ namespace sb {
 class Framebuffer
 {
 public:
-    Framebuffer(unsigned width,
-                unsigned height);
+    Framebuffer(uint32_t width,
+                uint32_t height);
 
     Framebuffer(const Framebuffer&) = delete;
     Framebuffer& operator =(const Framebuffer&) = delete;
@@ -30,8 +30,12 @@ public:
         return texture;
     }
 
+    const Vec2i& getSize() const { return sizePixels; }
+
 private:
+    Vec2i sizePixels;
     BufferId id;
+    BufferId renderbufferId;
     std::shared_ptr<Texture> texture;
 };
 

@@ -6,9 +6,11 @@
 
 namespace sb {
 
-Framebuffer::Framebuffer(unsigned width,
-                         unsigned height):
+Framebuffer::Framebuffer(uint32_t width,
+                         uint32_t height):
+    sizePixels(width, height),
     id(0),
+    renderbufferId(0),
     texture(std::make_shared<Texture>(width, height))
 {
     gLog.debug("new framebuffer");
@@ -21,6 +23,14 @@ Framebuffer::Framebuffer(unsigned width,
     GL_CHECK(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                     GL_TEXTURE_2D, texture->getId(), 0));
 
+    GL_CHECK(glGenRenderbuffers(1, &renderbufferId));
+    GL_CHECK(glBindRenderbuffer(GL_RENDERBUFFER, renderbufferId));
+    GL_CHECK(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24,
+                                   width, height));
+
+    GL_CHECK(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                       GL_RENDERBUFFER, renderbufferId));
+
     GLenum fboStatus;
     GL_CHECK(fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER));
     if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
@@ -32,6 +42,10 @@ Framebuffer::Framebuffer(unsigned width,
 
 Framebuffer::~Framebuffer()
 {
+    if (renderbufferId) {
+        GL_CHECK(glDeleteRenderbuffers(1, &renderbufferId));
+        renderbufferId = 0;
+    }
     if (id) {
         GL_CHECK(glDeleteFramebuffers(1, &id));
         id = 0;

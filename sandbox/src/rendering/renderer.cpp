@@ -149,11 +149,17 @@ void Renderer::clear()
 
 void Renderer::setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy)
 {
+    mViewport = IntRect(x, x + cx, y, y + cy);
     glViewport(x, y, cx, cy);
 
     // adjust aspect ratio
     mCamera.updateViewport(cx, cy);
     mSpriteCamera.updateViewport(cx, cy);
+}
+
+void Renderer::setViewport(const IntRect& rect)
+{
+    return setViewport(rect.left, rect.right, rect.width(), rect.height());
 }
 
 void Renderer::draw(Drawable& d)
@@ -205,10 +211,15 @@ void Renderer::drawAll()
         if (light.makesShadows) {
             sbAssert(light.type == Light::Type::Parallel, "TODO: shadows for point lights");
 
-            Camera camera = Camera::orthographic(-100.0, 100.0, -100.0, 100.0, -1000.0, 1000.0);
+            Camera camera = Camera::orthographic(-10.0, 10.0, -10.0, 10.0, -1000.0, 1000.0);
             camera.lookAt(-light.pos, Vec3());
 
+            //IntRect savedViewport = mViewport;
+            //Vec2i shadowFbSize = light.shadowFramebuffer->getSize();
+            //setViewport(0, 0, shadowFbSize.x, shadowFbSize.y);
+
             drawTo(*light.shadowFramebuffer, camera);
+            //setViewport(savedViewport);
 
             rendererState.shadows.push_back({
                 light.shadowFramebuffer->getTexture(),

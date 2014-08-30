@@ -11,6 +11,8 @@
 #include "rendering/light.h"
 #include "rendering/framebuffer.h"
 
+#include "utils/rect.h"
+
 #include <vector>
 #include <algorithm>
 
@@ -82,6 +84,7 @@ namespace sb
         void setClearColor(const Color& c);
         void clear();
         void setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy);
+        void setViewport(const IntRect& rect);
 
         void setAmbientLightColor(const Color& color) { mAmbientLightColor = color; }
         void addLight(const Light& light) { mLights.push_back(light); }
@@ -100,6 +103,7 @@ namespace sb
         void saveScreenshot(const std::string& filename, int width, int height);
 
     private:
+        IntRect mViewport;
         Camera mCamera;
         Camera mSpriteCamera;
         GLXContext mGLContext;
