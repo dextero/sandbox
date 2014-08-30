@@ -231,11 +231,6 @@ void Drawable::draw(Renderer::State& state) const
     auto shaderBind = make_bind(*mShader, mMesh->getVertexBuffer());
     auto textureBind = make_bind(*mTexture, 0);
 
-    ProjectionType projection = mProjectionType;
-    if (state.isRenderingShadow) {
-        projection = state.shadowProjectionType;
-    }
-
     mShader->setUniform("matViewProjection",
                         state.camera->getViewProjectionMatrix());
     mShader->setUniform("matModel", getTransformationMatrix());
