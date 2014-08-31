@@ -6,6 +6,8 @@
 #include "rendering/types.h"
 #include "rendering/texture.h"
 
+#define WITH_RENDERBUFFER 1
+
 namespace sb {
 
 class Framebuffer
@@ -35,7 +37,9 @@ public:
 private:
     Vec2i sizePixels;
     BufferId id;
+#if WITH_RENDERBUFFER
     BufferId renderbufferId;
+#endif
     std::shared_ptr<Texture> texture;
 };
 

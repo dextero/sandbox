@@ -82,7 +82,7 @@ namespace sb
 
         bool init(::Display* display, ::Window window, GLXFBConfig& fbc);
         void setClearColor(const Color& c);
-        void clear();
+        void clear() const;
         void setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy);
         void setViewport(const IntRect& rect);
 
@@ -103,6 +103,7 @@ namespace sb
         void saveScreenshot(const std::string& filename, int width, int height);
 
     private:
+        Color mClearColor;
         IntRect mViewport;
         Camera mCamera;
         Camera mSpriteCamera;

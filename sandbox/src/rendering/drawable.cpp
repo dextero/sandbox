@@ -226,6 +226,11 @@ void setShadowUniforms(Renderer::State& state,
 
 void Drawable::draw(Renderer::State& state) const
 {
+    if (state.isRenderingShadow
+            && mProjectionType == ProjectionType::Orthographic) {
+        return;
+    }
+
     auto vaoBind = make_bind(mMesh->getVertexBuffer());
     auto indexBind = make_bind(mMesh->getIndexBuffer());
     auto shaderBind = make_bind(*mShader, mMesh->getVertexBuffer());

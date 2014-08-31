@@ -11,6 +11,7 @@
 #include "utils/debug.h"
 #include "resources/mesh.h"
 #include "resources/image.h"
+#include "rendering/model.h"
 
 namespace sb {
 namespace {
@@ -59,6 +60,7 @@ bool Renderer::initGLEW()
 }
 
 Renderer::Renderer():
+    mClearColor(Color::Black),
     mCamera(Camera::perspective()),
     mSpriteCamera(Camera::orthographic()),
     mGLContext(NULL),
@@ -139,16 +141,17 @@ bool Renderer::init(::Display* display, ::Window window, GLXFBConfig& fbc)
 
 void Renderer::setClearColor(const Color& c)
 {
-    glClearColor(c.r, c.g, c.b, c.a);
+    mClearColor = c;
 }
 
-void Renderer::clear()
+void Renderer::clear() const
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
 void Renderer::setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy)
 {
+    //gLog.debug("setViewport: %u %u %u %u", x, y, cx, cy);
     mViewport = IntRect(x, x + cx, y, y + cy);
     glViewport(x, y, cx, cy);
 
@@ -159,7 +162,7 @@ void Renderer::setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy)
 
 void Renderer::setViewport(const IntRect& rect)
 {
-    return setViewport(rect.left, rect.right, rect.width(), rect.height());
+    return setViewport(rect.left, rect.bottom, rect.width(), rect.height());
 }
 
 void Renderer::draw(Drawable& d)
@@ -174,18 +177,22 @@ void Renderer::draw(Drawable& d)
 void Renderer::drawTo(Framebuffer& framebuffer,
                       Camera& camera) const
 {
-    GL_CHECK(glClear(GL_DEPTH_BUFFER_BIT));
-    //GL_CHECK(glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE)); 
-
     auto fbBind = make_bind(framebuffer);
+    GL_CHECK(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
+    clear();
+
+    //GL_CHECK(glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE)); 
 
     State rendererState(camera, Color::White, {});
     rendererState.isRenderingShadow = true;
     rendererState.projectionType = ProjectionType::Orthographic; // TODO
 
-    for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
-        d->draw(rendererState);
-    }
+    static Model ball("sphere.obj", gResourceMgr.getShader("proj_basic.vert", "color.frag"));
+    ball.draw(rendererState);
+
+    //for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
+        //d->draw(rendererState);
+    //}
 
     //GL_CHECK(glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE));
 }
@@ -211,15 +218,16 @@ void Renderer::drawAll()
         if (light.makesShadows) {
             sbAssert(light.type == Light::Type::Parallel, "TODO: shadows for point lights");
 
-            Camera camera = Camera::orthographic(-10.0, 10.0, -10.0, 10.0, -1000.0, 1000.0);
-            camera.lookAt(-light.pos, Vec3());
+            Camera camera = Camera::orthographic(-4.0, 4.0, -3.0, 3.0, -100.0, 100.0);
+            //Camera camera = Camera::orthographic(-20.0, 20.0, -20.0, 20.0, -1000.0, 1000.0);
+            //camera.lookAt(-light.pos + mCamera.getEye(), mCamera.getEye());
 
-            //IntRect savedViewport = mViewport;
-            //Vec2i shadowFbSize = light.shadowFramebuffer->getSize();
-            //setViewport(0, 0, shadowFbSize.x, shadowFbSize.y);
+            IntRect savedViewport = mViewport;
+            Vec2i shadowFbSize = light.shadowFramebuffer->getSize();
+            setViewport(0, 0, shadowFbSize.x, shadowFbSize.y);
 
             drawTo(*light.shadowFramebuffer, camera);
-            //setViewport(savedViewport);
+            setViewport(savedViewport);
 
             rendererState.shadows.push_back({
                 light.shadowFramebuffer->getTexture(),
@@ -228,6 +236,24 @@ void Renderer::drawAll()
         }
     }
 
+    sbFail("bo tak");
+
+#define FUCKING_FBOS_HOW_DO_THEY_WORK 0
+#if FUCKING_FBOS_HOW_DO_THEY_WORK
+    {
+        clear();
+
+        Camera camera = Camera::orthographic(-4.0, 4.0, -3.0, 3.0, -100.0, 100.0);
+        camera.lookAt(-mLights[1].pos, Vec3());
+        rendererState.camera = &camera;
+
+        static Model ball("sphere.obj", gResourceMgr.getShader("proj_basic.vert", "color.frag"));
+        ball.draw(rendererState);
+    }
+#else
+    GL_CHECK(glClearColor(mClearColor.r, mClearColor.g,
+                          mClearColor.b, mClearColor.a));
+    clear();
     for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
         if (d->mProjectionType == ProjectionType::Perspective) {
             rendererState.camera = &mCamera;
@@ -237,6 +263,7 @@ void Renderer::drawAll()
 
         d->draw(rendererState);
     }
+#endif
 
     mAmbientLightColor = Color::White;
     mLights.clear();

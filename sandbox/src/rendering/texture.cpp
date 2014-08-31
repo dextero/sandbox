@@ -1,5 +1,7 @@
 #include "rendering/texture.h"
 
+#include <vector>
+
 #include "utils/logger.h"
 #include "utils/lib.h"
 #include "utils/math.h"
@@ -22,15 +24,20 @@ GLuint createTexture(unsigned width,
     GL_CHECK(glBindTexture(GL_TEXTURE_2D, id));
     GL_CHECK(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 
+    GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+    GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+    GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
+    GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+    if (imageFormat == GL_DEPTH_COMPONENT) {
+        GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE));
+        GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL));
+        GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+    }
+
     GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, imageFormat,
                           width, height, 0, imageFormat,
                           imageType, data));
-
-    // generate mipmaps
-    GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
     if (generateMipmaps) {
         GL_CHECK(glGenerateMipmap(GL_TEXTURE_2D));
@@ -43,7 +50,7 @@ GLuint createTexture(unsigned width,
 
 Texture::Texture(unsigned width,
                  unsigned height):
-    mId(createTexture(width, height, nullptr, GL_DEPTH_COMPONENT, GL_FLOAT, false))
+    mId(createTexture(width, height, nullptr, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, true))
 {
 }
 
