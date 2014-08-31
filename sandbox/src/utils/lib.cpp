@@ -19,6 +19,11 @@
 #define FAIL_ON_ERROR
 
 namespace sb {
+
+#if GL_CALL_QUEUE
+Logger<QueueOutput> gl_queue_logger(QueueOutput(8));
+#endif // GL_CALL_QUEUE
+
 namespace utils {
 
 // returns true on error
@@ -27,12 +32,17 @@ bool GLCheck(const char* file, int line, const char* call)
     GLuint err = glGetError();
 
     if (err != GL_NO_ERROR) {
+#if GL_CALL_QUEUE
+        gLog.debug("last GL calls:\n%s", 
+                   ::sb::gl_queue_logger.getOutput().getOutput().c_str());
+#endif
 #ifdef FAIL_ON_ERROR
         sbFail(
 #else
         gLog.err(
 #endif
-            "GL error: \"%s\" at file %s, line %d\n>> %s\n", gluErrorString(err), file, line, call);
+            "GL error: \"%s\" at file %s, line %d\n>> %s\n",
+            gluErrorString(err), file, line, call);
     }
 
     return !!err;

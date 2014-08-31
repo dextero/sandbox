@@ -3,10 +3,6 @@
 
 #include <cstdlib>
 
-#include "utils/logger.h"
-
-namespace sb {
-
 # define sbFail(message, ...) \
     do { \
         gLog.err(message, ##__VA_ARGS__); \
@@ -28,7 +24,7 @@ namespace sb {
 
 # endif // _DEBUG
 
-} // namespace sb
+#include "utils/logger.h"
 
 #endif // SRC_UTILS_DEBUG_H
 

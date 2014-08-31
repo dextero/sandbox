@@ -6,11 +6,14 @@
 #include <GL/glu.h>
 #include <GL/glx.h>
 
-#ifndef TRACE_GL_CALLS
-#   define TRACE_GL_CALLS 0
+#ifndef GL_TRACE_CALLS
+#   define GL_TRACE_CALLS 1
 #endif // TRACE_GL_CALLS
+#ifndef GL_CONTINIOUS_TRACE
+#   define GL_CONTINIOUS_TRACE 0
+#endif // GL_CONTINIOUS_TRACE
 
-#if _DEBUG && TRACE_GL_CALLS
+#if _DEBUG && GL_TRACE_CALLS
 #   include "utils/glDebug.h"
 #endif // _DEBUG && TRACE_GL_CALLS
 
