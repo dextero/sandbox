@@ -23,12 +23,29 @@ namespace sb
         std::string name;
     };
 
+    struct Uniform
+    {
+        std::string name;
+        std::string type;
+
+        bool operator <(const Uniform& u) const {
+            return name < u.name;
+        }
+
+        Uniform(const std::string& name,
+                const std::string& type = ""):
+            name(name),
+            type(type)
+        {}
+    };
+
     class ConcreteShader
     {
     public:
         ConcreteShader(GLuint shaderType,
                        const std::string& path):
-            mShader(0)
+            mShader(0),
+            mFilename(path)
         {
             std::string code = utils::readFile(path);
             GL_CHECK(mShader = glCreateShader(shaderType));
@@ -61,24 +78,20 @@ namespace sb
         }
 
         GLuint getShader() const { return mShader; }
-        const std::map<Attrib::Kind, Input>& getInputs() const
-        {
-            return mInputs;
-        }
-        const std::set<std::string> getUniforms() const
-        {
-            return mUniforms;
-        }
+        const std::map<Attrib::Kind, Input>& getInputs() const { return mInputs; }
+        const std::set<Uniform> getUniforms() const { return mUniforms; }
+        const std::string& getFilename() const { return mFilename; }
 
     private:
         bool shaderCompilationSucceeded(const std::string& source);
         static std::map<Attrib::Kind, Input> parseInputs(const std::string& code,
                                                          bool warnOnUntagged);
-        static std::set<std::string> parseUniforms(const std::string& code);
+        static std::set<Uniform> parseUniforms(const std::string& code);
 
         GLuint mShader;
+        std::string mFilename;
         std::map<Attrib::Kind, Input> mInputs;
-        std::set<std::string> mUniforms;
+        std::set<Uniform> mUniforms;
     };
 
     class Shader
@@ -156,6 +169,7 @@ namespace sb
         {
             mProgram = prev.mProgram;
             prev.mProgram = 0;
+            mFilenames.swap(prev.mFilenames);
             mInputs.swap(prev.mInputs);
             mUniforms.swap(prev.mUniforms);
             return *this;
@@ -168,10 +182,15 @@ namespace sb
             }
         }
 
+        std::string getName() const {
+            return utils::join(mFilenames, ", ");
+        }
+
     private:
         ProgramId mProgram;
+        std::vector<std::string> mFilenames;
         std::map<Attrib::Kind, Input> mInputs;
-        std::set<std::string> mUniforms;
+        std::set<Uniform> mUniforms;
 
         Shader(const std::shared_ptr<ConcreteShader>& vertex,
                const std::shared_ptr<ConcreteShader>& fragment,

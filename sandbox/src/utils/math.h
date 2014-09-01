@@ -31,6 +31,7 @@ namespace sb
                                 float aspectRatio,
                                 float near = Z_NEAR,
                                 float far = Z_FAR);
+        Mat44 matrixShadowBias();
 
         namespace detail
         {

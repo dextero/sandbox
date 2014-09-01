@@ -216,7 +216,7 @@ void setShadowUniforms(Renderer::State& state,
             const Renderer::Shadow& s = state.shadows[i];
 
             outBinds.emplace_back(*s.shadowMap, firstTextureUnit + i);
-            shader->setUniform(base + ".perspectiveMatrix", s.perspectiveMatrix);
+            shader->setUniform(base + ".projectionMatrix", s.projectionMatrix);
             shader->setUniform(base + ".map", (GLint)(firstTextureUnit + i));
         }
     }
@@ -243,7 +243,11 @@ void Drawable::draw(Renderer::State& state) const
     std::vector<bind_guard<Texture>> shadowBinds;
     if (!state.isRenderingShadow) {
         mShader->setUniform("color", mColor);
-        mShader->setUniform("tex", 0);
+
+        if (mShader->hasUniform("tex")) {
+            mShader->setUniform("tex", 0);
+        }
+
         constexpr size_t BOUND_TEXTURES = 1;
 
         setLightUniforms(state, mShader);

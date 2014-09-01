@@ -67,7 +67,7 @@ vec4 specular(vec3 position,
 vec4 phong(vec3 position,
            vec3 normal)
 {
-#if 0
+#if 1
     return clamp(ambientLightColor + diffuse(position, normal) + specular(position, normal), 0.0, 1.0);
 #else
 #  if 1

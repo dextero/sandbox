@@ -20,13 +20,13 @@ const std::map<std::string, Attrib::Kind> ATTRIB_KINDS {
 
 ssize_t extractLineNum(const std::string& logLine)
 {
-    size_t numStart = logLine.find(':');
+    size_t numStart = logLine.find_first_not_of("0123456789");
     if (numStart == std::string::npos) {
         return -1;
     }
 
     ++numStart;
-    size_t numEnd = logLine.find('(', numStart);
+    size_t numEnd = logLine.find_first_not_of("0123456789", numStart);
 
     return lexical_cast<ssize_t>(logLine.substr(numStart, numEnd - numStart));
 }
@@ -128,6 +128,22 @@ void extractInput(std::map<Attrib::Kind, Input>& outInputs,
     outInputs[kind] = { kind, type, name };
 }
 
+void detectOptimizedOutUniforms(GLuint program,
+                                std::set<Uniform>& uniforms)
+{
+    for (const Uniform& uniform: uniforms) {
+        std::string nameToCheck = uniform.name;
+        if (uniform.type.size() > 2
+                && uniform.type.substr(uniform.type.size() - 2) == "[]") {
+            nameToCheck += "[0]";
+        }
+
+        if (glGetUniformLocation(program, nameToCheck.c_str()) == -1) {
+            gLog.warn("uniform \"%s\" may be optimized out!", uniform.name.c_str());
+        }
+    }
+}
+
 } // namespace
 
 std::map<Attrib::Kind, Input>
@@ -144,18 +160,29 @@ ConcreteShader::parseInputs(const std::string& code,
     return ret;
 }
 
-std::set<std::string> ConcreteShader::parseUniforms(const std::string& code)
+std::set<Uniform> ConcreteShader::parseUniforms(const std::string& code)
 {
-    std::set<std::string> ret;
+    std::set<Uniform> ret;
     std::vector<std::string> lines = utils::split(code, "\n");
 
     for (const std::string& line: lines) {
         std::vector<std::string> words = utils::split(line);
+
         if (words.size() > 2
                 && words[0] == "uniform") {
-            std::string uniformName = utils::strip(words[2], "[]0123456789;");
-            ret.insert(uniformName);
-            gLog.trace("uniform: %s", uniformName.c_str());
+            std::string uniformType = utils::strip(words[1]);
+            if (words[2].find("[") != std::string::npos
+                    || (words.size() > 3 && words[3][0] == '[')) {
+                uniformType += "[]";
+            }
+
+            std::string uniformName =
+                    utils::strip(
+                        utils::split(utils::strip(words[2], ";"), "[")[0]);
+
+            ret.insert(Uniform(uniformName, uniformType));
+            gLog.trace("uniform: %s %s",
+                       uniformType.c_str(), uniformName.c_str());
         }
     }
 
@@ -192,20 +219,24 @@ Shader::Shader(const std::shared_ptr<ConcreteShader>& vertex,
                const std::shared_ptr<ConcreteShader>& fragment,
                const std::shared_ptr<ConcreteShader>& geometry):
     mProgram(linkShader(vertex, fragment, geometry)),
+    mFilenames({ vertex->getFilename(), fragment->getFilename() }),
     mInputs(vertex->getInputs())
 {
-    for (const std::string& uniform: vertex->getUniforms()) {
+    for (const Uniform& uniform: vertex->getUniforms()) {
         mUniforms.insert(uniform);
     }
-    for (const std::string& uniform: fragment->getUniforms()) {
+    for (const Uniform& uniform: fragment->getUniforms()) {
         mUniforms.insert(uniform);
     }
 
     if (geometry) {
-        for (const std::string& uniform: geometry->getUniforms()) {
+        for (const Uniform& uniform: geometry->getUniforms()) {
             mUniforms.insert(uniform);
         }
+        mFilenames.push_back(geometry->getFilename());
     }
+
+    detectOptimizedOutUniforms(mProgram, mUniforms);
 }
 
 ProgramId Shader::linkShader(const std::shared_ptr<ConcreteShader>& vertex,
@@ -271,9 +302,25 @@ bool Shader::shaderLinkSucceeded(ProgramId program)
                             const Type* value_array, \
                             uint32_t elements) const \
     { \
-        if (!mProgram) return false; \
-        GLint loc = glGetUniformLocation(mProgram, name); \
-        if (loc == -1) return false; \
+        if (!mProgram) { \
+            sbFail("invalid program: %d", (int)mProgram); \
+            return false; \
+        } \
+        GLint loc; \
+        GL_CHECK(loc = glGetUniformLocation(mProgram, name)); \
+        if (loc == -1) { \
+            std::string name_str = \
+                    utils::split(utils::split(name, ".")[0], "[")[0]; \
+            if (!hasUniform(name_str)) { \
+                sbFail("no uniform \"%s\" in shader: %s", \
+                       name, getName().c_str()); \
+            } else { \
+                sbFail("uniform \"%s\" was optimized out by the shader " \
+                       "compiler in shader: %s", \
+                       name, getName().c_str()); \
+            } \
+            return false; \
+        } \
         GL_CHECK(glSetter(loc, elements, ##__VA_ARGS__, (const GLType*)value_array)); \
         return true; \
     }

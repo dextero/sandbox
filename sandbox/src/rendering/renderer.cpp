@@ -190,9 +190,9 @@ void Renderer::drawTo(Framebuffer& framebuffer,
     static Model ball("sphere.obj", gResourceMgr.getShader("proj_basic.vert", "color.frag"));
     ball.draw(rendererState);
 
-    //for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
-        //d->draw(rendererState);
-    //}
+    for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
+        d->draw(rendererState);
+    }
 
     //GL_CHECK(glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE));
 }
@@ -218,7 +218,8 @@ void Renderer::drawAll()
         if (light.makesShadows) {
             sbAssert(light.type == Light::Type::Parallel, "TODO: shadows for point lights");
 
-            Camera camera = Camera::orthographic(-4.0, 4.0, -3.0, 3.0, -100.0, 100.0);
+            Camera camera = Camera::orthographic(-1.0, 1.0, -0.75, 0.75, -100.0, 100.0);
+            //Camera camera = Camera::orthographic(-4.0, 4.0, -3.0, 3.0, -100.0, 100.0);
             //Camera camera = Camera::orthographic(-20.0, 20.0, -20.0, 20.0, -1000.0, 1000.0);
             //camera.lookAt(-light.pos + mCamera.getEye(), mCamera.getEye());
 
@@ -231,7 +232,7 @@ void Renderer::drawAll()
 
             rendererState.shadows.push_back({
                 light.shadowFramebuffer->getTexture(),
-                camera.getViewProjectionMatrix()
+                math::matrixShadowBias() * camera.getViewProjectionMatrix()
             });
         }
     }
@@ -245,8 +246,8 @@ void Renderer::drawAll()
                               mClearColor.b, mClearColor.a));
         clear();
 
-        Camera camera = Camera::orthographic(-4.0, 4.0, -3.0, 3.0, -100.0, 100.0);
-        camera.lookAt(-mLights[1].pos, Vec3());
+        Camera camera = Camera::orthographic(-1.0, 1.0, -0.75, 0.75, -100.0, 100.0);
+        //camera.lookAt(-light.pos + mCamera.getEye(), mCamera.getEye());
         rendererState.camera = &camera;
 
         static Model ball("sphere.obj", gResourceMgr.getShader("proj_basic.vert", "color.frag"));

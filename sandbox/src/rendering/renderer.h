@@ -26,7 +26,7 @@ namespace sb
         struct Shadow
         {
             std::shared_ptr<const Texture> shadowMap;
-            Mat44 perspectiveMatrix;
+            Mat44 projectionMatrix;
         };
 
         struct State

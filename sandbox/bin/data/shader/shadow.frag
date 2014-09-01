@@ -8,7 +8,7 @@ struct Shadow {
 uniform Shadow shadows[4];
 uniform uint numShadows;
 
-uniform vec3 eyePos;
+/*uniform vec3 eyePos;*/
 
 uniform sampler2D tex;
 uniform vec4 color;
@@ -24,12 +24,11 @@ out vec4 out_color;
 
 void main()
 {
-    vec3 pos = ps_shadow_position.xyz / ps_shadow_position.w;
-    float shadowCoefficient = texture(shadows[0].map, pos);
+    float shadowCoefficient = float(numShadows) * clamp(textureProj(shadows[0].map, ps_shadow_position), 0.0, 1.0);
 
     vec4 shadowColor = vec4(shadowCoefficient, shadowCoefficient, shadowCoefficient, 1.0);
     vec4 baseColor = vec4((color * texture2D(tex, ps_texcoord)).rgb, 1.0);
 
-    out_color = shadowColor + 0.001 * baseColor;
+    out_color = (0.9 * shadowColor + 0.1) * baseColor;
 }
 
