@@ -28,10 +28,10 @@ Framebuffer::Framebuffer(uint32_t width,
     GL_CHECK(glBindRenderbuffer(GL_RENDERBUFFER, 0));
 #endif
 
-	//GL_CHECK(glDrawBuffer(GL_NONE));
-	//GL_CHECK(glReadBuffer(GL_NONE));
     GL_CHECK(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                     GL_TEXTURE_2D, texture->getId(), 0));
+    GL_CHECK(glDrawBuffer(GL_NONE));
+    GL_CHECK(glReadBuffer(GL_NONE));
 
 #if WITH_RENDERBUFFER
     //GL_CHECK(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
@@ -64,8 +64,6 @@ Framebuffer::~Framebuffer()
 void Framebuffer::bind() const
 {
     GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, id));
-    //GL_CHECK(glDrawBuffer(GL_NONE));
-    //GL_CHECK(glReadBuffer(GL_NONE));
 }
 
 void Framebuffer::unbind() const

@@ -236,11 +236,13 @@ void Renderer::drawAll()
         }
     }
 
-    sbFail("bo tak");
+    //sbFail("bo tak");
 
 #define FUCKING_FBOS_HOW_DO_THEY_WORK 0
 #if FUCKING_FBOS_HOW_DO_THEY_WORK
     {
+        GL_CHECK(glClearColor(mClearColor.r, mClearColor.g,
+                              mClearColor.b, mClearColor.a));
         clear();
 
         Camera camera = Camera::orthographic(-4.0, 4.0, -3.0, 3.0, -100.0, 100.0);

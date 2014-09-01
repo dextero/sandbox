@@ -232,7 +232,7 @@ ProgramId Shader::linkShader(const std::shared_ptr<ConcreteShader>& vertex,
     GL_CHECK(glLinkProgram(id));
 
     if (!shaderLinkSucceeded(id)) {
-        gLog.err("shader link failed");
+        sbFail("shader link failed");
         return 0;
     }
 

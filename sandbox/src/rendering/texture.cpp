@@ -30,7 +30,7 @@ GLuint createTexture(unsigned width,
     GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
     if (imageFormat == GL_DEPTH_COMPONENT) {
-        GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE));
+        //GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE));
         GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL));
         GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
     }
@@ -50,7 +50,7 @@ GLuint createTexture(unsigned width,
 
 Texture::Texture(unsigned width,
                  unsigned height):
-    mId(createTexture(width, height, nullptr, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, true))
+    mId(createTexture(width, height, nullptr, GL_DEPTH_COMPONENT, GL_FLOAT, true))
 {
 }
 
