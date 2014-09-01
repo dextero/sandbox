@@ -123,9 +123,9 @@ int main()
 
     std::string fpsString;
 
-    bool displayHelp = true;
-    bool displaySimInfo = true;
-    bool displayBallInfo = true;
+    bool displayHelp = false;
+    bool displaySimInfo = false;
+    bool displayBallInfo = false;
 
     const std::string helpString =
         "controls:\n"
