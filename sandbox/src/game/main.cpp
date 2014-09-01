@@ -60,9 +60,7 @@ int main()
 {
     feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW);
 
-    using sb::utils::makeString;
-
-    sb::Window wnd(800, 600);
+    sb::Window wnd(1280, 1024);
 
     auto colorShader = gResourceMgr.getShader("proj_basic.vert", "color.frag");
     auto textureShader = gResourceMgr.getShader("proj_texture.vert", "texture.frag");
@@ -100,9 +98,6 @@ int main()
     sb::Terrain terrain("hmap_flat.jpg", "ground.jpg", shadowShader);
     terrain.setScale(10.f, 1.f, 10.f);
     terrain.setPosition(-640.f, 0.f, -640.f);
-
-    sb::Text text("dupa\ndupaa\nduuuuuuuupa dupa dupa asdasd12$%$#^%", gResourceMgr.getFont("font.txt"), textureShader);
-    text.setColor(sb::Color::Blue);
 
     gLog.info("all data loaded!\n");
 
@@ -160,7 +155,7 @@ int main()
         "/' - decrease/increase ball radius**\n"
         "* hold button to adjust value\n"
         "** doesn't affect existing balls";
-    //const uint32_t helpStringLines = 27u;
+    const uint32_t helpStringLines = 27u;
 
     gLog.info("entering main loop\n");
 
@@ -397,16 +392,17 @@ int main()
                             SYSTEMTIME systime;
                             ::GetSystemTime(&systime);
                             std::string filename =
-                                    makeString(systime.wHour, ".",
-                                               systime.wMinute, ".",
-                                               systime.wSecond, ".",
-                                               systime.wMilliseconds, ".png");
+                                    sb::utils::format("{0}.{1}.{2}.{3}.png",
+                                                      systime.wHour,
+                                                      systime.wMinute,
+                                                      systime.wSecond,
+                                                      systime.wMilliseconds);
 #else // PLATFORM_LINUX
                             timeval current;
                             gettimeofday(&current, NULL);
                             std::string filename =
-                                    makeString(current.tv_sec, ".",
-                                               (current.tv_usec / 1000), ".png");
+                                    sb::utils::format("{0}.{1}.png", current.tv_sec,
+                                                      (current.tv_usec / 1000));
 #endif // PLATFORM_WIN32
 
                             wnd.saveScreenshot(filename);
@@ -493,57 +489,61 @@ int main()
         wnd.draw(zaxis);
         wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest);
 
-        wnd.draw(text);
-
         // balls & forces
         sim.drawAll(wnd.getRenderer());
 
         // crosshair
         wnd.draw(crosshair);
 
-#if 0
         // info strings
         uint32_t nextLine = 0u;
-        sb::String::print(fpsString, 0.f, 0.f,
-                          (fpsCurrValue > 30.f
-                              ? sb::Color::Green
-                              : (fpsCurrValue > 20.f ? sb::Color::Yellow
-                                                     : sb::Color::Red)),
-                          nextLine++);
-        sb::String::print(
-                makeString("pos = ", wnd.getCamera().getEye(),
-                           "\nfront = ", wnd.getCamera().getFront(),
-                           " len = ", wnd.getCamera().getFront().length(),
-                           "\nright = ", wnd.getCamera().getRight(),
-                           "\nupReal = ", wnd.getCamera().getUpReal(),
-                           "\nphi = ",
+        wnd.drawString(fpsString, { 0.0f, 0.0f },
+                       (fpsCurrValue > 30.f
+                           ? sb::Color::Green
+                           : (fpsCurrValue > 20.f ? sb::Color::Yellow
+                                                  : sb::Color::Red)),
+                       nextLine++);
+        wnd.drawString(sb::utils::format("pos = {0}\n"
+                           "front = {1} len = {2}\n"
+                           "right = {3}\n"
+                           "upReal = {4}\n"
+                           "phi = {5} ({6})\n"
+                           "theta = {7} ({8})",
+                           wnd.getCamera().getEye(),
+                           wnd.getCamera().getFront(),
+                           wnd.getCamera().getFront().length(),
+                           wnd.getCamera().getRight(),
+                           wnd.getCamera().getUpReal(),
                            Degrees(wnd.getCamera().getHorizontalAngle()),
-                           "\ntheta = ",
-                           Degrees(wnd.getCamera().getVerticalAngle())),
-                0.f, 0.f, sb::Color::White, nextLine);
+                           Radians(wnd.getCamera().getHorizontalAngle()),
+                           Degrees(wnd.getCamera().getVerticalAngle()),
+                           Radians(wnd.getCamera().getVerticalAngle())),
+                       { 0.f, 0.f }, sb::Color::White, nextLine);
         nextLine += 6;
 
-        sb::String::print(makeString("throw velocity = ",
-                                     throwVelocity.getValue()),
-                           0.f, 0.f, Sim::ColorThrow, nextLine++);
-        sb::String::print(makeString("wind velocity = ",
-                                     windVelocity.getValue()),
-                          0.f, 0.f, Sim::ColorWind, nextLine++);
+        wnd.drawString(sb::utils::format("throw velocity = {0}",
+                                         throwVelocity.getValue()),
+                       { 0.f, 0.f }, Sim::ColorThrow, nextLine++);
+        wnd.drawString(sb::utils::format("wind velocity = {0}",
+                                         windVelocity.getValue()),
+                       { 0.f, 0.f }, Sim::ColorWind, nextLine++);
 
         if (displayHelp)
         {
-            sb::String::print(helpString,
-                              0.f, 0.0f, sb::Color::White, ++nextLine);
+            wnd.drawString(helpString, { 0.f, 0.0f },
+                           sb::Color::White, ++nextLine);
             nextLine += helpStringLines;
         }
-        if (displaySimInfo)
-            nextLine = sim.printParametersToScreen(0.f, 0.f, ++nextLine);
-        if (displayBallInfo)
+        if (displaySimInfo) {
+            nextLine = sim.printParametersToScreen(wnd, { 0.f, 0.f }, ++nextLine);
+        }
+        if (displayBallInfo) {
             nextLine = sim.printBallParametersToScreen(
-                    sim.raycast(wnd.getCamera().getEye(),
-                                wnd.getCamera().getFront().normalized()),
-                    0.f, 0.0f, nextLine);
-#endif
+                    wnd, sim.raycast(wnd.getCamera().getEye(),
+                                     wnd.getCamera().getFront().normalized()),
+                    { 0.f, 0.0f }, nextLine);
+        }
+
         wnd.display();
     }
 

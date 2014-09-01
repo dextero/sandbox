@@ -4,6 +4,11 @@
 #include "utils/logger.h"
 #include "utils/debug.h"
 
+#include "resources/font.h"
+#include "resources/resourceMgr.h"
+
+#include "rendering/text.h"
+
 #include <X11/Xutil.h>
 #include <cstring>
 
@@ -278,4 +283,22 @@ namespace sb
         return mRenderer.getCamera();
     }
 
+    void Window::drawString(const std::string& str,
+                            const Vec2& topLeft,
+                            const Color& color,
+                            uint32_t lineNum)
+    {
+        if (str.empty()) {
+            return;
+        }
+
+        static std::shared_ptr<sb::Font> font = gResourceMgr.getFont("font.txt");
+        static std::shared_ptr<sb::Shader> shader = gResourceMgr.getShader("proj_texture.vert", "texture.frag");
+
+        sb::Text text(str, font, shader);
+        text.setPosition(topLeft.x,
+                         topLeft.y + lineNum * font->getLineHeightPixels(), 0.0f);
+        text.setColor(color);
+        draw(text);
+    }
 } // namespace sb

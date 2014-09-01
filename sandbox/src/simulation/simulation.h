@@ -2,8 +2,9 @@
 #define SIM_SIMULATION_H
 
 #include <list>
-#include "../utils/types.h"
-#include "../rendering/line.h"
+#include "utils/types.h"
+#include "rendering/line.h"
+#include "window/window.h"
 
 namespace sb
 {
@@ -40,14 +41,14 @@ namespace Sim
         void reset();
 
         // returns lines displayed
-        uint32_t printParametersToScreen(float x = 0.f,
-                                         float y = 0.f,
+        uint32_t printParametersToScreen(sb::Window& wnd,
+                                         const Vec2& topLeft = Vec2(0.0f, 0.0f),
                                          uint32_t line = 0u);
         const std::shared_ptr<Ball> raycast(const Vec3& rayOrig,
                                             const Vec3& rayDir);
-        uint32_t printBallParametersToScreen(const std::shared_ptr<Ball> &ball,
-                                             float x = 0.f,
-                                             float y = 0.f,
+        uint32_t printBallParametersToScreen(sb::Window& wnd,
+                                             const std::shared_ptr<Ball> &ball,
+                                             const Vec2& topLeft = Vec2(0.0f, 0.0f),
                                              uint32_t line = 0u);
 
         double getBallRadius() const { return mBallRadius; }

@@ -18,7 +18,9 @@ namespace sb
     {
         sbAssert(bytes > 0, "added buffer must not be empty");
 
+#if 0
         gLog.trace("creating buffer: %lu bytes\n", bytes);
+#endif
 
         GL_CHECK(glGenBuffers(1, &id));
 
