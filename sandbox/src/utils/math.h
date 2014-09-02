@@ -59,4 +59,7 @@ namespace sb
     } // namespace Math
 } // namespace sb
 
+std::ostream& operator <<(std::ostream& os,
+                          const Mat44& mat);
+
 #endif //MATHUTILS_H

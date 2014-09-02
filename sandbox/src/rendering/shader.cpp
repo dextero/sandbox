@@ -15,7 +15,8 @@ const std::map<std::string, Attrib::Kind> ATTRIB_KINDS {
     { "POSITION", Attrib::Kind::Position },
     { "TEXCOORD", Attrib::Kind::Texcoord },
     { "COLOR", Attrib::Kind::Color },
-    { "NORMAL", Attrib::Kind::Normal }
+    { "NORMAL", Attrib::Kind::Normal },
+    { "", Attrib::Kind::Unspecified }
 };
 
 ssize_t extractLineNum(const std::string& logLine)
@@ -90,13 +91,12 @@ bool isInputLine(const std::string& line,
             gLog.warn("expected format: in <type> <name> // TAG");
             gLog.warn("recognized tags: %s", utils::join(tags, ", ").c_str());
         }
-        return false;
     }
 
     return true;
 }
 
-void extractInput(std::map<Attrib::Kind, Input>& outInputs,
+void extractInput(std::set<Input>& outInputs,
                   const std::string& line,
                   bool warnOnUntagged)
 {
@@ -108,7 +108,7 @@ void extractInput(std::map<Attrib::Kind, Input>& outInputs,
 
     const std::string& type = words[1];
     const std::string& name = utils::strip(words[2], "[]0123456789;");
-    const std::string& kind_str = words[4];
+    const std::string& kind_str = words.size() > 4 ? words[4] : "";
 
     auto kindIt = ATTRIB_KINDS.find(kind_str);
     if (kindIt == ATTRIB_KINDS.end()) {
@@ -116,16 +116,45 @@ void extractInput(std::map<Attrib::Kind, Input>& outInputs,
     }
     const Attrib::Kind kind = kindIt->second;
 
-    auto it = outInputs.find(kind);
-    if (it != outInputs.end()) {
-        sbFail("multiple inputs of the same kind (%s) detected: %s and %s",
-               kind_str.c_str(), it->second.name.c_str(), name.c_str());
+    if (kind != Attrib::Kind::Unspecified) {
+        auto it = std::find_if(outInputs.begin(), outInputs.end(),
+                               [kind](const Input& i) {
+                                   return i.kind == kind;
+                               });
+        if (it != outInputs.end()) {
+            sbFail("multiple inputs of the same kind (%s) detected: %s and %s",
+                   kind_str.c_str(), it->name.c_str(), name.c_str());
+        }
+
+        gLog.trace("input (%s): %s %s",
+                   kind_str.c_str(), type.c_str(), name.c_str());
+    } else {
+        gLog.trace("input: %s %s", type.c_str(), name.c_str());
     }
 
-    gLog.trace("input (%s): %s %s",
-               kind_str.c_str(), type.c_str(), name.c_str());
+    outInputs.insert(Input(name, type, kind));
+}
 
-    outInputs[kind] = { kind, type, name };
+void extractOutput(std::set<Output>& outOutputs,
+                   const std::string& line)
+{
+    std::vector<std::string> words = utils::split(line);
+
+    if (words.size() < 3
+            || words[0] != "out") {
+        return;
+    }
+
+    const std::string& type = words[1];
+    const std::string& name = utils::strip(words[2], "[]0123456789;");
+
+    gLog.trace("output: %s %s", type.c_str(), name.c_str());
+
+    if (outOutputs.find(name) != outOutputs.end()) {
+        sbFail("multiple outputs with same name (%s) detected", name.c_str());
+    }
+
+    outOutputs.insert(Output(name, type));
 }
 
 void detectOptimizedOutUniforms(GLuint program,
@@ -146,15 +175,26 @@ void detectOptimizedOutUniforms(GLuint program,
 
 } // namespace
 
-std::map<Attrib::Kind, Input>
-ConcreteShader::parseInputs(const std::string& code,
-                            bool warnOnUntagged)
+std::set<Input> ConcreteShader::parseInputs(const std::string& code,
+                                            bool warnOnUntagged)
 {
-    std::map<Attrib::Kind, Input> ret;
+    std::set<Input> ret;
     std::vector<std::string> lines = utils::split(code, "\n");
 
     for (const std::string& line: lines) {
         extractInput(ret, line, warnOnUntagged);
+    }
+
+    return ret;
+}
+
+std::set<Output> ConcreteShader::parseOutputs(const std::string& code)
+{
+    std::set<Output> ret;
+    std::vector<std::string> lines = utils::split(code, "\n");
+
+    for (const std::string& line: lines) {
+        extractOutput(ret, line);
     }
 
     return ret;
@@ -215,13 +255,68 @@ bool ConcreteShader::shaderCompilationSucceeded(const std::string& source)
     return true;
 }
 
+namespace {
+
+void checkShaderCompatibility(
+    const std::shared_ptr<ConcreteShader>& first,
+    const std::shared_ptr<ConcreteShader>& second)
+{
+    const std::set<Output>& outputs = first->getOutputs();
+
+    gLog.debug("checking compat: %s, %s", first->getFilename().c_str(),
+               second->getFilename().c_str());
+    gLog.debug("outputs:");
+    for (const Output& out: outputs) {
+        gLog.debug("- %s %s", out.type.c_str(), out.name.c_str());
+    }
+    gLog.debug("inputs:");
+    for (const Input& in: second->getInputs()) {
+        gLog.debug("- %s %s", in.type.c_str(), in.name.c_str());
+    }
+
+    for (const Input& input: second->getInputs()) {
+        gLog.debug("checking input %s", input.name.c_str());
+
+        auto outputIt = outputs.find(Output(input.name));
+        if (outputIt == outputs.end()) {
+            sbFail("dangling input: %s in shader %s when used with %s",
+                   input.name.c_str(), second->getFilename().c_str(),
+                   first->getFilename().c_str());
+        }
+
+        if (input.type != outputIt->type) {
+            sbFail("different types for in/out variable %s (%s, %s) in shaders "
+                   "%s and %s", input.name.c_str(), input.type.c_str(),
+                   outputIt->type.c_str(), first->getFilename().c_str(),
+                   second->getFilename().c_str());
+        }
+    }
+}
+
+void checkInputOutputCompatbility(
+        const std::shared_ptr<ConcreteShader>& vertex,
+        const std::shared_ptr<ConcreteShader>& fragment,
+        const std::shared_ptr<ConcreteShader>& geometry)
+{
+    if (geometry) {
+        checkShaderCompatibility(vertex, geometry);
+        checkShaderCompatibility(geometry, fragment);
+    } else {
+        checkShaderCompatibility(vertex, fragment);
+    }
+}
+
+} // namespace
+
 Shader::Shader(const std::shared_ptr<ConcreteShader>& vertex,
                const std::shared_ptr<ConcreteShader>& fragment,
                const std::shared_ptr<ConcreteShader>& geometry):
     mProgram(linkShader(vertex, fragment, geometry)),
     mFilenames({ vertex->getFilename(), fragment->getFilename() }),
-    mInputs(vertex->getInputs())
+    mInputs(vertex->makeInputsMap())
 {
+    checkInputOutputCompatbility(vertex, fragment, geometry);
+
     for (const Uniform& uniform: vertex->getUniforms()) {
         mUniforms.insert(uniform);
     }

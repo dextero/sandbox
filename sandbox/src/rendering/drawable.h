@@ -49,7 +49,7 @@ namespace sb
 
     protected:
         std::shared_ptr<Mesh> mMesh;
-        std::shared_ptr<Texture> mTexture;    // if present, overrides model's own texture
+        std::shared_ptr<const Texture> mTexture;    // if present, overrides model's own texture
         std::shared_ptr<Shader> mShader;
         Color mColor;
 

@@ -1,5 +1,9 @@
 #include "utils/math.h"
 
+#include <iomanip>
+
+#include "utils/lexical_cast.h"
+
 namespace sb
 {
     namespace math
@@ -68,3 +72,26 @@ namespace sb
         }
     } // namespace Math
 } // namespace sb
+
+std::ostream& operator <<(std::ostream& os,
+                          const Mat44& mat)
+{
+    constexpr std::streamsize PRECISION = 8;
+
+    const std::streamsize oldPrecision = os.precision();
+
+#define MAT(col, row) \
+    std::setw(PRECISION + 1) \
+    << lexical_cast<std::string>(mat[col][row]).substr(0, PRECISION)
+
+    os << ".' "  << MAT(0, 0) << MAT(1, 0) << MAT(2, 0) << MAT(3, 0) << " '.\n"
+       << "|  "  << MAT(0, 1) << MAT(1, 1) << MAT(2, 1) << MAT(3, 1) << "  |\n"
+       << "|  "  << MAT(0, 2) << MAT(1, 2) << MAT(2, 2) << MAT(3, 2) << "  |\n"
+       << "'. "  << MAT(0, 3) << MAT(1, 3) << MAT(2, 3) << MAT(3, 3) << " .'\n";
+
+#undef MAT
+
+    os.precision(oldPrecision);
+    return os;
+}
+

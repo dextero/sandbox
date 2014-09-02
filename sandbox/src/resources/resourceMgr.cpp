@@ -56,16 +56,16 @@ ResourceMgr::ResourceMgr(const std::string& basePath):
 
     std::vector<Vec3> quadVertices {
         { -1.f, -1.f, 0.f },
-        {  1.f, -1.f, 0.f },
         { -1.f,  1.f, 0.f },
+        {  1.f, -1.f, 0.f },
         {  1.f,  1.f, 0.f }
     };
 
     std::vector<Vec2> quadTexcoords {
-        { 0.f, 1.f },
         { 0.f, 0.f },
-        { 1.f, 1.f },
-        { 1.f, 0.f }
+        { 0.f, 1.f },
+        { 1.f, 0.f },
+        { 1.f, 1.f }
     };
 
     std::vector<uint32_t> quadIndices { 0, 1, 2, 3 };

@@ -205,7 +205,7 @@ void setShadowUniforms(Renderer::State& state,
     sbAssert(shader->hasUniform("shadows") == shader->hasUniform("numShadows"),
              "shadows and numShadows must both be present");
 
-    if (shader->hasUniform("numShadows")) {
+    if (shader->hasUniform("shadows")) {
         shader->setUniform("numShadows", (unsigned)state.shadows.size());
 
         outBinds.clear();

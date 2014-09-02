@@ -22,4 +22,9 @@ namespace sb
     {
         mTexture = gResourceMgr.getTexture(image);
     }
+
+    void Sprite::setTexture(const std::shared_ptr<const Texture>& tex)
+    {
+        mTexture = tex;
+    }
 } // namespace sb

@@ -17,6 +17,7 @@ namespace sb
 {
     struct Attrib {
         enum class Kind {
+            Unspecified,
             Position,
             Texcoord,
             Color,

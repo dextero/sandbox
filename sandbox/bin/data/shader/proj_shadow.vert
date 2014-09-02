@@ -20,7 +20,7 @@ out vec2 ps_texcoord;
 
 void main()
 {
-    ps_shadow_position = shadows[0].projectionMatrix * vec4(position, 1.0);
+    ps_shadow_position = shadows[0].projectionMatrix * matModel * vec4(position, 1.0);
     ps_position = matViewProjection * matModel * vec4(position, 1.0);
     ps_texcoord = texcoord;
 

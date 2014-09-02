@@ -21,6 +21,34 @@ namespace sb
         Attrib::Kind kind;
         std::string type;
         std::string name;
+
+        Input(const std::string& name,
+              const std::string& type = "",
+              Attrib::Kind kind = Attrib::Kind::Unspecified):
+            kind(kind),
+            type(type),
+            name(name)
+        {}
+
+        bool operator <(const Input& i) const {
+            return name < i.name;
+        }
+    };
+
+    struct Output
+    {
+        std::string type;
+        std::string name;
+
+        Output(const std::string& name,
+               const std::string& type = ""):
+            type(type),
+            name(name)
+        {}
+
+        bool operator <(const Output& o) const {
+            return name < o.name;
+        }
     };
 
     struct Uniform
@@ -67,6 +95,7 @@ namespace sb
             }
 
             mInputs = parseInputs(code, shaderType == GL_VERTEX_SHADER);
+            mOutputs = parseOutputs(code);
             mUniforms = parseUniforms(code);
         }
 
@@ -78,19 +107,37 @@ namespace sb
         }
 
         GLuint getShader() const { return mShader; }
-        const std::map<Attrib::Kind, Input>& getInputs() const { return mInputs; }
+        const std::set<Input>& getInputs() const { return mInputs; }
+        const std::set<Output> getOutputs() const { return mOutputs; }
         const std::set<Uniform> getUniforms() const { return mUniforms; }
         const std::string& getFilename() const { return mFilename; }
 
+        std::map<Attrib::Kind, Input> makeInputsMap() const {
+            std::map<Attrib::Kind, Input> ret;
+
+            for (const Input& input: mInputs) {
+                if (input.kind == Attrib::Kind::Unspecified) {
+                    sbFail("input %s is missing a kind annotation in shader %s",
+                           input.name.c_str(), mFilename.c_str());
+                }
+
+                ret.insert({ input.kind, input });
+            }
+
+            return ret;
+        }
+
     private:
         bool shaderCompilationSucceeded(const std::string& source);
-        static std::map<Attrib::Kind, Input> parseInputs(const std::string& code,
-                                                         bool warnOnUntagged);
+        static std::set<Input> parseInputs(const std::string& code,
+                                           bool warnOnUntagged);
+        static std::set<Output> parseOutputs(const std::string& code);
         static std::set<Uniform> parseUniforms(const std::string& code);
 
         GLuint mShader;
         std::string mFilename;
-        std::map<Attrib::Kind, Input> mInputs;
+        std::set<Input> mInputs;
+        std::set<Output> mOutputs;
         std::set<Uniform> mUniforms;
     };
 
