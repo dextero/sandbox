@@ -628,7 +628,7 @@ int main()
     // main loop
     while (game.isRunning())
     {
-        float delta = clock.getSecsElapsed();
+        float delta = clock.getSecondsElapsed();
         clock.reset();
 
         game.handleInput();

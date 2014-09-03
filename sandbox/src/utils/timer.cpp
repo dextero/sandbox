@@ -14,20 +14,14 @@ namespace sb
         gettimeofday(&mTimeStart, NULL);
     }
 
-    float Timer::getSecsElapsed()
+    uint64_t Timer::getMicrosecondsElapsed()
     {
         timeval current;
         gettimeofday(&current, NULL);
 
-        return (float)((double)(current.tv_usec - mTimeStart.tv_usec) / (double)1000000.);
-    }
-
-    unsigned long long Timer::getMillisecsElapsed()
-    {
-        timeval current;
-        gettimeofday(&current, NULL);
-
-        return (unsigned long long)(current.tv_usec - mTimeStart.tv_usec) * 1000LL;
+        uint64_t seconds = (uint64_t)(current.tv_sec - mTimeStart.tv_sec);
+        uint64_t useconds = (uint64_t)(current.tv_usec - mTimeStart.tv_usec);
+        return seconds * 1000000ULL + useconds;
     }
 } // namespace sb
 

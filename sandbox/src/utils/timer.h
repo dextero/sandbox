@@ -2,6 +2,7 @@
 #define TIMER_H
 
 #include <sys/time.h>
+#include <cstdint>
 
 namespace sb
 {
@@ -11,8 +12,12 @@ namespace sb
         Timer();
 
         void reset();
-        float getSecsElapsed();
-        unsigned long long getMillisecsElapsed();
+        uint64_t getMicrosecondsElapsed();
+
+        inline float getSecondsElapsed()
+        {
+            return (float)getMicrosecondsElapsed() / 1000000.0f;
+        }
 
     private:
         timeval mTimeStart;
