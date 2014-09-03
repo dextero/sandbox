@@ -31,7 +31,8 @@ GLuint createTexture(unsigned width,
 
     if (imageFormat == GL_DEPTH_COMPONENT) {
         GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE));
-        GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL));
+        GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LESS));
+        GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
     }
 
     GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, imageFormat,

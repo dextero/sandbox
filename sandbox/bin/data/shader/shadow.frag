@@ -24,11 +24,17 @@ out vec4 out_color;
 
 void main()
 {
-    float shadowCoefficient = 0.0f;
+    vec4 shadow_pos = ps_shadow_position;
+    shadow_pos.z -= shadow_pos.w * 0.0001;
+
+    float shadowCoefficient = 0.0;
     for (uint i = 0u; i < numShadows; ++i) {
-        shadowCoefficient += textureProj(shadows[0].map, ps_shadow_position);
+        if (shadow_pos.x >= 0.0 && shadow_pos.x <= 1.0
+                && shadow_pos.y >= 0.0 && shadow_pos.y <= 1.0) {
+            shadowCoefficient += 1.0 - textureProj(shadows[0].map, shadow_pos);
+        }
     }
-    shadowCoefficient /= float(numShadows);
+    shadowCoefficient = 1.0 - shadowCoefficient / numShadows;
 
     vec4 shadowColor = vec4(shadowCoefficient, shadowCoefficient, shadowCoefficient, 1.0);
     vec4 baseColor = vec4((color * texture2D(tex, ps_texcoord)).rgb, 1.0);

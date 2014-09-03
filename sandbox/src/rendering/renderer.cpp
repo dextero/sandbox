@@ -214,7 +214,7 @@ void Renderer::drawAll()
             //Camera camera = Camera::perspective(30.0f);
             //Camera camera = Camera::orthographic(-1.0, 1.0, -0.75, 0.75, -100.0, 100.0);
             //Camera camera = Camera::orthographic(-4.0, 4.0, -3.0, 3.0, -100.0, 100.0);
-            Camera camera = Camera::orthographic(-20.0, 20.0, -20.0, 20.0, -1000.0, 1000.0);
+            Camera camera = Camera::orthographic(-100.0, 100.0, -100.0, 100.0, -1000.0, 1000.0);
             camera.lookAt(-light.pos, Vec3(0.0, 0.0, 0.0));
             //camera.lookAt(Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f));
 

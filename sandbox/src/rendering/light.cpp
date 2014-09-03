@@ -3,7 +3,7 @@
 namespace sb {
 namespace {
     const unsigned SHADOWMAP_WIDTH = 1024;
-    const unsigned SHADOWMAP_HEIGHT = 768;
+    const unsigned SHADOWMAP_HEIGHT = SHADOWMAP_WIDTH;
 } // namespace
 
 Light::Light(Type type,
