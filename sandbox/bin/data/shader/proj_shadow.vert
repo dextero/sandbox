@@ -2,7 +2,7 @@
 
 struct Shadow {
     mat4 projectionMatrix;
-    sampler2DShadow map;
+    sampler2D map;
 };
 
 uniform Shadow shadows[4];

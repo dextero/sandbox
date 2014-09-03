@@ -2,7 +2,7 @@
 
 struct Shadow {
     mat4 projectionMatrix;
-    sampler2DShadow map;
+    sampler2D map;
 };
 
 uniform Shadow shadows[4];
@@ -23,12 +23,19 @@ out vec4 out_color;
 
 void main()
 {
-    float shadowCoefficient = clamp(float(numShadows), 0.99, 1.01);
-    shadowCoefficient *= clamp(textureProj(shadows[0].map, ps_shadow_position), 0.0, 1.0);
+    vec4 proj = ps_shadow_position / ps_shadow_position.w;
+
+    float shadowCoefficient = 0.0f;
+    for (uint i = 0u; i < numShadows; ++i) {
+        float depth = texture2D(shadows[i].map, ps_shadow_position.st).r;
+        shadowCoefficient += depth < ps_shadow_position.z ? 0.0 : 1.0;
+        /*shadowCoefficient += clamp(abs(textureProj(shadows[0].map, shpos)), 0.0, 1.0);*/
+    }
+    shadowCoefficient /= float(numShadows);
 
     vec4 shadowColor = vec4(shadowCoefficient, shadowCoefficient, shadowCoefficient, 1.0);
-    vec4 baseColor = vec4((color * texture2D(tex, ps_shadow_position.xy)).rgb, 1.0);
+    vec4 baseColor = vec4((color * texture2D(tex, ps_texcoord)).rgb, 1.0);
 
-    out_color = (0.5 * shadowColor + 0.5) * baseColor;
+    out_color = shadowColor * baseColor;
 }
 

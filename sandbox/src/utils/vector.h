@@ -9,7 +9,7 @@ namespace sb
     { return glm::detail::operator op((const base_type&)*this); }
 #define OP2(RetType, ArgType, op) \
     inline RetType operator op(ArgType arg) \
-    { return base_type::operator op(arg); }
+    { base_type::operator op(arg); return *this; }
 #define OP2_T(Template, RetType, ArgType, op) \
     template<typename OpArgType, glm::precision OpPrec> \
     inline RetType operator op(const Template<OpArgType, OpPrec>& arg) \
