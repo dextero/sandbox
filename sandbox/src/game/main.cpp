@@ -21,17 +21,17 @@
 
 class Accumulator
 {
+    const float mBase;
+    const float mStep;
     float mAccumulator;
-    float mBase;
-    float mStep;
     bool mRunning;
 
 public:
     Accumulator(float base,
                 float step = 1.f):
-        mAccumulator(0.f),
         mBase(base),
         mStep(step),
+        mAccumulator(0.f),
         mRunning(false)
     {}
 
@@ -45,14 +45,15 @@ public:
     {
         if (mRunning) {
             mAccumulator += mStep;
-            assert(mAccumulator > 0.0f);
+            assert(mAccumulator >= 0.0f);
         }
     }
     void update(float dt)
     {
+        gLog.debug("update %f, is %f", dt, mAccumulator);
         if (mRunning) {
             mAccumulator += dt;
-            assert(mAccumulator > 0.0f);
+            assert(mAccumulator >= 0.0f);
         }
     }
 

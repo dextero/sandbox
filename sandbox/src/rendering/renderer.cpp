@@ -181,20 +181,13 @@ void Renderer::drawTo(Framebuffer& framebuffer,
     GL_CHECK(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
     clear();
 
-    //GL_CHECK(glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE)); 
-
     State rendererState(camera, Color::White, {});
     rendererState.isRenderingShadow = true;
     rendererState.projectionType = ProjectionType::Orthographic; // TODO
 
-    static Model ball("sphere.obj", gResourceMgr.getShader("proj_basic.vert", "color.frag"));
-    ball.draw(rendererState);
-
     for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
         d->draw(rendererState);
     }
-
-    //GL_CHECK(glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE));
 }
 
 void Renderer::drawAll()
@@ -218,12 +211,12 @@ void Renderer::drawAll()
         if (light.makesShadows) {
             sbAssert(light.type == Light::Type::Parallel, "TODO: shadows for point lights");
 
-            Camera camera = Camera::orthographic();
+            //Camera camera = Camera::perspective(30.0f);
             //Camera camera = Camera::orthographic(-1.0, 1.0, -0.75, 0.75, -100.0, 100.0);
             //Camera camera = Camera::orthographic(-4.0, 4.0, -3.0, 3.0, -100.0, 100.0);
-            //Camera camera = Camera::orthographic(-20.0, 20.0, -20.0, 20.0, -1000.0, 1000.0);
-            //camera.lookAt(-light.pos + mCamera.getEye(), mCamera.getEye());
-            camera.lookAt(Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f));
+            Camera camera = Camera::orthographic(-20.0, 20.0, -20.0, 20.0, -1000.0, 1000.0);
+            camera.lookAt(-light.pos, Vec3(0.0, 0.0, 0.0));
+            //camera.lookAt(Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f));
 
             IntRect savedViewport = mViewport;
             Vec2i shadowFbSize = light.shadowFramebuffer->getSize();
@@ -241,21 +234,6 @@ void Renderer::drawAll()
 
     //sbFail("bo tak");
 
-#define FUCKING_FBOS_HOW_DO_THEY_WORK 0
-#if FUCKING_FBOS_HOW_DO_THEY_WORK
-    {
-        GL_CHECK(glClearColor(mClearColor.r, mClearColor.g,
-                              mClearColor.b, mClearColor.a));
-        clear();
-
-        Camera camera = Camera::orthographic(-1.0, 1.0, -0.75, 0.75, -100.0, 100.0);
-        //camera.lookAt(-light.pos + mCamera.getEye(), mCamera.getEye());
-        rendererState.camera = &camera;
-
-        static Model ball("sphere.obj", gResourceMgr.getShader("proj_basic.vert", "color.frag"));
-        ball.draw(rendererState);
-    }
-#else
     GL_CHECK(glClearColor(mClearColor.r, mClearColor.g,
                           mClearColor.b, mClearColor.a));
     clear();
@@ -269,18 +247,6 @@ void Renderer::drawAll()
 
         d->draw(rendererState);
     }
-
-    static Sprite sprite(gResourceMgr.getShader("proj_depth_texture.vert", "depth_texture.frag"));
-    static constexpr float SPRITE_WIDTH = 256.0f;
-    static Vec3 spriteSize(SPRITE_WIDTH, SPRITE_WIDTH * 0.75f, 1.0f);
-    sprite.setPosition(Vec3(1280.0f - SPRITE_WIDTH, SPRITE_WIDTH * 0.75f, 0.0f));
-    sprite.setScale(spriteSize);
-    sprite.setTexture(rendererState.shadows[0].shadowMap);
-    sprite.setColor(Color(1.0f, 1.0f, 1.0f, 0.5f));
-
-    rendererState.camera = &mSpriteCamera;
-    sprite.draw(rendererState);
-#endif
 
     mAmbientLightColor = Color::White;
     mLights.clear();
