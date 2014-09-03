@@ -211,12 +211,8 @@ void Renderer::drawAll()
         if (light.makesShadows) {
             sbAssert(light.type == Light::Type::Parallel, "TODO: shadows for point lights");
 
-            //Camera camera = Camera::perspective(30.0f);
-            //Camera camera = Camera::orthographic(-1.0, 1.0, -0.75, 0.75, -100.0, 100.0);
-            //Camera camera = Camera::orthographic(-4.0, 4.0, -3.0, 3.0, -100.0, 100.0);
             Camera camera = Camera::orthographic(-100.0, 100.0, -100.0, 100.0, -1000.0, 1000.0);
             camera.lookAt(-light.pos, Vec3(0.0, 0.0, 0.0));
-            //camera.lookAt(Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f));
 
             IntRect savedViewport = mViewport;
             Vec2i shadowFbSize = light.shadowFramebuffer->getSize();
@@ -231,8 +227,6 @@ void Renderer::drawAll()
             });
         }
     }
-
-    //sbFail("bo tak");
 
     GL_CHECK(glClearColor(mClearColor.r, mClearColor.g,
                           mClearColor.b, mClearColor.a));

@@ -15,8 +15,6 @@ Framebuffer::Framebuffer(uint32_t width,
 #endif
     texture(std::make_shared<Texture>(width, height))
 {
-    gLog.debug("new framebuffer");
-
     GL_CHECK(glGenFramebuffers(1, &id));
     auto bind = make_bind(*this);
 
@@ -43,8 +41,6 @@ Framebuffer::Framebuffer(uint32_t width,
     if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
         sbFail("framebuffer not ready");
     }
-
-    gLog.debug("framebuffer %u ready", id);
 }
 
 Framebuffer::~Framebuffer()

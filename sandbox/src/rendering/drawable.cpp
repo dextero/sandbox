@@ -215,27 +215,6 @@ void setShadowUniforms(Renderer::State& state,
             std::string base = utils::format("shadows[{0}]", i);
             const Renderer::Shadow& s = state.shadows[i];
 
-            static bool done = false;
-            if (!done) {
-                gLog.debug("projectionMatrix %d:\n%s", (int)i,
-                           lexical_cast<std::string>(s.projectionMatrix).c_str());
-                Vec2 ins[] {
-                    { 0.0f, 0.0f },
-                    { 1.0f, 0.0f },
-                    { 0.0f, 1.0f },
-                    { 1.0f, 1.0f }
-                };
-                for (const Vec2& v: ins) {
-                    Vec4 in(v.x, v.y, 0.0f, 1.0f);
-                    Vec4 out = s.projectionMatrix * in;
-                    out /= out.w;
-                    gLog.debug("%s transformed = %s",
-                               lexical_cast<std::string>(v).c_str(),
-                               lexical_cast<std::string>(Vec2(out.x, out.y)).c_str());
-                }
-                done = true;
-            }
-
             outBinds.emplace_back(*s.shadowMap, firstTextureUnit + i);
             shader->setUniform(base + ".projectionMatrix", s.projectionMatrix);
             shader->setUniform(base + ".map", (GLint)(firstTextureUnit + i));

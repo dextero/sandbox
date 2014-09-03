@@ -50,7 +50,6 @@ public:
     }
     void update(float dt)
     {
-        gLog.debug("update %f, is %f", dt, mAccumulator);
         if (mRunning) {
             mAccumulator += dt;
             assert(mAccumulator >= 0.0f);
@@ -289,7 +288,6 @@ public:
 
         static Radians angle(0.0f);
         angle = Radians(angle.value() + 0.02f);
-        gLog.debug("angle = %s", lexical_cast<std::string>(angle).c_str());
         scene.parallelLight.pos = Vec3(20.0f * std::sin(angle.value()), -20.0f, 20.0f * std::cos(angle.value()));
     }
 
@@ -310,7 +308,6 @@ public:
 
         // physics update
         uint32_t guard = 3u;
-        gLog.debug("dT = %f, pUS = %f, guard = %u", deltaTime.getValue(), -PHYSICS_UPDATE_STEP, guard);
         while ((deltaTime.getValue() >= PHYSICS_UPDATE_STEP) && guard--)
         {
             deltaTime.update(-PHYSICS_UPDATE_STEP);
