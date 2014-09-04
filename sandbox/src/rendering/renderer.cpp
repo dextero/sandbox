@@ -167,7 +167,7 @@ void Renderer::setViewport(const IntRect& rect)
 
 void Renderer::draw(Drawable& d)
 {
-    if (!d.mMesh && !d.mTexture) {
+    if (!d.mMesh) {
         sbFail("Renderer::draw: invalid call, mMesh == NULL");
     }
 

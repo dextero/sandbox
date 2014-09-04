@@ -104,6 +104,7 @@ struct Scene
 
         terrain.setScale(10.f, 1.f, 10.f);
         terrain.setPosition(-640.f, 0.f, -640.f);
+        terrain.setTexture("tex2", gResourceMgr.getTexture("blue_marble.jpg"));
 
         gLog.info("all data loaded!\n");
     }

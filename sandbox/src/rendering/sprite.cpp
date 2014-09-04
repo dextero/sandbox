@@ -20,11 +20,6 @@ namespace sb
 
     void Sprite::setImage(const std::string& image)
     {
-        mTexture = gResourceMgr.getTexture(image);
-    }
-
-    void Sprite::setTexture(const std::shared_ptr<const Texture>& tex)
-    {
-        mTexture = tex;
+        setTexture(gResourceMgr.getTexture(image));
     }
 } // namespace sb

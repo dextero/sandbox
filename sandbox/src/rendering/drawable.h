@@ -45,11 +45,13 @@ namespace sb
         const Color& getColor() const { return mColor; }
         void setColor(const Color& color) { mColor = color; }
 
-        bool operator <(const Drawable& d) const;
+        void setTexture(const std::shared_ptr<const Texture>& tex);
+        void setTexture(const std::string& uniformName,
+                        const std::shared_ptr<const Texture>& tex);
 
     protected:
         std::shared_ptr<Mesh> mMesh;
-        std::shared_ptr<const Texture> mTexture;    // if present, overrides model's own texture
+        std::map<std::string, std::shared_ptr<const Texture>> mTextures;
         std::shared_ptr<Shader> mShader;
         Color mColor;
 
