@@ -14,37 +14,28 @@ namespace sb
     class Camera
     {
     public:
-        Camera();
-
-        void setOrthographicMatrix(float left = -1.f,
+        static Camera perspective(float fov = PI_3,
+                                  float aspectRatio = 1.33f,
+                                  float near = Z_NEAR,
+                                  float far = Z_FAR);
+            
+        static Camera orthographic(float left = -1.f,
                                    float right = 1.f,
                                    float bottom = -1.f,
                                    float top = 1.f,
                                    float near = -1.f,
                                    float far = 1.f);
-        void setPerspectiveMatrix(float fov = PI_3,
-                                  float aspectRatio = 1.33f,
-                                  float near = Z_NEAR,
-                                  float far = Z_FAR);
         void updateViewMatrix();
 
-        Mat44& getOrthographicProjectionMatrix()
+        const Mat44& getProjectionMatrix() const
         {
-            return mOrthographicProjectionMatrix;
+            return mProjectionMatrix;
         }
-        Mat44& getPerspectiveProjectionMatrix()
-        {
-            return mPerspectiveProjectionMatrix;
-        }
-        Mat44& getViewMatrix();    // updates only if needed
+        const Mat44& getViewMatrix();    // updates only if needed
 
-        Mat44 getViewProjectionMatrix(EProjectionType projectionType)
+        Mat44 getViewProjectionMatrix()
         {
-            if (projectionType == ProjectionOrthographic) {
-                return getOrthographicProjectionMatrix();
-            }
-
-            return getPerspectiveProjectionMatrix() * getViewMatrix();
+            return getProjectionMatrix() * getViewMatrix();
         }
 
         void lookAt(Vec3 pos,
@@ -63,18 +54,25 @@ namespace sb
         void ascend(float distance);
         void moveRelative(const Vec3& delta); // delta = (right, upReal, front) instead of (x, y, z)
 
-        const Vec3& getEye() { return mEye; }
-        const Vec3& getAt() { return mAt; }
-        const Vec3& getUp() { return mUp; }
-        const Vec3& getFront() { return mFront; }
-        const Vec3& getRight() { return mRight; }
-        const Vec3& getUpReal() { return mUpReal; }
-        Radians getHorizontalAngle() { return mXZAngle; }
-        Radians getVerticalAngle() { return mYAngle; }
+        const Vec3& getEye() const { return mEye; }
+        const Vec3& getAt() const { return mAt; }
+        const Vec3& getUp() const { return mUp; }
+        const Vec3& getFront() const { return mFront; }
+        const Vec3& getRight() const { return mRight; }
+        const Vec3& getUpReal() const { return mUpReal; }
+        Radians getHorizontalAngle() const { return mXZAngle; }
+        Radians getVerticalAngle() const { return mYAngle; }
+
+        void updateViewport(unsigned width,
+                            unsigned height);
 
     private:
-        Mat44 mOrthographicProjectionMatrix;
-        Mat44 mPerspectiveProjectionMatrix;
+        float mPerspectiveFov;
+        float mPerspectiveNear;
+        float mPerspectiveFar;
+
+        ProjectionType mProjectionType;
+        Mat44 mProjectionMatrix;
         Mat44 mViewMatrix;
 
         Mat44 mRotationMatrix;
@@ -95,6 +93,8 @@ namespace sb
             MatrixTranslationUpdated = 1 << 1
         };
         uint32_t mMatrixUpdateFlags;
+
+        Camera();
 
         // needs to be called after every mFront change
         void updateAngles();

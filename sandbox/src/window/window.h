@@ -46,6 +46,11 @@ namespace sb
         Renderer& getRenderer();
         Camera& getCamera();
 
+        void drawString(const std::string& str,
+                        const Vec2& topLeft = Vec2(0.0f, 0.0f),
+                        const Color& color = sb::Color::White,
+                        uint32_t lineNum = 0);
+
     private:
         ::Display* mDisplay;
         ::Window mWindow;

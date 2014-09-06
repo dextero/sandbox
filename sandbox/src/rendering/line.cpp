@@ -16,7 +16,7 @@ namespace sb
                const Vec3& to,
                const Color& col,
                const std::shared_ptr<Shader>& shader):
-        Drawable(ProjectionPerspective,
+        Drawable(ProjectionType::Perspective,
                  gResourceMgr.getLine(),
                  nullptr,
                  shader),

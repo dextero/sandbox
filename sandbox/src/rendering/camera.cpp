@@ -7,8 +7,7 @@
 namespace sb
 {
     Camera::Camera():
-        mOrthographicProjectionMatrix(),
-        mPerspectiveProjectionMatrix(),
+        mProjectionMatrix(),
         mViewMatrix(),
         mRotationMatrix(),
         mTranslationMatrix(),
@@ -22,30 +21,38 @@ namespace sb
         mYAngle(0.0),
         mMatrixUpdateFlags(0)
     {
-        setOrthographicMatrix();
-        setPerspectiveMatrix();
-
         lookAt(mEye, mAt, mUp);
     }
 
-    void Camera::setOrthographicMatrix(float left,
-                                       float right,
-                                       float bottom,
-                                       float top,
-                                       float near,
-                                       float far)
+    Camera Camera::perspective(float fov,
+                                float aspectRatio,
+                                float near,
+                                float far)
     {
-        mOrthographicProjectionMatrix =
-                math::matrixOrthographic(left, right, bottom, top, near, far);
-    }
+        Camera ret;
+        ret.mProjectionType = ProjectionType::Perspective;
+        ret.mProjectionMatrix = math::matrixPerspective(fov, aspectRatio,
+                                                        near, far);
+        ret.mPerspectiveFov = fov;
+        ret.mPerspectiveNear = near;
+        ret.mPerspectiveFar = far;
 
-    void Camera::setPerspectiveMatrix(float fov,
-                                      float aspectRatio,
-                                      float near,
-                                      float far)
+        return ret;
+    }
+        
+    Camera Camera::orthographic(float left,
+                                float right,
+                                float bottom,
+                                float top,
+                                float near,
+                                float far)
     {
-        mPerspectiveProjectionMatrix =
-                math::matrixPerspective(fov, aspectRatio, near, far);
+        Camera ret;
+        ret.mProjectionType = ProjectionType::Orthographic;
+        ret.mProjectionMatrix = math::matrixOrthographic(left, right,
+                                                         bottom, top,
+                                                         near, far);
+        return ret;
     }
 
     void Camera::updateViewMatrix()
@@ -74,7 +81,7 @@ namespace sb
     }
 
     // updates only if needed
-    Mat44& Camera::getViewMatrix()
+    const Mat44& Camera::getViewMatrix()
     {
         if (mMatrixUpdateFlags) {
             updateViewMatrix();
@@ -214,6 +221,19 @@ namespace sb
         mAt += d;
 
         mMatrixUpdateFlags |= MatrixTranslationUpdated;
+    }
+
+    void Camera::updateViewport(unsigned width,
+                                unsigned height)
+    {
+        if (mProjectionType == ProjectionType::Perspective) {
+            mProjectionMatrix = math::matrixPerspective(
+                    mPerspectiveFov, (float)width / (float)height, 
+                    mPerspectiveNear, mPerspectiveFar);
+        } else {
+            mProjectionMatrix = math::matrixOrthographic(
+                    0.0f, (float)width, (float)height, 0.0f, -100.0f, 100.0f);
+        }
     }
 
     void Camera::updateAngles()

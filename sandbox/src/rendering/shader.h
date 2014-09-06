@@ -21,6 +21,50 @@ namespace sb
         Attrib::Kind kind;
         std::string type;
         std::string name;
+
+        Input(const std::string& name,
+              const std::string& type = "",
+              Attrib::Kind kind = Attrib::Kind::Unspecified):
+            kind(kind),
+            type(type),
+            name(name)
+        {}
+
+        bool operator <(const Input& i) const {
+            return name < i.name;
+        }
+    };
+
+    struct Output
+    {
+        std::string type;
+        std::string name;
+
+        Output(const std::string& name,
+               const std::string& type = ""):
+            type(type),
+            name(name)
+        {}
+
+        bool operator <(const Output& o) const {
+            return name < o.name;
+        }
+    };
+
+    struct Uniform
+    {
+        std::string name;
+        std::string type;
+
+        bool operator <(const Uniform& u) const {
+            return name < u.name;
+        }
+
+        Uniform(const std::string& name,
+                const std::string& type = ""):
+            name(name),
+            type(type)
+        {}
     };
 
     class ConcreteShader
@@ -28,7 +72,8 @@ namespace sb
     public:
         ConcreteShader(GLuint shaderType,
                        const std::string& path):
-            mShader(0)
+            mShader(0),
+            mFilename(path)
         {
             std::string code = utils::readFile(path);
             GL_CHECK(mShader = glCreateShader(shaderType));
@@ -50,6 +95,7 @@ namespace sb
             }
 
             mInputs = parseInputs(code, shaderType == GL_VERTEX_SHADER);
+            mOutputs = parseOutputs(code);
             mUniforms = parseUniforms(code);
         }
 
@@ -61,24 +107,38 @@ namespace sb
         }
 
         GLuint getShader() const { return mShader; }
-        const std::map<Attrib::Kind, Input>& getInputs() const
-        {
-            return mInputs;
-        }
-        const std::set<std::string> getUniforms() const
-        {
-            return mUniforms;
+        const std::set<Input>& getInputs() const { return mInputs; }
+        const std::set<Output> getOutputs() const { return mOutputs; }
+        const std::set<Uniform> getUniforms() const { return mUniforms; }
+        const std::string& getFilename() const { return mFilename; }
+
+        std::map<Attrib::Kind, Input> makeInputsMap() const {
+            std::map<Attrib::Kind, Input> ret;
+
+            for (const Input& input: mInputs) {
+                if (input.kind == Attrib::Kind::Unspecified) {
+                    sbFail("input %s is missing a kind annotation in shader %s",
+                           input.name.c_str(), mFilename.c_str());
+                }
+
+                ret.insert({ input.kind, input });
+            }
+
+            return ret;
         }
 
     private:
         bool shaderCompilationSucceeded(const std::string& source);
-        static std::map<Attrib::Kind, Input> parseInputs(const std::string& code,
-                                                         bool warnOnUntagged);
-        static std::set<std::string> parseUniforms(const std::string& code);
+        static std::set<Input> parseInputs(const std::string& code,
+                                           bool warnOnUntagged);
+        static std::set<Output> parseOutputs(const std::string& code);
+        static std::set<Uniform> parseUniforms(const std::string& code);
 
         GLuint mShader;
-        std::map<Attrib::Kind, Input> mInputs;
-        std::set<std::string> mUniforms;
+        std::string mFilename;
+        std::set<Input> mInputs;
+        std::set<Output> mOutputs;
+        std::set<Uniform> mUniforms;
     };
 
     class Shader
@@ -86,42 +146,42 @@ namespace sb
     public:
         template<typename T>
         bool setUniform(const char* name,
-                        const T& value)
+                        const T& value) const
         {
             return setUniform(name, &value, 1);
         }
 
         template<typename T>
-        bool setUniform(const char*, const T*, uint32_t)
+        bool setUniform(const char*, const T*, uint32_t) const
         {
             sbFail("Wrong overload called!");
         }
 
         bool setUniform(const char* name,
                         const float* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const Vec2* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const Vec3* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const Color* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const Mat44* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const int* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
         bool setUniform(const char* name,
                         const unsigned* value_array,
-                        uint32_t elements);
+                        uint32_t elements) const;
 
         template<typename T>
         inline bool setUniform(const std::string& name,
-                               const T& value)
+                               const T& value) const
         {
             return setUniform(name.c_str(), value);
         }
@@ -129,7 +189,7 @@ namespace sb
         template<typename T>
         inline bool setUniform(const std::string& name,
                                const T* value_array,
-                               uint32_t elements)
+                               uint32_t elements) const
         {
             return setUniform(name.c_str(), value_array, elements);
         }
@@ -140,14 +200,14 @@ namespace sb
             SamplerShadowmap = 2
         };
 
-        void bind(const VertexBuffer& vb);
-        void unbind();
+        void bind(const VertexBuffer& vb) const;
+        void unbind() const;
 
-        const std::map<Attrib::Kind, Input>& getInputs() {
+        const std::map<Attrib::Kind, Input>& getInputs() const {
             return mInputs;
         }
 
-        bool hasUniform(const std::string& name) {
+        bool hasUniform(const std::string& name) const {
             return mUniforms.count(name) > 0;
         }
 
@@ -156,6 +216,7 @@ namespace sb
         {
             mProgram = prev.mProgram;
             prev.mProgram = 0;
+            mFilenames.swap(prev.mFilenames);
             mInputs.swap(prev.mInputs);
             mUniforms.swap(prev.mUniforms);
             return *this;
@@ -168,10 +229,15 @@ namespace sb
             }
         }
 
+        std::string getName() const {
+            return utils::join(mFilenames, ", ");
+        }
+
     private:
         ProgramId mProgram;
+        std::vector<std::string> mFilenames;
         std::map<Attrib::Kind, Input> mInputs;
-        std::set<std::string> mUniforms;
+        std::set<Uniform> mUniforms;
 
         Shader(const std::shared_ptr<ConcreteShader>& vertex,
                const std::shared_ptr<ConcreteShader>& fragment,

@@ -156,51 +156,58 @@ namespace Sim
         mBalls.clear();
     }
 
-#if 0
     // returns lines displayed
-    uint32_t Simulation::printParametersToScreen(float x, float y, uint32_t line)
+    uint32_t Simulation::printParametersToScreen(sb::Window& wnd,
+                                                 const Vec2& topLeft,
+                                                 uint32_t line)
     {
-        using sb::utils::makeString;
-
-        sb::String::print(makeString("velocity = ", mThrowStartVelocity,
-                                     " (", mThrowStartVelocity.length(), ")"),
-                          x, y, ColorVelocity, line++);
-        sb::String::print(makeString("gravity = ", mGravity,
-                                     " (", mGravity.length(), ")"),
-                          x, y, ColorGravity, line++);
-        sb::String::print("drag", x, y, ColorDrag, line++);
-        sb::String::print(makeString("wind velocity = ", mWindVelocity,
-                                     " (", mWindVelocity.length(), ")"),
-                          x, y, ColorWind, line++);
-        sb::String::print("buoyancy", x, y, ColorBuoyancy, line++);
-        sb::String::print("net", x, y, ColorNet, line++);
-        sb::String::print("trajectory", x, y, ColorPath, line++);
+        wnd.drawString(sb::utils::format("velocity = {0} ({1})",
+                                         mThrowStartVelocity,
+                                         mThrowStartVelocity.length()),
+                       topLeft, ColorVelocity, line++);
+        wnd.drawString(sb::utils::format("gravity = {0} ({1})",
+                                         mGravity,
+                                         mGravity.length()),
+                       topLeft, ColorGravity, line++);
+        wnd.drawString("drag", topLeft, ColorDrag, line++);
+        wnd.drawString(sb::utils::format("wind velocity = {0} ({1})",
+                                         mWindVelocity,
+                                         mWindVelocity.length()),
+                       topLeft, ColorWind, line++);
+        wnd.drawString("buoyancy", topLeft, ColorBuoyancy, line++);
+        wnd.drawString("net", topLeft, ColorNet, line++);
+        wnd.drawString("trajectory", topLeft, ColorPath, line++);
         // additional line
-        sb::String::print(
-                makeString("simulation type = ",
+        wnd.drawString(sb::utils::format(
+                           "simulation type = {0}\n"
+                           "throw delay = {1}\n"
+                           "throw accumulator = {2}\n"
+                           "max balls = {3}\n"
+                           "slomo factor = {4}\n"
+                           "air density = {5}\n"
+                           "throw start pos = {6}\n"
+                           "ball throw velocity = {7}\n"
+                           "ball mass = {8}\n"
+                           "ball radius = {9}\n"
+                           "ball path length = {10}\n"
+                           "paused = {11}\n"
+                           "show throw lines = {12}\n"
+                           "vector display type = {13}\n"
+                           "auto-pause on ground hit = {14}",
                            mSimType == SimSingleThrow ? "single ball"
                                                       : "multiple balls",
-                           "\nthrow delay = ", mBallThrowDelay,
-                           "\nthrow accumulator = ", mBallThrowAccumulator,
-                           "\nmax balls = ", mMaxBalls,
-                           "\nslomo factor = ", mSloMoFactor,
-                           "\nair density = ", mAirDensity,
-                           "\nthrow start pos = ", mThrowStartPos,
-                           "\nball throw velocity = ", mThrowStartVelocity,
-                           "\nball mass = ", mBallMass,
-                           "\nball radius = ", mBallRadius,
-                           "\nball path_length = ", mBallPathLength,
-                           "\npaused = ", mPaused,
-                           "\nshow throw lines = ", mShowLauncherLines,
-                           "\nvector display type = ",
+                           mBallThrowDelay, mBallThrowAccumulator,
+                           mMaxBalls, mSloMoFactor, mAirDensity,
+                           mThrowStartPos, mThrowStartVelocity, mBallMass,
+                           mBallRadius, mBallPathLength, mPaused,
+                           mShowLauncherLines,
                            mVectorDisplayType == DisplayForce ? "forces"
                                                               : "accelerations",
-                           "\nauto-pause on ground hit = ", mPauseOnGroundHit),
-                x, y, sb::Color::White, line);
+                           mPauseOnGroundHit),
+                       topLeft, sb::Color::White, line);
         line += 15;
         return line;
     }
-#endif
 
     const std::shared_ptr<Ball> Simulation::raycast(const Vec3& rayOrig,
                                                     const Vec3& rayDir)
@@ -240,55 +247,47 @@ namespace Sim
         return ret;
     }
 
-#if 0
     uint32_t Simulation::printBallParametersToScreen(
+            sb::Window& wnd,
             const std::shared_ptr<Ball> &ball,
-            float x,
-            float y,
+            const Vec2& topLeft,
             uint32_t line)
     {
-        using sb::utils::makeString;
-
         if (ball)
         {
-            sb::String::print(makeString("velocity = ", ball->mVelocity.first,
-                                         " (", ball->mVelocity.first.length(), ")"),
-                              x, y, ColorVelocity, line++);
-            sb::String::print(makeString("gravity = ", ball->mAccGravity.first,
-                                         " (", ball->mAccGravity.first.length(), ")"),
-                              x, y, ColorGravity, line++);
-            sb::String::print(makeString("drag = ", ball->mAccDrag.first,
-                                         " (", ball->mAccDrag.first.length(), ")"),
-                              x, y, ColorDrag, line++);
-            sb::String::print(makeString("wind = ", ball->mAccWind.first,
-                                         " (", ball->mAccWind.first.length(), ")"),
-                              x, y, ColorWind, line++);
-            sb::String::print(makeString("buoyancy = ", ball->mAccBuoyancy.first,
-                                         " (", ball->mAccBuoyancy.first.length(), ")"),
-                              x, y, ColorBuoyancy, line++);
-            sb::String::print(makeString("net = ", ball->mAccNet.first,
-                                         " (", ball->mAccNet.first.length(), ")"),
-                              x, y, ColorNet, line++);
-            sb::String::print(makeString("distance covered = ",
-                                         ball->mDistanceCovered),
-                              x, y, ColorPath, line++);
-            sb::String::print(makeString("mass = ", ball->mMass,
-                                         "\nradius = ", ball->mRadius,
-                                         "\narea = ", ball->mArea,
-                                         "\nvolume = ", ball->mVolume,
-                                         "\nhorizontal distance covered = ",
-                                         ball->mHorizontalDistanceCovered,
-                                         "\nenergy = ", ball->mTotalEnergy,
-                                         "\ntime = ", ball->mTime,
-                                         "\nTTL = ", ball->mTimeToLive),
-                              x, y, sb::Color::White, line);
+            wnd.drawString(sb::utils::format("velocity = {0}", ball->mVelocity.first),
+                           topLeft, ColorVelocity, line++);
+            wnd.drawString(sb::utils::format("gravity = {0}", ball->mAccGravity.first),
+                           topLeft, ColorGravity, line++);
+            wnd.drawString(sb::utils::format("drag = {0}", ball->mAccDrag.first),
+                           topLeft, ColorDrag, line++);
+            wnd.drawString(sb::utils::format("wind = {0}", ball->mAccWind.first),
+                           topLeft, ColorWind, line++);
+            wnd.drawString(sb::utils::format("buoyancy = {0}", ball->mAccBuoyancy.first),
+                           topLeft, ColorBuoyancy, line++);
+            wnd.drawString(sb::utils::format("net = {0}", ball->mAccNet.first),
+                           topLeft, ColorNet, line++);
+            wnd.drawString(sb::utils::format("distance covered = {0}", ball->mDistanceCovered),
+                           topLeft, ColorPath, line++);
+            wnd.drawString(sb::utils::format(
+                               "mass = {0}\n"
+                               "radius = {1}\n"
+                               "area = {2}\n"
+                               "volume = {3}\n"
+                               "horizontal distance covered = {4}\n"
+                               "energy = {5}\n"
+                               "time = {6}\n"
+                               "TTL = {7}",
+                               ball->mMass, ball->mRadius, ball->mArea,
+                               ball->mVolume, ball->mHorizontalDistanceCovered,
+                               ball->mTotalEnergy, ball->mTime, ball->mTimeToLive),
+                           topLeft, sb::Color::White, line);
             line += 9;
+        } else {
+           wnd.drawString("no ball selected", topLeft, sb::Color::White, line++);
         }
-        else
-            sb::String::print("no ball selected", x, y, sb::Color::White, line++);
 
         return line;
     }
-#endif
 
 }

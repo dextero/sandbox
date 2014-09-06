@@ -18,50 +18,6 @@ std::wstring toWString(const std::string& str)
     return std::wstring(str.begin(), str.end());
 }
 
-std::vector<std::string> split(const std::string& str, char c)
-{
-    std::vector<std::string> ret;
-
-    size_t prev = 0, at = (size_t)-1;
-    while ((at = str.find(c, at + 1)) != std::string::npos)
-    {
-        if (at != prev + 1) {
-            ret.push_back(str.substr(prev, at - prev));
-        }
-
-        prev = at;
-    }
-    ret.push_back(str.substr(prev));
-
-    return ret;
-}
-
-std::vector<std::string>
-split(const std::string& str,
-      const std::function<bool(char)>& isSeparator)
-{
-    std::vector<std::string> ret;
-
-    size_t prev = 0;
-    for (size_t at = 0; at < str.size(); ++at) {
-        if (!isSeparator(str[at])) {
-            continue;
-        } else if (prev == at) {
-            ++prev;
-            continue;
-        }
-
-        ret.push_back(str.substr(prev, at - prev));
-        prev = at + 1;
-    }
-
-    if (prev != str.size()) {
-        ret.push_back(str.substr(prev));
-    }
-
-    return ret;
-}
-
 std::string strip(const std::string& text,
                   const std::string& chars)
 {
@@ -170,20 +126,21 @@ size_t skipSeparators(const std::string& text,
 
 } // namespace
 
-std::vector<std::string> split(const std::string& text,
-                               const std::string& separator)
+std::vector<std::string> split(const std::string& str, char c)
 {
     std::vector<std::string> ret;
-    size_t lastSeparatorEnd = 0;
-    size_t at = text.find(separator);
 
-    while (at != std::string::npos) {
-        ret.push_back(text.substr(lastSeparatorEnd, at - lastSeparatorEnd));
-        lastSeparatorEnd = at + separator.size();
-        at = text.find(separator, lastSeparatorEnd);
+    size_t prev = 0, at = (size_t)-1;
+    while ((at = str.find(c, at + 1)) != std::string::npos)
+    {
+        if (at != prev + 1) {
+            ret.push_back(str.substr(prev, at - prev));
+        }
+
+        prev = at;
     }
+    ret.push_back(str.substr(prev));
 
-    ret.push_back(text.substr(lastSeparatorEnd));
     return ret;
 }
 
@@ -205,6 +162,48 @@ std::vector<std::string> split(const std::string& text,
         ret.push_back(text.substr(lastSeparatorEnd));
     }
 
+    return ret;
+}
+
+std::vector<std::string> split(const std::string& str,
+                               const std::function<bool(char)>& isSeparator)
+{
+    std::vector<std::string> ret;
+
+    size_t prev = 0;
+    for (size_t at = 0; at < str.size(); ++at) {
+        if (!isSeparator(str[at])) {
+            continue;
+        } else if (prev == at) {
+            ++prev;
+            continue;
+        }
+
+        ret.push_back(str.substr(prev, at - prev));
+        prev = at + 1;
+    }
+
+    if (prev != str.size()) {
+        ret.push_back(str.substr(prev));
+    }
+
+    return ret;
+}
+
+std::vector<std::string> split(const std::string& text,
+                               const std::string& separator)
+{
+    std::vector<std::string> ret;
+    size_t lastSeparatorEnd = 0;
+    size_t at = text.find(separator);
+
+    while (at != std::string::npos) {
+        ret.push_back(text.substr(lastSeparatorEnd, at - lastSeparatorEnd));
+        lastSeparatorEnd = at + separator.size();
+        at = text.find(separator, lastSeparatorEnd);
+    }
+
+    ret.push_back(text.substr(lastSeparatorEnd));
     return ret;
 }
 

@@ -9,7 +9,7 @@ namespace sb
     { return glm::detail::operator op((const base_type&)*this); }
 #define OP2(RetType, ArgType, op) \
     inline RetType operator op(ArgType arg) \
-    { return base_type::operator op(arg); }
+    { base_type::operator op(arg); return *this; }
 #define OP2_T(Template, RetType, ArgType, op) \
     template<typename OpArgType, glm::precision OpPrec> \
     inline RetType operator op(const Template<OpArgType, OpPrec>& arg) \
@@ -196,6 +196,24 @@ namespace sb
 #undef OP2_CONST
 #undef OP2
 #undef OP1
+
+template<typename T>
+std::ostream& operator <<(std::ostream& os, const TVec2<T>& v)
+{
+    return os << "(" << v.x << ", " << v.y << ")";
+}
+
+template<typename T>
+std::ostream& operator <<(std::ostream& os, const TVec3<T>& v)
+{
+    return os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+}
+
+template<typename T>
+std::ostream& operator <<(std::ostream& os, const TVec4<T>& v)
+{
+    return os << "(" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")";
+}
 
 } // namespace sb
 

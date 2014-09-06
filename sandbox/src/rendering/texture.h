@@ -8,10 +8,20 @@
 
 namespace sb
 {
+    enum MagFilter
+    {
+        Linear,
+        Nearest
+    };
+
     class Texture
     {
     public:
         static const uint32_t MAX_TEXTURE_UNITS = 4;
+
+        // depth texture only!
+        Texture(unsigned width,
+                unsigned height);
 
         Texture(std::shared_ptr<Image> image);
         ~Texture();
@@ -23,6 +33,10 @@ namespace sb
 
         void bind(uint32_t textureUnit) const;
         void unbind() const;
+
+        TextureId getId() const { return mId; }
+
+        void setMagFilter(MagFilter filter) const;
 
     private:
         TextureId mId;

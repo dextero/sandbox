@@ -15,14 +15,14 @@ namespace sb
     class Mesh
     {
     public:
-        enum EShape {
-            ShapePoint = SHAPE_POINTS,
-            ShapeLine = SHAPE_LINES,
-            ShapeTriangle = SHAPE_TRIANGLES,
-            ShapeTriangleStrip = SHAPE_TRIANGLE_STRIP
+        enum Shape {
+            Point = SHAPE_POINTS,
+            Line = SHAPE_LINES,
+            Triangle = SHAPE_TRIANGLES,
+            TriangleStrip = SHAPE_TRIANGLE_STRIP
         };
 
-        Mesh(EShape shape,
+        Mesh(Shape shape,
              const std::vector<Vec3>& vertices,
              const std::vector<Vec2>& texcoords,
              const std::vector<Color>& colors,
@@ -34,7 +34,7 @@ namespace sb
         IndexBuffer& getIndexBuffer() { return mIndexBuffer; }
         size_t getIndexBufferSize() { return mIndexBufferSize; }
 
-        EShape getShape() { return mShape; }
+        Shape getShape() { return mShape; }
         const std::shared_ptr<Texture>& getTexture() { return mTexture; }
 
         void setTexture(const std::shared_ptr<Texture>& texture)
@@ -47,7 +47,7 @@ namespace sb
         IndexBuffer mIndexBuffer;
         uint32_t mIndexBufferSize;
 
-        EShape mShape;
+        Shape mShape;
         std::shared_ptr<Texture> mTexture;
 
         friend class ResourceMgr;

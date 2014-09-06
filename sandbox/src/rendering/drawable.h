@@ -39,13 +39,19 @@ namespace sb
         void setScale(float uniform);
         void rotate(Radians angle);
         void rotate(const Vec3& axis, Radians angle);
+
         const Mat44& getTransformationMatrix() const;
 
-        bool operator <(const Drawable& d) const;
+        const Color& getColor() const { return mColor; }
+        void setColor(const Color& color) { mColor = color; }
+
+        void setTexture(const std::shared_ptr<const Texture>& tex);
+        void setTexture(const std::string& uniformName,
+                        const std::shared_ptr<const Texture>& tex);
 
     protected:
         std::shared_ptr<Mesh> mMesh;
-        std::shared_ptr<Texture> mTexture;    // if present, overrides model's own texture
+        std::map<std::string, std::shared_ptr<const Texture>> mTextures;
         std::shared_ptr<Shader> mShader;
         Color mColor;
 
@@ -66,16 +72,16 @@ namespace sb
         Vec3 mScale;
         Quat mRotation;
 
-        EProjectionType mProjectionType;
+        ProjectionType mProjectionType;
 
-        Drawable(EProjectionType projType,
+        Drawable(ProjectionType projType,
                  const std::shared_ptr<Mesh>& mesh,
                  const std::shared_ptr<Texture>& texture,
                  const std::shared_ptr<Shader>& shader);
 
         void recalculateMatrices() const;
 
-        void draw(Renderer::State& rendererState) const;
+        virtual void draw(Renderer::State& rendererState) const;
 
         friend class Renderer;
     };

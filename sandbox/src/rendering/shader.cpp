@@ -15,18 +15,19 @@ const std::map<std::string, Attrib::Kind> ATTRIB_KINDS {
     { "POSITION", Attrib::Kind::Position },
     { "TEXCOORD", Attrib::Kind::Texcoord },
     { "COLOR", Attrib::Kind::Color },
-    { "NORMAL", Attrib::Kind::Normal }
+    { "NORMAL", Attrib::Kind::Normal },
+    { "", Attrib::Kind::Unspecified }
 };
 
 ssize_t extractLineNum(const std::string& logLine)
 {
-    size_t numStart = logLine.find('(');
+    size_t numStart = logLine.find_first_not_of("0123456789");
     if (numStart == std::string::npos) {
         return -1;
     }
 
     ++numStart;
-    size_t numEnd = logLine.find(')', numStart);
+    size_t numEnd = logLine.find_first_not_of("0123456789", numStart);
 
     return lexical_cast<ssize_t>(logLine.substr(numStart, numEnd - numStart));
 }
@@ -52,12 +53,20 @@ void printPreprocessedCompileLog(const std::string& log,
     std::vector<std::string> sourceLines = utils::split(source, "\n");
     std::vector<std::string> logLines = utils::split(log, "\n");
 
+    ssize_t lineNum = -1;
     for (const auto& logLine: logLines) {
-        ssize_t lineNum = extractLineNum(logLine);
-        gLog.printf("%s", logLine.c_str());
-        if (lineNum >= 0) {
-            printWithContext(sourceLines, (size_t)lineNum - 1);
+        ssize_t newLineNum = extractLineNum(logLine);
+        if (newLineNum >= 0 && newLineNum != lineNum) {
+            if (lineNum >= 0) {
+                printWithContext(sourceLines, (size_t)lineNum - 1);
+            }
+            lineNum = newLineNum;
         }
+        gLog.printf("%s", logLine.c_str());
+    }
+
+    if (lineNum >= 0) {
+        printWithContext(sourceLines, (size_t)lineNum - 1);
     }
 }
 
@@ -82,13 +91,12 @@ bool isInputLine(const std::string& line,
             gLog.warn("expected format: in <type> <name> // TAG");
             gLog.warn("recognized tags: %s", utils::join(tags, ", ").c_str());
         }
-        return false;
     }
 
     return true;
 }
 
-void extractInput(std::map<Attrib::Kind, Input>& outInputs,
+void extractInput(std::set<Input>& outInputs,
                   const std::string& line,
                   bool warnOnUntagged)
 {
@@ -100,7 +108,7 @@ void extractInput(std::map<Attrib::Kind, Input>& outInputs,
 
     const std::string& type = words[1];
     const std::string& name = utils::strip(words[2], "[]0123456789;");
-    const std::string& kind_str = words[4];
+    const std::string& kind_str = words.size() > 4 ? words[4] : "";
 
     auto kindIt = ATTRIB_KINDS.find(kind_str);
     if (kindIt == ATTRIB_KINDS.end()) {
@@ -108,25 +116,69 @@ void extractInput(std::map<Attrib::Kind, Input>& outInputs,
     }
     const Attrib::Kind kind = kindIt->second;
 
-    auto it = outInputs.find(kind);
-    if (it != outInputs.end()) {
-        sbFail("multiple inputs of the same kind (%s) detected: %s and %s",
-               kind_str.c_str(), it->second.name.c_str(), name.c_str());
+    if (kind != Attrib::Kind::Unspecified) {
+        auto it = std::find_if(outInputs.begin(), outInputs.end(),
+                               [kind](const Input& i) {
+                                   return i.kind == kind;
+                               });
+        if (it != outInputs.end()) {
+            sbFail("multiple inputs of the same kind (%s) detected: %s and %s",
+                   kind_str.c_str(), it->name.c_str(), name.c_str());
+        }
+
+        gLog.trace("input (%s): %s %s",
+                   kind_str.c_str(), type.c_str(), name.c_str());
+    } else {
+        gLog.trace("input: %s %s", type.c_str(), name.c_str());
     }
 
-    gLog.trace("input (%s): %s %s",
-               kind_str.c_str(), type.c_str(), name.c_str());
+    outInputs.insert(Input(name, type, kind));
+}
 
-    outInputs[kind] = { kind, type, name };
+void extractOutput(std::set<Output>& outOutputs,
+                   const std::string& line)
+{
+    std::vector<std::string> words = utils::split(line);
+
+    if (words.size() < 3
+            || words[0] != "out") {
+        return;
+    }
+
+    const std::string& type = words[1];
+    const std::string& name = utils::strip(words[2], "[]0123456789;");
+
+    gLog.trace("output: %s %s", type.c_str(), name.c_str());
+
+    if (outOutputs.find(name) != outOutputs.end()) {
+        sbFail("multiple outputs with same name (%s) detected", name.c_str());
+    }
+
+    outOutputs.insert(Output(name, type));
+}
+
+void detectOptimizedOutUniforms(GLuint program,
+                                std::set<Uniform>& uniforms)
+{
+    for (const Uniform& uniform: uniforms) {
+        std::string nameToCheck = uniform.name;
+        if (uniform.type.size() > 2
+                && uniform.type.substr(uniform.type.size() - 2) == "[]") {
+            nameToCheck += "[0]";
+        }
+
+        if (glGetUniformLocation(program, nameToCheck.c_str()) == -1) {
+            gLog.warn("uniform \"%s\" may be optimized out!", uniform.name.c_str());
+        }
+    }
 }
 
 } // namespace
 
-std::map<Attrib::Kind, Input>
-ConcreteShader::parseInputs(const std::string& code,
-                            bool warnOnUntagged)
+std::set<Input> ConcreteShader::parseInputs(const std::string& code,
+                                            bool warnOnUntagged)
 {
-    std::map<Attrib::Kind, Input> ret;
+    std::set<Input> ret;
     std::vector<std::string> lines = utils::split(code, "\n");
 
     for (const std::string& line: lines) {
@@ -136,18 +188,41 @@ ConcreteShader::parseInputs(const std::string& code,
     return ret;
 }
 
-std::set<std::string> ConcreteShader::parseUniforms(const std::string& code)
+std::set<Output> ConcreteShader::parseOutputs(const std::string& code)
 {
-    std::set<std::string> ret;
+    std::set<Output> ret;
+    std::vector<std::string> lines = utils::split(code, "\n");
+
+    for (const std::string& line: lines) {
+        extractOutput(ret, line);
+    }
+
+    return ret;
+}
+
+std::set<Uniform> ConcreteShader::parseUniforms(const std::string& code)
+{
+    std::set<Uniform> ret;
     std::vector<std::string> lines = utils::split(code, "\n");
 
     for (const std::string& line: lines) {
         std::vector<std::string> words = utils::split(line);
+
         if (words.size() > 2
                 && words[0] == "uniform") {
-            std::string uniformName = utils::strip(words[2], "[]0123456789;");
-            ret.insert(uniformName);
-            gLog.trace("uniform: %s", uniformName.c_str());
+            std::string uniformType = utils::strip(words[1]);
+            if (words[2].find("[") != std::string::npos
+                    || (words.size() > 3 && words[3][0] == '[')) {
+                uniformType += "[]";
+            }
+
+            std::string uniformName =
+                    utils::strip(
+                        utils::split(utils::strip(words[2], ";"), "[")[0]);
+
+            ret.insert(Uniform(uniformName, uniformType));
+            gLog.trace("uniform: %s %s",
+                       uniformType.c_str(), uniformName.c_str());
         }
     }
 
@@ -180,24 +255,83 @@ bool ConcreteShader::shaderCompilationSucceeded(const std::string& source)
     return true;
 }
 
+namespace {
+
+void checkShaderCompatibility(
+    const std::shared_ptr<ConcreteShader>& first,
+    const std::shared_ptr<ConcreteShader>& second)
+{
+    const std::set<Output>& outputs = first->getOutputs();
+
+    gLog.debug("checking compat: %s, %s", first->getFilename().c_str(),
+               second->getFilename().c_str());
+    gLog.debug("outputs:");
+    for (const Output& out: outputs) {
+        gLog.debug("- %s %s", out.type.c_str(), out.name.c_str());
+    }
+    gLog.debug("inputs:");
+    for (const Input& in: second->getInputs()) {
+        gLog.debug("- %s %s", in.type.c_str(), in.name.c_str());
+    }
+
+    for (const Input& input: second->getInputs()) {
+        gLog.debug("checking input %s", input.name.c_str());
+
+        auto outputIt = outputs.find(Output(input.name));
+        if (outputIt == outputs.end()) {
+            sbFail("dangling input: %s in shader %s when used with %s",
+                   input.name.c_str(), second->getFilename().c_str(),
+                   first->getFilename().c_str());
+        }
+
+        if (input.type != outputIt->type) {
+            sbFail("different types for in/out variable %s (%s, %s) in shaders "
+                   "%s and %s", input.name.c_str(), input.type.c_str(),
+                   outputIt->type.c_str(), first->getFilename().c_str(),
+                   second->getFilename().c_str());
+        }
+    }
+}
+
+void checkInputOutputCompatbility(
+        const std::shared_ptr<ConcreteShader>& vertex,
+        const std::shared_ptr<ConcreteShader>& fragment,
+        const std::shared_ptr<ConcreteShader>& geometry)
+{
+    if (geometry) {
+        checkShaderCompatibility(vertex, geometry);
+        checkShaderCompatibility(geometry, fragment);
+    } else {
+        checkShaderCompatibility(vertex, fragment);
+    }
+}
+
+} // namespace
+
 Shader::Shader(const std::shared_ptr<ConcreteShader>& vertex,
                const std::shared_ptr<ConcreteShader>& fragment,
                const std::shared_ptr<ConcreteShader>& geometry):
     mProgram(linkShader(vertex, fragment, geometry)),
-    mInputs(vertex->getInputs())
+    mFilenames({ vertex->getFilename(), fragment->getFilename() }),
+    mInputs(vertex->makeInputsMap())
 {
-    for (const std::string& uniform: vertex->getUniforms()) {
+    checkInputOutputCompatbility(vertex, fragment, geometry);
+
+    for (const Uniform& uniform: vertex->getUniforms()) {
         mUniforms.insert(uniform);
     }
-    for (const std::string& uniform: fragment->getUniforms()) {
+    for (const Uniform& uniform: fragment->getUniforms()) {
         mUniforms.insert(uniform);
     }
 
     if (geometry) {
-        for (const std::string& uniform: geometry->getUniforms()) {
+        for (const Uniform& uniform: geometry->getUniforms()) {
             mUniforms.insert(uniform);
         }
+        mFilenames.push_back(geometry->getFilename());
     }
+
+    detectOptimizedOutUniforms(mProgram, mUniforms);
 }
 
 ProgramId Shader::linkShader(const std::shared_ptr<ConcreteShader>& vertex,
@@ -224,7 +358,7 @@ ProgramId Shader::linkShader(const std::shared_ptr<ConcreteShader>& vertex,
     GL_CHECK(glLinkProgram(id));
 
     if (!shaderLinkSucceeded(id)) {
-        gLog.err("shader link failed");
+        sbFail("shader link failed");
         return 0;
     }
 
@@ -259,11 +393,29 @@ bool Shader::shaderLinkSucceeded(ProgramId program)
 }
 
 #define DEFINE_UNIFORM_SETTER(Type, GLType, glSetter, ...) \
-    bool Shader::setUniform(const char* name, const Type* value_array, uint32_t elements) \
+    bool Shader::setUniform(const char* name, \
+                            const Type* value_array, \
+                            uint32_t elements) const \
     { \
-        if (!mProgram) return false; \
-        GLint loc = glGetUniformLocation(mProgram, name); \
-        if (loc == -1) return false; \
+        if (!mProgram) { \
+            sbFail("invalid program: %d", (int)mProgram); \
+            return false; \
+        } \
+        GLint loc; \
+        GL_CHECK(loc = glGetUniformLocation(mProgram, name)); \
+        if (loc == -1) { \
+            std::string name_str = \
+                    utils::split(utils::split(name, ".")[0], "[")[0]; \
+            if (!hasUniform(name_str)) { \
+                sbFail("no uniform \"%s\" in shader: %s", \
+                       name, getName().c_str()); \
+            } else { \
+                sbFail("uniform \"%s\" was optimized out by the shader " \
+                       "compiler in shader: %s", \
+                       name, getName().c_str()); \
+            } \
+            return false; \
+        } \
         GL_CHECK(glSetter(loc, elements, ##__VA_ARGS__, (const GLType*)value_array)); \
         return true; \
     }
@@ -277,7 +429,7 @@ DEFINE_UNIFORM_SETTER(unsigned, GLuint, glUniform1uiv)
 
 DEFINE_UNIFORM_SETTER(Mat44, GLfloat, glUniformMatrix4fv, GL_FALSE)
 
-void Shader::bind(const VertexBuffer& vb)
+void Shader::bind(const VertexBuffer& vb) const
 {
     GL_CHECK(glUseProgram(mProgram));
 
@@ -316,7 +468,7 @@ void Shader::bind(const VertexBuffer& vb)
     }
 }
 
-void Shader::unbind()
+void Shader::unbind() const
 {
     GL_CHECK(glUseProgram(0));
 }

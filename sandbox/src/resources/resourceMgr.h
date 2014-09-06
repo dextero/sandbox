@@ -19,6 +19,7 @@ namespace sb
 {
     class Image;
     class Mesh;
+    class Font;
 
     template<typename T>
     void noop(const std::shared_ptr<T>&) {}
@@ -124,6 +125,7 @@ namespace sb
         std::shared_ptr<Image> getImage(const std::string& name);
         std::shared_ptr<Mesh> getMesh(const std::string& name);
         std::shared_ptr<Mesh> getTerrain(const std::string& heightmap);
+        std::shared_ptr<Font> getFont(const std::string& name);
         std::shared_ptr<Shader> getShader(
                 const std::string& vertexShaderName,
                 const std::string& fragmentShaderName,
@@ -140,6 +142,7 @@ namespace sb
         static std::shared_ptr<Image> loadImage(const std::string& path);
         static std::shared_ptr<Mesh> loadMesh(const std::string& path);
         static std::shared_ptr<Mesh> loadTerrain(const std::string& heightmapPath);
+        static std::shared_ptr<Font> loadFont(const std::string& path);
 
         static std::map<std::string, std::string> getInputs(const std::string& code);
 
@@ -167,6 +170,10 @@ namespace sb
             Mesh,
             &ResourceMgr::loadTerrain
         > mTerrains;
+        SpecificResourceMgr<
+            Font,
+            &ResourceMgr::loadFont
+        > mFonts;
 
         SpecificResourceMgr<
             ConcreteShader,

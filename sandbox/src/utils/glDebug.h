@@ -9,19 +9,26 @@
 
 namespace sb {
 
+#if GL_CALL_QUEUE && !GL_CONTINIOUS_TRACE
+extern Logger<QueueOutput> gl_queue_logger;
+#   define glLog ::sb::gl_queue_logger
+#else // GL_CALL_QUEUE
+#   define glLog gLog
+#endif // GL_CALL_QUEUE
+
 const char* gl_const_to_string(GLulong id);
 
-inline void print_arg(const char* str) { gLog.debug("  <%s>", str); }
-inline void print_arg(const void* ptr) { gLog.debug("  %p", ptr); }
+inline void print_arg(const char* str) { glLog.debug("  \"%s\"", str); }
+inline void print_arg(const void* ptr) { glLog.debug("  %p", ptr); }
 
 inline void print_arg(GLulong id)
 {
     const char* glConstName = gl_const_to_string(id);
 
     if (glConstName) {
-        gLog.debug("  %lu (0x%lx) = %s", id, id, glConstName);
+        glLog.debug("  %lu (0x%lx) = %s", id, id, glConstName);
     } else {
-        gLog.debug("  %lu (0x%lx)", id, id, glConstName);
+        glLog.debug("  %lu (0x%lx)", id, id, glConstName);
     }
 }
 
@@ -42,10 +49,11 @@ struct proxy_call_helper
                             RetT (*func)(Args...),
                             Args... args)
     {
-        gLog.debug("%s", func_name);
+        glLog.debug("%s", func_name);
         print_args(args...);
         RetT ret = func(args...);
-        gLog.debug("=> %s", lexical_cast<std::string>(ret).c_str());
+        glLog.debug("=> %s", lexical_cast<std::string>(ret).c_str());
+        glLog.flush();
         return ret;
     }
 };
@@ -57,10 +65,11 @@ struct proxy_call_helper<void, Args...>
                             void (*func)(Args...),
                             Args... args)
     {
-        gLog.debug("%s", func_name);
+        glLog.debug("%s", func_name);
         print_args(args...);
         func(args...);
-        gLog.debug("=> void");
+        glLog.debug("=> void");
+        glLog.flush();
     }
 };
 
@@ -87,6 +96,11 @@ struct proxy_call_struct
     DstT operator ()(Args... args)
     {
         return proxy_call(func_name, func, args...);
+    }
+
+    operator const void*() const
+    {
+        return (const void*)func;
     }
 
     const char* func_name;

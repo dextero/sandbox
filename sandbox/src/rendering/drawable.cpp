@@ -6,12 +6,12 @@
 
 namespace sb {
 
-Drawable::Drawable(EProjectionType projType,
+Drawable::Drawable(ProjectionType projType,
                    const std::shared_ptr<Mesh>& mesh,
                    const std::shared_ptr<Texture>& texture,
                    const std::shared_ptr<Shader>& shader):
     mMesh(mesh),
-    mTexture(texture ? texture : gResourceMgr.getDefaultTexture()),
+    mTextures({ { "tex", texture ? texture : gResourceMgr.getDefaultTexture() } }),
     mShader(shader),
     mColor(Color::White),
     mTranslationMatrix(),
@@ -137,20 +137,15 @@ const Mat44& Drawable::getTransformationMatrix() const
     return mTransformationMatrix;
 }
 
-bool Drawable::operator <(const Drawable& d) const {
-    int diff = mShader.get() - d.mShader.get();
-    if (diff) {
-        return diff < 0;
-    }
+void Drawable::setTexture(const std::string& uniformName,
+                          const std::shared_ptr<const Texture>& tex)
+{
+    mTextures[uniformName] = tex;
+}
 
-    diff = mTexture.get() - d.mTexture.get();
-    if (diff) {
-        return diff < 0;
-    }
-
-    float zDiff = (mRotation * mPosition).z
-                  - (d.mRotation * mPosition).z;
-    return zDiff < 0;
+void Drawable::setTexture(const std::shared_ptr<const Texture>& tex)
+{
+    setTexture("tex", tex);
 }
 
 namespace {
@@ -159,7 +154,7 @@ void setLightUniforms(const Renderer::State& state,
                       const std::shared_ptr<Shader>& shader)
 {
     if (shader->hasUniform("eyePos")) {
-        shader->setUniform("eyePos", state.camera.getEye());
+        shader->setUniform("eyePos", state.camera->getEye());
     }
 
     if (shader->hasUniform("ambientLightColor")) {
@@ -197,22 +192,65 @@ void setLightUniforms(const Renderer::State& state,
     }
 }
 
+void setShadowUniforms(Renderer::State& state,
+                       const std::shared_ptr<const Shader>& shader,
+                       size_t firstTextureUnit,
+                       std::vector<bind_guard<Texture>>& outBinds)
+{
+    sbAssert(shader->hasUniform("shadows") == shader->hasUniform("numShadows"),
+             "shadows and numShadows must both be present");
+
+    if (shader->hasUniform("shadows")) {
+        shader->setUniform("numShadows", (unsigned)state.shadows.size());
+
+        outBinds.clear();
+        outBinds.reserve(state.shadows.size());
+
+        for (size_t i = 0; i < state.shadows.size(); ++i) {
+            std::string base = utils::format("shadows[{0}]", i);
+            const Renderer::Shadow& s = state.shadows[i];
+
+            outBinds.emplace_back(*s.shadowMap, firstTextureUnit + i);
+            shader->setUniform(base + ".projectionMatrix", s.projectionMatrix);
+            shader->setUniform(base + ".map", (GLint)(firstTextureUnit + i));
+        }
+    }
+}
+
 } // namespace
 
 void Drawable::draw(Renderer::State& state) const
 {
+    if (state.isRenderingShadow
+            && mProjectionType == ProjectionType::Orthographic) {
+        return;
+    }
+
     auto vaoBind = make_bind(mMesh->getVertexBuffer());
     auto indexBind = make_bind(mMesh->getIndexBuffer());
     auto shaderBind = make_bind(*mShader, mMesh->getVertexBuffer());
-    auto textureBind = make_bind(*mTexture, 0);
 
-    mShader->setUniform("texture", 0);
     mShader->setUniform("matViewProjection",
-            state.camera.getViewProjectionMatrix(mProjectionType));
+                        state.camera->getViewProjectionMatrix());
     mShader->setUniform("matModel", getTransformationMatrix());
-    mShader->setUniform("color", mColor);
 
-    setLightUniforms(state, mShader);
+    std::vector<bind_guard<Texture>> textureBinds;
+    std::vector<bind_guard<Texture>> shadowBinds;
+    if (!state.isRenderingShadow) {
+        mShader->setUniform("color", mColor);
+
+        size_t boundTextures = 0;
+        for (const auto& pair: mTextures) {
+            if (mShader->hasUniform(pair.first)) {
+                textureBinds.emplace_back(make_bind(*pair.second, boundTextures));
+                mShader->setUniform(pair.first, (GLint)boundTextures);
+                ++boundTextures;
+            }
+        }
+
+        setLightUniforms(state, mShader);
+        setShadowUniforms(state, mShader, boundTextures, shadowBinds);
+    }
 
     GL_CHECK(glDrawElements((GLuint)mMesh->getShape(),
                             mMesh->getIndexBufferSize(),

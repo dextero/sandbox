@@ -45,10 +45,12 @@ VertexBuffer::VertexBuffer(const std::vector<Vec3>& vertices,
     mVAO(0),
     mBuffers()
 {
-    gLog.trace("creating vertex buffer (%lu, vertices%s%s)\n",
+#if 0
+    gLog.debug("creating vertex buffer (%lu, vertices%s%s)\n",
                vertices.size(),
                texcoords.size() > 0 ? " texcoords" : "",
                colors.size() > 0 ? " colors" : "");
+#endif
 
     GL_CHECK(glGenVertexArrays(1, &mVAO));
     auto vaoBind = make_bind(*this);

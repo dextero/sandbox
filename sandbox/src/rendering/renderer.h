@@ -9,6 +9,9 @@
 #include "rendering/texture.h"
 #include "rendering/camera.h"
 #include "rendering/light.h"
+#include "rendering/framebuffer.h"
+
+#include "utils/rect.h"
 
 #include <vector>
 #include <algorithm>
@@ -20,16 +23,26 @@ namespace sb
     class Renderer
     {
     public:
+        struct Shadow
+        {
+            std::shared_ptr<const Texture> shadowMap;
+            Mat44 projectionMatrix;
+        };
+
         struct State
         {
             std::shared_ptr<Shader> shader;
             std::shared_ptr<Texture> texture;
-            EProjectionType projectionType;
-            Camera &camera;
+            ProjectionType projectionType;
+            Camera* camera;
 
             Color ambientLightColor;
             std::vector<Light> pointLights;
             std::vector<Light> parallelLights;
+            std::vector<Shadow> shadows;
+
+            bool isRenderingShadow;
+            ProjectionType shadowProjectionType;
 
         private:
             State(Camera& camera,
@@ -37,9 +50,10 @@ namespace sb
                   const std::vector<Light>& allLights):
                 shader(),
                 texture(),
-                projectionType(EProjectionType::ProjectionPerspective),
-                camera(camera),
-                ambientLightColor(ambientLightColor)
+                projectionType(ProjectionType::Perspective),
+                camera(&camera),
+                ambientLightColor(ambientLightColor),
+                isRenderingShadow(false)
             {
                 std::copy_if(allLights.begin(), allLights.end(),
                              std::back_inserter(pointLights),
@@ -68,8 +82,9 @@ namespace sb
 
         bool init(::Display* display, ::Window window, GLXFBConfig& fbc);
         void setClearColor(const Color& c);
-        void clear();
+        void clear() const;
         void setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy);
+        void setViewport(const IntRect& rect);
 
         void setAmbientLightColor(const Color& color) { mAmbientLightColor = color; }
         void addLight(const Light& light) { mLights.push_back(light); }
@@ -88,7 +103,10 @@ namespace sb
         void saveScreenshot(const std::string& filename, int width, int height);
 
     private:
+        Color mClearColor;
+        IntRect mViewport;
         Camera mCamera;
+        Camera mSpriteCamera;
         GLXContext mGLContext;
         ::Display* mDisplay;
 
@@ -105,6 +123,9 @@ namespace sb
             FilterProjection,
             FilterShaderTextureProjectionDepth
         };
+
+        void drawTo(Framebuffer& framebuffer,
+                    Camera& camera) const;
     };
 } // namespace sb
 

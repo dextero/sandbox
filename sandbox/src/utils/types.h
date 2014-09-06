@@ -58,12 +58,5 @@ inline Radians operator "" _rad(long double radians)
     return Radians(radians);
 }
 
-template<typename T>
-std::ostream& operator <<(std::ostream& os,
-                          const glm::detail::tvec3<T, glm::highp>& v)
-{
-    return os << '(' << v.x << ", " << v.y << ", " << v.z << ')';
-}
-
 #endif // UTILS_TYPES_H
 

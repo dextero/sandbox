@@ -11,6 +11,7 @@
 #include "utils/debug.h"
 #include "resources/mesh.h"
 #include "resources/image.h"
+#include "rendering/model.h"
 
 namespace sb {
 namespace {
@@ -59,7 +60,9 @@ bool Renderer::initGLEW()
 }
 
 Renderer::Renderer():
-    mCamera(),
+    mClearColor(Color::Black),
+    mCamera(Camera::perspective()),
+    mSpriteCamera(Camera::orthographic()),
     mGLContext(NULL),
     mDisplay(NULL),
     mDrawablesBuffer(),
@@ -133,37 +136,58 @@ bool Renderer::init(::Display* display, ::Window window, GLXFBConfig& fbc)
     String::init(mDisplay);
 #endif
 
-    mCamera.setPerspectiveMatrix();
-    mCamera.setOrthographicMatrix();
-
     return true;
 }
 
 void Renderer::setClearColor(const Color& c)
 {
-    glClearColor(c.r, c.g, c.b, c.a);
+    mClearColor = c;
 }
 
-void Renderer::clear()
+void Renderer::clear() const
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
 void Renderer::setViewport(unsigned x, unsigned y, unsigned cx, unsigned cy)
 {
+    //gLog.debug("setViewport: %u %u %u %u", x, y, cx, cy);
+    mViewport = IntRect(x, x + cx, y, y + cy);
     glViewport(x, y, cx, cy);
 
     // adjust aspect ratio
-    mCamera.setPerspectiveMatrix(PI_3, (float)cx / (float)cy);
+    mCamera.updateViewport(cx, cy);
+    mSpriteCamera.updateViewport(cx, cy);
+}
+
+void Renderer::setViewport(const IntRect& rect)
+{
+    return setViewport(rect.left, rect.bottom, rect.width(), rect.height());
 }
 
 void Renderer::draw(Drawable& d)
 {
-    if (!d.mMesh && !d.mTexture) {
+    if (!d.mMesh) {
         sbFail("Renderer::draw: invalid call, mMesh == NULL");
     }
 
     mDrawablesBuffer.push_back(std::make_shared<Drawable>(d));
+}
+
+void Renderer::drawTo(Framebuffer& framebuffer,
+                      Camera& camera) const
+{
+    auto fbBind = make_bind(framebuffer);
+    GL_CHECK(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
+    clear();
+
+    State rendererState(camera, Color::White, {});
+    rendererState.isRenderingShadow = true;
+    rendererState.projectionType = ProjectionType::Orthographic; // TODO
+
+    for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
+        d->draw(rendererState);
+    }
 }
 
 void Renderer::drawAll()
@@ -179,11 +203,42 @@ void Renderer::drawAll()
                   return *a < *b;
               });
 #endif
-
     State rendererState(mCamera,
                         mAmbientLightColor,
                         mLights);
+
+    for (const Light& light: mLights) {
+        if (light.makesShadows) {
+            sbAssert(light.type == Light::Type::Parallel, "TODO: shadows for point lights");
+
+            Camera camera = Camera::orthographic(-100.0, 100.0, -100.0, 100.0, -1000.0, 1000.0);
+            camera.lookAt(-light.pos, Vec3(0.0, 0.0, 0.0));
+
+            IntRect savedViewport = mViewport;
+            Vec2i shadowFbSize = light.shadowFramebuffer->getSize();
+            setViewport(0, 0, shadowFbSize.x, shadowFbSize.y);
+
+            drawTo(*light.shadowFramebuffer, camera);
+            setViewport(savedViewport);
+
+            rendererState.shadows.push_back({
+                light.shadowFramebuffer->getTexture(),
+                math::matrixShadowBias() * camera.getViewProjectionMatrix()
+            });
+        }
+    }
+
+    GL_CHECK(glClearColor(mClearColor.r, mClearColor.g,
+                          mClearColor.b, mClearColor.a));
+    clear();
+
     for (const std::shared_ptr<Drawable>& d: mDrawablesBuffer) {
+        if (d->mProjectionType == ProjectionType::Perspective) {
+            rendererState.camera = &mCamera;
+        } else {
+            rendererState.camera = &mSpriteCamera;
+        }
+
         d->draw(rendererState);
     }
 
