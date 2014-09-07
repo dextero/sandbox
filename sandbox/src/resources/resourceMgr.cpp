@@ -135,66 +135,77 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
         return {};
     }
 
+    std::vector<Vec3> vertices;
+    std::vector<Vec2> texcoords;
+    std::vector<Vec3> normals;
+    std::vector<uint32_t> indices;
     for (uint32_t i = 0; i < scene->mNumMeshes; ++i) {
         aiMesh* mesh = scene->mMeshes[i];
 
-        if (!mesh->HasPositions()
-                || !mesh->HasTextureCoords(0)) {
+        gLog.trace("loading mesh %u of %s", i, name.c_str());
+        if (!mesh->HasPositions()) {
+            gLog.warn("no vertex positions in mesh %u of %s", i, name.c_str());
+            continue;
+        }
+        if (!mesh->HasTextureCoords(0)) {
+            gLog.warn("no texcoords in mesh %u of %s", i, name.c_str());
             continue;
         }
 
         // texcoords
-        std::vector<Vec3> vertices(mesh->mNumVertices);
-        memcpy(&vertices[0], mesh->mVertices, mesh->mNumVertices * sizeof(Vec3));
+        size_t verticesSoFar = vertices.size();
+        vertices.resize(verticesSoFar + mesh->mNumVertices);
+        memcpy(&vertices[verticesSoFar], mesh->mVertices, mesh->mNumVertices * sizeof(Vec3));
 
-        std::vector<Vec3> normals;
         if (mesh->HasNormals()) {
-            normals.resize(mesh->mNumVertices);
-            memcpy(&normals[0], mesh->mNormals, mesh->mNumVertices * sizeof(Vec3));
+            normals.resize(verticesSoFar + mesh->mNumVertices);
+            memcpy(&normals[verticesSoFar], mesh->mNormals, mesh->mNumVertices * sizeof(Vec3));
         }
 
-        std::vector<Vec2> texcoords;
         if (mesh->HasTextureCoords(0)) {
-            texcoords.reserve(mesh->mNumVertices);
+            texcoords.reserve(verticesSoFar + mesh->mNumVertices);
             for (uint32_t i = 0; i < mesh->mNumVertices; ++i) {
                 texcoords.emplace_back(Vec2(mesh->mTextureCoords[0][i].x,
                                             mesh->mTextureCoords[0][i].y));
             }
         }
 
-        aiString filename;
-        std::shared_ptr<Texture> texture;
-
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        aiReturn result = material->GetTexture(aiTextureType_DIFFUSE,
-                                               0, &filename);
-        if (result == AI_SUCCESS) {
-            gLog.info("%s: got texture %s\n", name.c_str(), filename.data);
-            texture = gResourceMgr.getTexture(filename.data);
-        }
-
         uint32_t numIndices = 0;
-        std::vector<uint32_t> indices;
         for (uint32_t i = 0; i < mesh->mNumFaces; ++i) {
             numIndices += mesh->mFaces[i].mNumIndices;
         }
 
-        indices.resize(numIndices);
-        numIndices = 0;
+        size_t indicesSoFar = indices.size();
+        indices.resize(indicesSoFar + numIndices);
+        numIndices = indicesSoFar;
         for (uint32_t i = 0; i < mesh->mNumFaces; ++i) {
             memcpy(&indices[numIndices],
                    mesh->mFaces[i].mIndices,
                    mesh->mFaces[i].mNumIndices * sizeof(uint32_t));
             numIndices += mesh->mFaces[i].mNumIndices;
         }
-
-        return std::make_shared<Mesh>(Mesh::Shape::Triangle,
-                                      vertices, texcoords,
-                                      std::vector<Color>(), normals,
-                                      indices, texture);
     }
 
-    return {};
+    if (vertices.empty()) {
+        return {};
+    }
+
+    // TODO: multiple materials
+    aiString filename;
+
+    std::shared_ptr<Texture> texture;
+    aiMaterial* material = scene->mMaterials[0];
+    aiReturn result = material->GetTexture(aiTextureType_DIFFUSE,
+                                           0, &filename);
+    if (result == AI_SUCCESS) {
+        gLog.info("%s: got texture %s\n", name.c_str(), filename.data);
+        texture = gResourceMgr.getTexture(filename.data);
+    }
+
+    return std::make_shared<Mesh>(Mesh::Shape::Triangle,
+                                  vertices, texcoords,
+                                  std::vector<Color>(), normals,
+                                  indices, texture);
 }
 
 std::shared_ptr<Mesh> ResourceMgr::loadTerrain(const std::string& heightmap)
