@@ -124,8 +124,8 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
     Assimp::Importer importer;
     const uint32_t importerFlags = aiProcess_Triangulate
                                    | aiProcess_JoinIdenticalVertices
-                                   | aiProcess_SortByPType
-                                   | aiProcess_GenSmoothNormals;
+                                   | aiProcess_SortByPType;
+                                   //| aiProcess_GenSmoothNormals;
     const aiScene* scene = importer.ReadFile(name, importerFlags);
 
     sbAssert(scene != nullptr, "cannot load mesh: %s", name.c_str());
