@@ -124,8 +124,8 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
     Assimp::Importer importer;
     const uint32_t importerFlags = aiProcess_Triangulate
                                    | aiProcess_JoinIdenticalVertices
-                                   | aiProcess_SortByPType
-                                   | aiProcess_GenSmoothNormals;
+                                   | aiProcess_SortByPType;
+                                   //| aiProcess_GenSmoothNormals;
     const aiScene* scene = importer.ReadFile(name, importerFlags);
 
     sbAssert(scene != nullptr, "cannot load mesh: %s", name.c_str());
@@ -147,10 +147,10 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
             gLog.warn("no vertex positions in mesh %u of %s", i, name.c_str());
             continue;
         }
-        if (!mesh->HasTextureCoords(0)) {
-            gLog.warn("no texcoords in mesh %u of %s", i, name.c_str());
-            continue;
-        }
+        //if (!mesh->HasTextureCoords(0)) {
+            //gLog.warn("no texcoords in mesh %u of %s", i, name.c_str());
+            //continue;
+        //}
 
         // texcoords
         size_t verticesSoFar = vertices.size();
@@ -202,6 +202,10 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
         texture = gResourceMgr.getTexture(filename.data);
     }
 
+    gLog.trace("%s: got vertices%s%s",
+               name.c_str(),
+               texcoords.empty() ? "" : ", texcoords",
+               normals.empty() ? "" : ", normals");
     return std::make_shared<Mesh>(Mesh::Shape::Triangle,
                                   vertices, texcoords,
                                   std::vector<Color>(), normals,
