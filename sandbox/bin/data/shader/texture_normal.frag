@@ -36,7 +36,8 @@ vec4 diffuse(vec3 position,
     vec4 outColor = vec4(0.0, 0.0, 0.0, 1.0);
 
     for (uint i = 0u; i < numParallelLights; ++i) {
-        vec3 lightDir = -parallelLights[i].direction;
+        vec3 lightDir = parallelLights[i].direction;
+        lightDir.y = -lightDir.y;
         outColor.rgb += parallelLights[i].color.rgb * parallelLights[i].intensity * dot(lightDir, normal);
     }
 
