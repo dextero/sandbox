@@ -234,6 +234,10 @@ void Drawable::draw(Renderer::State& state) const
                         state.camera->getViewProjectionMatrix());
     mShader->setUniform("matModel", getTransformationMatrix());
 
+    if (mShader->hasUniform("matView")) {
+        mShader->setUniform("matView", state.camera->getViewMatrix());
+    }
+
     std::vector<bind_guard<Texture>> textureBinds;
     std::vector<bind_guard<Texture>> shadowBinds;
     if (!state.isRenderingShadow) {

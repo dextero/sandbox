@@ -73,7 +73,7 @@ void printPreprocessedCompileLog(const std::string& log,
 bool isInputLine(const std::string& line,
                  const std::vector<std::string>& words,
                  bool warnOnUntagged) {
-    if (line.size() == 0
+    if (words.size() == 0
             || words[0] != "in") {
         return false;
     }
