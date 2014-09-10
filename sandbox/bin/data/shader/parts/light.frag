@@ -17,7 +17,10 @@ uniform uint numPointLights;
 uniform ParallelLight parallelLights[8];
 uniform uint numParallelLights;
 
+#ifndef HAVE_EYEPOS
+#define HAVE_EYEPOS
 uniform vec3 eyePos;
+#endif
 
 vec4 diffuse(vec3 position,
              vec3 normal)
