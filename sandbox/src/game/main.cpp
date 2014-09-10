@@ -129,8 +129,8 @@ struct Scene
             }
         }      
 
-        tree.setPosition(1.f, 11.f, 1.f);
-        tree.setScale(0.1f);
+        tree.setPosition(1.f, 1.f, 1.f);
+        tree.setScale(15.0f);
         gLog.info("all data loaded!\n");
     }
 };
@@ -302,7 +302,6 @@ public:
         // crosshair
         wnd.draw(scene.crosshair);
 
-        
         for (Vec3 position : scene.treeCoordinates){ 
             scene.tree.setPosition(position);
             wnd.draw(scene.tree);
