@@ -13,8 +13,8 @@ out vec4 out_color;
 
 void main()
 {
-    const vec3 FOG_COLOR = vec3(0.0, 0.0, 1.0);
-    const float FOG_DENSITY = 0.015;
+    const vec3 FOG_COLOR = vec3(0.4, 0.4, 0.45);
+    const float FOG_DENSITY = 0.01;
 
     out_color = texture2D(tex, ps_texcoord) * color;
     out_color = applyFog(out_color, ps_position, FOG_COLOR, FOG_DENSITY);

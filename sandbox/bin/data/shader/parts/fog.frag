@@ -13,6 +13,6 @@ vec4 applyFog(vec4 inColor,
     float fogFactor = 1.0 / exp(exponent * exponent);
     fogFactor = clamp(fogFactor, 0.0, 1.0); 
 
-    return vec4(inColor.rgb * fogFactor, 1.0);
+    return vec4(inColor.rgb, fogFactor);
 }
 
