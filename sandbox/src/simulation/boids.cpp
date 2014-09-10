@@ -10,8 +10,8 @@ namespace Sim
 	    {
 	            sb::Fish fish("salamon.obj",
 	                     textureShader, gResourceMgr.getTexture("salamon2.jpg"));
-	            fish.setPosition(rand() % 20 - 10.0, rand() % 20 - 10.0, rand() % 20 - 10.0);
-	            fish.setVelocity((rand() % 50 - 25)/50.0, (rand() % 50 - 25)/50.0, (rand() % 50 - 25)/50.0);
+	            fish.setPosition(rand() % 20 - 10.0, rand() % 20 , rand() % 20 - 10.0);
+	            fish.setVelocity((rand() % 50 - 25)/50.0, (rand() % 50 - 25)/100.0, (rand() % 50 - 25)/50.0);
 	            fish.setScale(0.8f);
 	            shoalOfFish.push_back(fish);
 	    }
@@ -67,7 +67,7 @@ namespace Sim
 
 	Vec3 Boids::tendToPlace(sb::Fish fish, Vec3 place)
 	{
-	    return (place - fish.getPosition()) / 100000;
+	    return (place - fish.getPosition()) / 10000;
 	}
 
 	Vec3 Boids::notSoFast(sb::Fish fish, float max_speed)
@@ -93,7 +93,7 @@ namespace Sim
 	Vec3 Boids::calculateVelocity(sb::Fish& fish, Vec3 predator_position)
 	{
 	    Vec3 before = {0.f, 0.f, 1.f}; 
-	    Vec3 after = fish.getVelocity() + tendToPlace(fish, Vec3(0.f, 1.f, 1.f)) + massRule(fish)  + notSoCloseRule(fish) + similarVelocityRule(fish) + avoidPredator(fish, predator_position);
+	    Vec3 after = fish.getVelocity() + tendToPlace(fish, Vec3(0.f, 5.f, 1.f)) + massRule(fish)  + notSoCloseRule(fish) + similarVelocityRule(fish) + avoidPredator(fish, predator_position);
 	    Vec3 rotation_axis = before.cross(fish.getVelocity());    
 	    float rotation_angle = acos(before.dot(fish.getVelocity()));
 	    
@@ -121,6 +121,12 @@ namespace Sim
 
 	Vec3 Boids::calculatePosition(sb::Fish fish)
 	{
+		Vec3 currPos = fish.getVelocity() + fish.getPosition(); 
+		if(currPos.y < 1 )  {
+			if (fish.getVelocity().y < 0)  {
+				fish.setVelocity(Vec3(fish.getVelocity().x, 0.,fish.getVelocity().z));
+			}
+		}
 	    return fish.getVelocity() + fish.getPosition();
 	}
 

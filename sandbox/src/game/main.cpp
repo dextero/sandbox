@@ -19,6 +19,7 @@
 #include "simulation/boids.h"
 #include <sstream>
 #include <IL/ilut.h>
+#include <vector>
 
 class Accumulator
 {
@@ -80,7 +81,9 @@ struct Scene
     sb::Model dragon;
     sb::Terrain terrain;
     sb::Model tree;
-
+    
+    std::vector<Vec3> treeCoordinates;
+    
     sb::Light pointLight = sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f);
     sb::Light parallelLight = sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f);
 
@@ -102,6 +105,7 @@ struct Scene
         dragon("salamon.obj", fogShader),
         terrain("hmap_flat.jpg", "ground.jpg", fogShader),
         tree("Tree.obj", fogShader, gResourceMgr.getTexture("Tree.jpg")),
+        treeCoordinates(),
         pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f)),
         parallelLight(sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f))
     {
@@ -115,8 +119,17 @@ struct Scene
         terrain.setScale(10.f, 1.f, 10.f);
         terrain.setPosition(-640.f, 0.f, -640.f);
         terrain.setTexture("tex2", gResourceMgr.getTexture("blue_marble.jpg"));
+        
+        srand((unsigned)time(0));
+        for (int i =-5; i< 5; i++ ) {
+            for (int j =-5; j < 5; j ++ ) {
+                if (rand() % 100 > 50) {
+                    treeCoordinates.push_back(Vec3((rand() % 300) - 150, 0, (rand() % 300) - 150));
+                }
+            }
+        }      
 
-        tree.setPosition(1.f, 1.f, 1.f);
+        tree.setPosition(1.f, 11.f, 1.f);
         tree.setScale(0.1f);
         gLog.info("all data loaded!\n");
     }
@@ -290,16 +303,10 @@ public:
         wnd.draw(scene.crosshair);
 
         
-        srand((unsigned)time(0));
-        for (int i =-5; i< 5; i++ ) {
-            for (int j =-5; j < 5; j ++ ) {
-                if (rand() % 100 > 50) {
-                    scene.tree.setPosition( i * 50, 0.0, j * 50);
-                    wnd.draw(scene.tree);
-                }
-            }
-            
-        }        
+        for (Vec3 position : scene.treeCoordinates){ 
+            scene.tree.setPosition(position);
+            wnd.draw(scene.tree);
+        }
         
         drawStrings();
 
