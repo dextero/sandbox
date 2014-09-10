@@ -19,3 +19,11 @@ sandbox/extlibs
 sandbox/unused-gfx
 *.o
 *.d
+*.pyc
+
+sandbox/bin/sandbox
+sandbox/bin/run_tests
+
+core
+tags
+
