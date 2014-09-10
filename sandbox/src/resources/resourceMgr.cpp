@@ -139,27 +139,33 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
     std::vector<Vec2> texcoords;
     std::vector<Vec3> normals;
     std::vector<uint32_t> indices;
-    for (uint32_t i = 0; i < scene->mNumMeshes; ++i) {
-        aiMesh* mesh = scene->mMeshes[i];
+    for (uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx) {
+        aiMesh* mesh = scene->mMeshes[meshIdx];
 
-        gLog.trace("loading mesh %u of %s", i, name.c_str());
+        gLog.trace("loading mesh %u of %s", meshIdx, name.c_str());
         if (!mesh->HasPositions()) {
-            gLog.warn("no vertex positions in mesh %u of %s", i, name.c_str());
+            gLog.warn("no vertex positions in mesh %u of %s", meshIdx, name.c_str());
             continue;
         }
         if (!mesh->HasTextureCoords(0)) {
-            gLog.warn("no texcoords in mesh %u of %s", i, name.c_str());
+            gLog.warn("no texcoords in mesh %u of %s", meshIdx, name.c_str());
             continue;
         }
 
         // texcoords
         size_t verticesSoFar = vertices.size();
-        vertices.resize(verticesSoFar + mesh->mNumVertices);
-        memcpy(&vertices[verticesSoFar], mesh->mVertices, mesh->mNumVertices * sizeof(Vec3));
+        vertices.reserve(verticesSoFar + mesh->mNumVertices);
+        for (size_t i = 0; i < mesh->mNumVertices; ++i) {
+            const aiVector3D& v = mesh->mVertices[i];
+            vertices.emplace_back(v.x, v.y, v.z);
+        }
 
         if (mesh->HasNormals()) {
-            normals.resize(verticesSoFar + mesh->mNumVertices);
-            memcpy(&normals[verticesSoFar], mesh->mNormals, mesh->mNumVertices * sizeof(Vec3));
+            vertices.reserve(verticesSoFar + mesh->mNumVertices);
+            for (size_t i = 0; i < mesh->mNumVertices; ++i) {
+                const aiVector3D& n = mesh->mVertices[i];
+                normals.emplace_back(n.x, n.y, n.z);
+            }
         }
 
         if (mesh->HasTextureCoords(0)) {
@@ -179,10 +185,13 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
         indices.resize(indicesSoFar + numIndices);
         numIndices = indicesSoFar;
         for (uint32_t i = 0; i < mesh->mNumFaces; ++i) {
-            memcpy(&indices[numIndices],
-                   mesh->mFaces[i].mIndices,
-                   mesh->mFaces[i].mNumIndices * sizeof(uint32_t));
-            numIndices += mesh->mFaces[i].mNumIndices;
+            const aiFace& face = mesh->mFaces[i];
+            sbAssert(face.mNumIndices == 3, "mesh not triangulated");
+
+            for (size_t j = 0; j < face.mNumIndices; ++j) {
+                indices[numIndices + j] = indicesSoFar + face.mIndices[j];
+            }
+            numIndices += face.mNumIndices;
         }
     }
 

@@ -117,7 +117,7 @@ struct Scene
         terrain.setTexture("tex2", gResourceMgr.getTexture("blue_marble.jpg"));
 
         tree.setPosition(1.f, 1.f, 1.f);
-        tree.setScale(0.1f);
+        tree.setScale(15.0f);
         gLog.info("all data loaded!\n");
     }
 };
@@ -290,7 +290,7 @@ public:
         wnd.draw(scene.crosshair);
 
         
-        srand((unsigned)time(0));
+        srand(0);
         for (int i =-5; i< 5; i++ ) {
             for (int j =-5; j < 5; j ++ ) {
                 if (rand() % 100 > 50) {
