@@ -5,12 +5,16 @@ in vec2 in_texcoord; // TEXCOORD
 
 uniform mat4 matModel, matViewProjection;
 
-out vec3 world_pos;
-out vec2 texcoord;	
+out vec3 ps_position;
+out vec2 ps_texcoord;	
 
-void main(){
+void main()
+{
+    vec4 worldPos = matModel * vec4(in_position, 1.0);
 
-	world_pos = (matModel * vec4(in_position,1)).xyz;
-	texcoord = in_texcoord;
-    gl_Position = matViewProjection * matModel * vec4(in_position,1); 
+	ps_position = worldPos.xyz;
+	ps_texcoord = in_texcoord;
+
+    gl_Position = matViewProjection * worldPos;
 }
+
