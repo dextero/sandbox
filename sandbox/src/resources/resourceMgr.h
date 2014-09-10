@@ -137,6 +137,10 @@ namespace sb
         // default texture, indicating some errors
         std::shared_ptr<Texture> getDefaultTexture();
 
+        std::string getShaderFolder() const {
+            return mBasePath + "shader";
+        }
+
     private:
         static std::shared_ptr<Texture> loadTexture(const std::string& path);
         static std::shared_ptr<Image> loadImage(const std::string& path);

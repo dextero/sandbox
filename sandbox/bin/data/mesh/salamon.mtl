@@ -1,23 +1,10 @@
-# Wavefront material library
-# Tue Aug 03 07:48:16 1999
-# Created with Viewpoint Interchange www.viewpoint.com
+# Blender MTL File: 'None'
+# Material Count: 1
 
-newmtl sal_body
-  Ka 0 0 0
-  Kd 0 0 0
-  Ks 0 0 0
-  illum 2
-  map_Kd salmon.tif
-
-newmtl sal_eye
-  Ka 0 0 0
-  Kd 0 0 0
-  Ks 0 0 0
-  illum 2
-  map_Kd eye_fsh.tif
-
-newmtl sal_mouth
-  Ka 0 0 0
-  Kd 0.690196 0.67451 0.694118
-  Ks 0.690196 0.67451 0.694118
-  illum 2
+newmtl None
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2

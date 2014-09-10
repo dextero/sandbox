@@ -48,3 +48,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++11 -Wno-variadic-m
 add_executable(sandbox ${SANDBOX_SOURCES})
 target_link_libraries(sandbox ${LIBS})
 
+find_sources(TEST_SOURCES ${ROOT_DIR}/test ".cpp" "test")
+set(TEST_SOURCES ${TEST_SOURCES}
+                 src/utils/logger.cpp
+                 src/utils/stringUtils.cpp)
+
+add_executable(run_tests ${TEST_SOURCES})
+set_target_properties(run_tests
+                      PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -DTEST -U_DEBUG -DNDEBUG")
+

@@ -42,13 +42,6 @@ std::string readFile(const std::string& path)
         sbFail("cannot open file: %s", path.c_str());
     }
 
-    file.get();
-    if (!file) {
-        sbFail("invalid file: %s, maybe it is a directory?\n", path.c_str());
-    }
-
-    file.unget();
-
     file.seekg(0, std::ios::end);
     size_t filesize = file.tellg();
 
