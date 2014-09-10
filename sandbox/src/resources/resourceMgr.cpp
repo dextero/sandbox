@@ -19,6 +19,8 @@
 #include "image.h"
 #include "font.h"
 
+#include "rendering/terrain.h"
+
 namespace sb {
 
 SINGLETON_INSTANCE(ResourceMgr);
@@ -229,16 +231,10 @@ std::shared_ptr<Mesh> ResourceMgr::loadTerrain(const std::string& heightmap)
     gLog.trace("loading terrain %s: %ux%u vertices\n",
                heightmap.c_str(), w, h);
 
-#define RGBA_TO_HEIGHT(rgba) \
-((float)(((rgba) & 0x00ff0000) \
-       | (((rgba) & 0xff000000) << 8) \
-       | (((rgba) & 0x0000ff00) << 16)) \
-    / 100000.0f)
-
     std::vector<Vec3> vertices;
     for (uint32_t i = 0; i < w * h; ++i) {
         vertices.emplace_back(Vec3((float)(i % w),
-                                    RGBA_TO_HEIGHT(data[i]),
+                                    Terrain::decodeHeight(data[i]),
                                     (float)(i / w)));
     }
 

@@ -103,7 +103,7 @@ struct Scene
         skybox("skybox.obj", textureShader,
                gResourceMgr.getTexture("miramar.jpg")),
         dragon("salamon.obj", fogShader),
-        terrain("hmap_flat.jpg", "ground.jpg", fogShader),
+        terrain("hmap_perlin.jpg", "ground.jpg", fogShader),
         tree("Tree.obj", fogShader, gResourceMgr.getTexture("Tree.jpg")),
         treeCoordinates(),
         pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f)),
@@ -116,15 +116,19 @@ struct Scene
 
         skybox.setScale(1000.f);
 
-        terrain.setScale(10.f, 1.f, 10.f);
-        terrain.setPosition(-640.f, 0.f, -640.f);
+        terrain.setScale(10.f, 20.f, 10.f);
+        terrain.setPosition(-640.f, -10.0f, -640.f);
         terrain.setTexture("tex2", gResourceMgr.getTexture("blue_marble.jpg"));
+        gLog.debug("terrain @ 0, 0: %f", terrain.getHeightAt(0.0f, 0.0f));
         
         srand((unsigned)time(0));
         for (int i =-5; i< 5; i++ ) {
             for (int j =-5; j < 5; j ++ ) {
                 if (rand() % 100 > 50) {
-                    treeCoordinates.push_back(Vec3((rand() % 300) - 150, 0, (rand() % 300) - 150));
+                    Vec3 pos((rand() % 300) - 150, 0, (rand() % 300) - 150);
+                    pos.y = terrain.getHeightAt(pos.x, pos.z);
+
+                    treeCoordinates.push_back(pos);
                 }
             }
         }      
