@@ -3,8 +3,6 @@
 uniform sampler2D tex;
 uniform vec4 color;
 
-const uint specular_exp = 16u;
-
 in vec4 ps_position;
 in vec2 ps_texcoord;
 
