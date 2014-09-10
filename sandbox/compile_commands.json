@@ -1,0 +1,157 @@
+[
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/window/window.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/window/window.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/window/window.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/utils/logger.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/logger.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/logger.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/utils/math.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/math.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/math.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/utils/lib.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/lib.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/lib.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/utils/glConstToString.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/glConstToString.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/glConstToString.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/utils/stringUtils.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/stringUtils.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/stringUtils.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/utils/timer.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/timer.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/utils/timer.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/game/main.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/game/main.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/game/main.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/resources/image.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/resources/image.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/resources/image.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/resources/resourceMgr.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/resources/resourceMgr.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/resources/resourceMgr.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/resources/mesh.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/resources/mesh.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/resources/mesh.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/simulation/boids.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/simulation/boids.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/simulation/boids.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/simulation/simulation.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/simulation/simulation.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/simulation/simulation.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/simulation/ball.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/simulation/ball.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/simulation/ball.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/shader.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/shader.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/shader.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/line.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/line.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/line.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/text.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/text.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/text.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/drawable.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/drawable.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/drawable.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/framebuffer.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/framebuffer.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/framebuffer.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/light.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/light.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/light.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/fish.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/fish.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/fish.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/terrain.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/terrain.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/terrain.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/texture.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/texture.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/texture.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/camera.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/camera.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/camera.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/renderer.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/renderer.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/renderer.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/model.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/model.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/model.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/string.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/string.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/string.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/color.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/color.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/color.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/sprite.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/sprite.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/sprite.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/vertexBuffer.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/vertexBuffer.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/vertexBuffer.cpp"
+},
+{
+  "directory": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox",
+  "command": "/usr/bin/g++     -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE -g -D_DEBUG -DGL_CALL_QUEUE -I/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src    -o CMakeFiles/sandbox.dir/src/rendering/buffer.cpp.o -c /home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/buffer.cpp",
+  "file": "/home/blost/Dropbox/grafika/projekt/sandbox/sandbox/src/rendering/buffer.cpp"
+}
+]

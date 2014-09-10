@@ -69,13 +69,17 @@ struct Scene
     std::shared_ptr<sb::Shader> textureLightShader;
     std::shared_ptr<sb::Shader> shadowShader;
 
+    std::shared_ptr<sb::Shader> fogShader;
+    
     sb::Line xaxis;
     sb::Line yaxis;
     sb::Line zaxis;
 
     sb::Sprite crosshair;
     sb::Model skybox;
+    sb::Model dragon;
     sb::Terrain terrain;
+    sb::Model tree;
 
     sb::Light pointLight = sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f);
     sb::Light parallelLight = sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f);
@@ -85,6 +89,7 @@ struct Scene
         textureShader(gResourceMgr.getShader("proj_texture.vert", "texture.frag")),
         textureLightShader(gResourceMgr.getShader("proj_texture_normal.vert", "texture_normal.frag")),
         shadowShader(gResourceMgr.getShader("proj_shadow.vert", "shadow.frag")),
+        fogShader(gResourceMgr.getShader("fog_shader.vert","fog.frag")),
         xaxis(Vec3(1000.f, 0.f, 0.f),
               sb::Color::Red, colorShader),
         yaxis(Vec3(0.f, 1000.f, 0.f),
@@ -94,10 +99,14 @@ struct Scene
         crosshair("dot.png", textureShader),
         skybox("skybox.obj", textureShader,
                gResourceMgr.getTexture("miramar.jpg")),
-        terrain("hmap_flat.jpg", "ground.jpg", shadowShader),
+        dragon("salamon.obj", fogShader),
+        terrain("hmap_flat.jpg", "ground.jpg", fogShader),
+        tree("Tree.obj", fogShader, gResourceMgr.getTexture("Tree.jpg")),
         pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f)),
         parallelLight(sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f))
     {
+        dragon.setPosition(5.f, 1.f, 1.f);
+        dragon.setScale(10.f);
         crosshair.setPosition(0.f, 0.f, 0.f);
         crosshair.setScale(0.01f, 0.01f * 1.33f, 1.f);
 
@@ -107,6 +116,8 @@ struct Scene
         terrain.setPosition(-640.f, 0.f, -640.f);
         terrain.setTexture("tex2", gResourceMgr.getTexture("blue_marble.jpg"));
 
+        tree.setPosition(1.f, 1.f, 1.f);
+        tree.setScale(0.1f);
         gLog.info("all data loaded!\n");
     }
 };
@@ -271,12 +282,25 @@ public:
         wnd.draw(scene.zaxis);
         wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest);
 
+        wnd.draw(scene.dragon);
         // balls & forces
-        sim.drawAll(wnd.getRenderer());
 
+        sim.drawAll(wnd.getRenderer());
         // crosshair
         wnd.draw(scene.crosshair);
 
+        
+        srand((unsigned)time(0));
+        for (int i =-5; i< 5; i++ ) {
+            for (int j =-5; j < 5; j ++ ) {
+                if (rand() % 100 > 50) {
+                    scene.tree.setPosition( i * 50, 0.0, j * 50);
+                    wnd.draw(scene.tree);
+                }
+            }
+            
+        }        
+        
         drawStrings();
 
         wnd.display();
