@@ -81,7 +81,7 @@ namespace sb
             GL_CHECK(mShader = glCreateShader(shaderType));
 
             std::string code = preprocessed.getCode();
-            gLog.debug("code:\n%s", code.c_str());
+            //gLog.debug("code:\n%s", code.c_str());
             const GLchar* codePtr = (const GLchar*)&code[0];
             GL_CHECK(glShaderSource(mShader, 1, &codePtr, NULL));
 

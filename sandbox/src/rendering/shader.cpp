@@ -38,13 +38,19 @@ void printWithContext(const PreprocessedCode& source,
 {
     size_t start = (size_t)std::max((ssize_t)lineNum - (ssize_t)contextLines,
                                     (ssize_t)0);
-    size_t end = std::min(lineNum + contextLines, source.getNumLines());
+    size_t end = std::min(lineNum + contextLines + 1, source.getNumLines() - 1);
 
     const auto backtrace = source.findLine(lineNum).getBacktrace();
+    for (auto it = backtrace.rbegin(); it != --backtrace.rend(); ++it) {
+        gLog.printf("included from %s:%u", it->file.c_str(), it->line);
+    }
+    gLog.printf("     error at %s:%u",
+                backtrace.front().file.c_str(), backtrace.front().line);
+    gLog.printf("--- code ---");
 
     for (size_t i = start; i < end; ++i) {
         gLog.printf("%s % 4u: %s\n",
-                    (i == lineNum ? ">>" : "  "), (unsigned)i,
+                    (i == lineNum ? ">>" : "  "), (unsigned)(i + 1),
                     source.findLine(i)->getLine().c_str());
     }
 }
