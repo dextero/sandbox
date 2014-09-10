@@ -13,6 +13,7 @@
 #include "../utils/types.h"
 #include "../utils/stringUtils.h"
 #include "../utils/lib.h"
+#include "utils/code_preprocessor.h"
 
 namespace sb
 {
@@ -75,9 +76,12 @@ namespace sb
             mShader(0),
             mFilename(path)
         {
-            std::string code = utils::readFile(path);
+            PreprocessedCode preprocessed(path);
+
             GL_CHECK(mShader = glCreateShader(shaderType));
 
+            std::string code = preprocessed.getCode();
+            gLog.debug("code:\n%s", code.c_str());
             const GLchar* codePtr = (const GLchar*)&code[0];
             GL_CHECK(glShaderSource(mShader, 1, &codePtr, NULL));
 
@@ -90,13 +94,13 @@ namespace sb
             gLog.trace("compiling %s shader: %s",
                        SHADERS[shaderType].c_str(), path.c_str());
             GL_CHECK(glCompileShader(mShader));
-            if (!shaderCompilationSucceeded(code)) {
+            if (!shaderCompilationSucceeded(preprocessed)) {
                 sbFail("shader compilation failed");
             }
 
-            mInputs = parseInputs(code, shaderType == GL_VERTEX_SHADER);
-            mOutputs = parseOutputs(code);
-            mUniforms = parseUniforms(code);
+            mInputs = parseInputs(preprocessed, shaderType == GL_VERTEX_SHADER);
+            mOutputs = parseOutputs(preprocessed);
+            mUniforms = parseUniforms(preprocessed);
         }
 
         ~ConcreteShader()
@@ -128,11 +132,11 @@ namespace sb
         }
 
     private:
-        bool shaderCompilationSucceeded(const std::string& source);
-        static std::set<Input> parseInputs(const std::string& code,
+        bool shaderCompilationSucceeded(const PreprocessedCode& source);
+        static std::set<Input> parseInputs(const PreprocessedCode& code,
                                            bool warnOnUntagged);
-        static std::set<Output> parseOutputs(const std::string& code);
-        static std::set<Uniform> parseUniforms(const std::string& code);
+        static std::set<Output> parseOutputs(const PreprocessedCode& code);
+        static std::set<Uniform> parseUniforms(const PreprocessedCode& code);
 
         GLuint mShader;
         std::string mFilename;

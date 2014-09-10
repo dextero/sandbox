@@ -92,8 +92,8 @@ extern Logger<FileOutput> default_logger;
 template<typename Output>
 class Logger
 {
-private:
-    enum class LogColor
+public:
+    enum class Color
     {
         White = 0,
         Green = 32,
@@ -102,7 +102,6 @@ private:
         Blue = 34
     };
 
-public:
     Logger(Output&& output = std::move(Output())):
         mOutput(std::forward<Output>(output))
     {}
@@ -117,25 +116,41 @@ public:
     Logger& operator =(const Logger&) = delete;
     Logger& operator =(Logger&&) = delete;
 
-#define DEFINE_LOG_LEVEL(Name, Color, Prefix) \
+#if !TEST
+# define DEFINE_LOG_LEVEL(Name, Color, Prefix) \
     void Name(const char* msg, ...) \
     { \
         va_list list; \
         va_start(list, msg); \
-        log_internal(Color, Prefix, msg, list); \
+        log_internal(Color, Prefix, msg, true, list); \
+        va_end(list); \
     }
+#else // TEST
+# define DEFINE_LOG_LEVEL(Name, Color, Prefix) \
+    void Name(const char*, ...) {}
+#endif // TEST
 
-    DEFINE_LOG_LEVEL(printf, LogColor::White, "")
-    DEFINE_LOG_LEVEL(trace, LogColor::White, "[TRACE] ")
-    DEFINE_LOG_LEVEL(info, LogColor::Green, "[INFO] ")
-    DEFINE_LOG_LEVEL(warn, LogColor::Yellow, "[WARN] ")
-    DEFINE_LOG_LEVEL(err, LogColor::Red, "[ERR] ")
+    DEFINE_LOG_LEVEL(printf, Color::White, "")
+    DEFINE_LOG_LEVEL(trace, Color::White, "[TRACE] ")
+    DEFINE_LOG_LEVEL(info, Color::Green, "[INFO] ")
+    DEFINE_LOG_LEVEL(warn, Color::Yellow, "[WARN] ")
+    DEFINE_LOG_LEVEL(err, Color::Red, "[ERR] ")
 
 #ifdef _DEBUG
-    DEFINE_LOG_LEVEL(debug, LogColor::Blue, "[DEBUG] ")
+    DEFINE_LOG_LEVEL(debug, Color::Blue, "[DEBUG] ")
 #else
     inline void debug(const char*, ...) {}
 #endif
+
+#if TEST
+    void printf(Color color, const char* msg, ...)
+    {
+        va_list list;
+        va_start(list, msg);
+        log_internal(color, "", msg, false, list);
+        va_end(list);
+    }
+#endif // TEST
 
     void flush() { mOutput.flush(); }
     const Output& getOutput() const { return mOutput; }
@@ -143,9 +158,10 @@ public:
 private:
     Output mOutput;
 
-    void log_internal(LogColor color,
+    void log_internal(Color color,
                       const char* prefix,
                       const char* msg,
+                      bool appendNewline,
                       va_list args)
     {
         char format_buffer[1024];
@@ -164,9 +180,10 @@ private:
                     && bytes_written < (int)sizeof(buffer),
                  "buffer too small");
 
-        if (bytes_written > 5
+        if (appendNewline
+                && bytes_written > 5
                 && buffer[bytes_written - 5] != '\n'
-                && bytes_written + 1 < sizeof(buffer)) {
+                && (size_t)(bytes_written + 1) < sizeof(buffer)) {
             buffer[bytes_written] = '\n';
             buffer[bytes_written + 1] = '\0';
         }

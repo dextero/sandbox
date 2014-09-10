@@ -35,7 +35,7 @@ ResourceMgr::ResourceMgr(const std::string& basePath):
     mMeshes(mBasePath + "mesh/"),
     mTerrains(""),
     mFonts(mBasePath + "font/"),
-    mVertexShaders(mBasePath + "shader/"),
+    mVertexShaders(getShaderFolder()),
     mFragmentShaders(mBasePath + "shader/"),
     mGeometryShaders(mBasePath + "shader/"),
     mShaderPrograms()

@@ -32,25 +32,26 @@ ssize_t extractLineNum(const std::string& logLine)
     return lexical_cast<ssize_t>(logLine.substr(numStart, numEnd - numStart));
 }
 
-void printWithContext(const std::vector<std::string>& sourceLines,
+void printWithContext(const PreprocessedCode& source,
                       size_t lineNum,
                       size_t contextLines = 3)
 {
     size_t start = (size_t)std::max((ssize_t)lineNum - (ssize_t)contextLines,
                                     (ssize_t)0);
-    size_t end = std::min(lineNum + contextLines, sourceLines.size());
+    size_t end = std::min(lineNum + contextLines, source.getNumLines());
+
+    const auto backtrace = source.findLine(lineNum).getBacktrace();
 
     for (size_t i = start; i < end; ++i) {
         gLog.printf("%s % 4u: %s\n",
                     (i == lineNum ? ">>" : "  "), (unsigned)i,
-                    sourceLines[i].c_str());
+                    source.findLine(i)->getLine().c_str());
     }
 }
 
 void printPreprocessedCompileLog(const std::string& log,
-                                 const std::string& source)
+                                 const PreprocessedCode& source)
 {
-    std::vector<std::string> sourceLines = utils::split(source, "\n");
     std::vector<std::string> logLines = utils::split(log, "\n");
 
     ssize_t lineNum = -1;
@@ -58,7 +59,7 @@ void printPreprocessedCompileLog(const std::string& log,
         ssize_t newLineNum = extractLineNum(logLine);
         if (newLineNum >= 0 && newLineNum != lineNum) {
             if (lineNum >= 0) {
-                printWithContext(sourceLines, (size_t)lineNum - 1);
+                printWithContext(source, (size_t)lineNum - 1);
             }
             lineNum = newLineNum;
         }
@@ -66,7 +67,7 @@ void printPreprocessedCompileLog(const std::string& log,
     }
 
     if (lineNum >= 0) {
-        printWithContext(sourceLines, (size_t)lineNum - 1);
+        printWithContext(source, (size_t)lineNum - 1);
     }
 }
 
@@ -175,38 +176,43 @@ void detectOptimizedOutUniforms(GLuint program,
 
 } // namespace
 
-std::set<Input> ConcreteShader::parseInputs(const std::string& code,
+std::set<Input> ConcreteShader::parseInputs(const PreprocessedCode& code,
                                             bool warnOnUntagged)
 {
     std::set<Input> ret;
-    std::vector<std::string> lines = utils::split(code, "\n");
 
-    for (const std::string& line: lines) {
-        extractInput(ret, line, warnOnUntagged);
+    for (const auto& node: code) {
+        if (node.isLine()) {
+            extractInput(ret, node.getLine(), warnOnUntagged);
+        }
     }
 
     return ret;
 }
 
-std::set<Output> ConcreteShader::parseOutputs(const std::string& code)
+std::set<Output> ConcreteShader::parseOutputs(const PreprocessedCode& code)
 {
     std::set<Output> ret;
-    std::vector<std::string> lines = utils::split(code, "\n");
 
-    for (const std::string& line: lines) {
-        extractOutput(ret, line);
+    for (const auto& node: code) {
+        if (node.isLine()) {
+            extractOutput(ret, node.getLine());
+        }
     }
 
     return ret;
 }
 
-std::set<Uniform> ConcreteShader::parseUniforms(const std::string& code)
+std::set<Uniform> ConcreteShader::parseUniforms(const PreprocessedCode& code)
 {
     std::set<Uniform> ret;
-    std::vector<std::string> lines = utils::split(code, "\n");
 
-    for (const std::string& line: lines) {
-        std::vector<std::string> words = utils::split(line);
+    for (const auto& node: code) {
+        if (!node.isLine()) {
+            continue;
+        }
+
+        std::vector<std::string> words = utils::split(node.getLine());
 
         if (words.size() > 2
                 && words[0] == "uniform") {
@@ -229,7 +235,7 @@ std::set<Uniform> ConcreteShader::parseUniforms(const std::string& code)
     return ret;
 }
 
-bool ConcreteShader::shaderCompilationSucceeded(const std::string& source)
+bool ConcreteShader::shaderCompilationSucceeded(const PreprocessedCode& source)
 {
     GLint retval;
     GL_CHECK_RET(glGetShaderiv(mShader, GL_COMPILE_STATUS, &retval), false);

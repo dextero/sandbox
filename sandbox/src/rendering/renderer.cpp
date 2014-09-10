@@ -172,6 +172,7 @@ void Renderer::draw(Drawable& d)
     }
 
     mDrawablesBuffer.push_back(std::make_shared<Drawable>(d));
+    drawAll();
 }
 
 void Renderer::drawTo(Framebuffer& framebuffer,

@@ -142,8 +142,10 @@ std::string format(const std::string& format,
 
     for (const auto &fmtArg: fmtArgs) {
         if (fmtArg.number >= argsAsStrings.size()) {
-            sbFail("insufficient arguments to format(): found index %u",
-                   (unsigned)fmtArg.number);
+            sbFail("insufficient arguments to format(): "
+                   "found index %u, got:\n%s\n",
+                   (unsigned)fmtArg.number,
+                   utils::join(argsAsStrings, "\n").c_str());
         }
 
         size_t chunkLength = fmtArg.startOffset - lastEnd;
