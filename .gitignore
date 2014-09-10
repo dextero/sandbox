@@ -20,10 +20,19 @@ sandbox/unused-gfx
 *.o
 *.d
 *.pyc
+*.swp
+*.swo
+
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
 
 sandbox/bin/sandbox
 sandbox/bin/run_tests
+sandbox/build
 
 core
 tags
+.ycm_extra_conf.py
 
