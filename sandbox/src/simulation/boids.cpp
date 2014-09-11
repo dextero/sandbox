@@ -8,11 +8,11 @@ namespace Sim
 	    srand((unsigned)time(0));
 	    for (int i = 0; i < size; ++i)
 	    {
-	            sb::Fish fish("salamon.obj",
-	                     textureShader, gResourceMgr.getTexture("salamon2.jpg"));
+	            sb::Fish fish("Crow/vorona.obj",
+	                     textureShader, gResourceMgr.getTexture("crow.tif"));
 	            fish.setPosition(rand() % 20 - 10.0, rand() % 20 , rand() % 20 - 10.0);
 	            fish.setVelocity((rand() % 50 - 25)/50.0, (rand() % 50 - 25)/100.0, (rand() % 50 - 25)/50.0);
-	            fish.setScale(0.8f);
+	            fish.setScale(0.003f);
 	            shoalOfFish.push_back(fish);
 	    }
 	} 
@@ -42,7 +42,7 @@ namespace Sim
 	    
 	    for(sb::Fish fish_it : shoalOfFish)
 	    {
-	        if (distance(fish_it.getPosition(), fish.getPosition()) < 0.5) {
+	        if (distance(fish_it.getPosition(), fish.getPosition()) < 1.5) {
 	            closeness_vector = closeness_vector - (fish_it.getPosition() - fish.getPosition())/100; 
 	        }
 	    }

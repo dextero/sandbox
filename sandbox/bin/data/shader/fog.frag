@@ -2,6 +2,7 @@
 
 #include "data/shader/parts/fog.frag"
 #include "data/shader/parts/light.frag"
+#include "data/shader/parts/shadow.frag"
 
 uniform sampler2D tex;
 
@@ -19,6 +20,7 @@ void main()
 
     out_color = texture2D(tex, ps_texcoord) * color;
     out_color = applyLight(out_color, ps_position, ps_normal, 0.001, 1.0, 0.0);
+    out_color = applyShadow(out_color);
     out_color = applyFog(out_color, ps_position, FOG_DENSITY);
 }
 

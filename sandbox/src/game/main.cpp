@@ -76,11 +76,12 @@ struct Scene
     sb::Terrain terrain;
     sb::Model tree;
     sb::Model sun;
+    sb::Model goat;
     
     std::vector<Vec3> treeCoordinates;
     
-    sb::Light pointLight = sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f);
-    sb::Light parallelLight = sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f);
+    sb::Light pointLight = sb::Light::point(Vec3(10.0, 10.0, 0.0), 1000.0f);
+    sb::Light parallelLight = sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 1.0f);
 
     Scene():
         colorShader(gResourceMgr.getShader("proj_basic.vert", "color.frag")),
@@ -95,6 +96,7 @@ struct Scene
         terrain("hmap_perlin.jpg", "ground.jpg", fogShader),
         tree("Tree.obj", fogShader, gResourceMgr.getTexture("Tree.jpg")),
         sun("sphere.obj", colorShader),
+        goat("koza.obj", textureLightShader, gResourceMgr.getTexture("goat.png")),
         treeCoordinates(),
         pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 1.0f)),
         parallelLight(sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 1.0f))
@@ -113,17 +115,15 @@ struct Scene
 
         sun.setScale(100.0f);
         sun.setColor(sb::Color(1.0f, 1.0f, 0.8f));
+        goat.setScale(10.0f);
         
         srand((unsigned)time(0));
-        for (int i =-5; i< 5; i++ ) {
-            for (int j =-5; j < 5; j ++ ) {
-                if (rand() % 100 > 50) {
-                    Vec3 pos((rand() % 300) - 150, 0, (rand() % 300) - 150);
-                    pos.y = terrain.getHeightAt(pos.x, pos.z);
+        const size_t NUM_TREES = 100;
+        for (size_t i = 0; i < NUM_TREES; i++ ) {
+            Vec3 pos((rand() % 300) - 150, 0, (rand() % 300) - 150);
+            pos.y = terrain.getHeightAt(pos.x, pos.z);
 
-                    treeCoordinates.push_back(pos);
-                }
-            }
+            treeCoordinates.push_back(pos);
         }      
 
         tree.setPosition(1.f, 1.f, 1.f);
@@ -210,7 +210,7 @@ public:
         wnd.clear(sb::Color(0.f, 0.f, 0.5f));
 
         wnd.setAmbientLightColor(sb::Color(0.2f, 0.2f, 0.2f));
-        //wnd.addLight(scene.pointLight);
+        wnd.addLight(scene.pointLight);
         wnd.addLight(scene.parallelLight);
 
         // environment
@@ -220,6 +220,7 @@ public:
         drawBoids();
 
         wnd.draw(scene.dragon);
+        wnd.draw(scene.goat);
 
         // crosshair
         wnd.draw(scene.crosshair);
@@ -271,6 +272,11 @@ public:
         sunPos.y = -sunPos.y;
         sunPos += wnd.getCamera().getEye();
         scene.sun.setPosition(sunPos);
+
+        Vec3 pos(std::sin(angle.value() * 5.0f), 0.0f, std::cos(angle.value() * 5.0f));
+        pos *= 10.0f;
+        pos.y = scene.terrain.getHeightAt(pos.x, pos.z);
+        scene.goat.setPosition(pos);
     }
 
     void update(float delta)

@@ -30,14 +30,19 @@ vec4 diffuse(vec3 position,
     for (uint i = 0u; i < numParallelLights; ++i) {
         vec3 lightDir = normalize(parallelLights[i].direction);
         lightDir.y = -lightDir.y;
-        outColor.rgb += parallelLights[i].color.rgb * parallelLights[i].intensity * dot(lightDir, normal);
+        outColor.rgb += parallelLights[i].color.rgb
+                        * parallelLights[i].intensity
+                        * dot(lightDir, normal);
     }
 
     for (uint i = 0u; i < numPointLights; ++i) {
-        vec3 diff = position - pointLights[i].position;
+        vec3 diff = pointLights[i].position - position;
         vec3 lightDir = normalize(diff);
         float distSquared = dot(diff, diff);
-        outColor.rgb += pointLights[i].color.rgb * pointLights[i].intensity * dot(lightDir, normal);
+        outColor.rgb += pointLights[i].color.rgb
+                        //* distSquared
+                        * pointLights[i].intensity
+                        * dot(lightDir, normal);
     }
 
     return clamp(outColor, 0.0, 1.0);
@@ -51,7 +56,9 @@ vec4 specular(vec3 position,
     for (uint i = 0u; i < numPointLights; ++i) {
         vec3 lightDir = normalize(position - pointLights[i].position);
         vec3 eyeDir = normalize(eyePos - position);
-        outColor.rgb += pointLights[i].color.rgb * pointLights[i].intensity * pow(dot(lightDir, reflect(eyeDir, normal)), specularExp);
+        outColor.rgb += pointLights[i].color.rgb
+                        * pointLights[i].intensity
+                        * pow(dot(lightDir, reflect(eyeDir, normal)), specularExp);
     }
 
     return clamp(outColor, 0.0, 1.0);
