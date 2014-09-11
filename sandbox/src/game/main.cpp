@@ -14,8 +14,6 @@
 #include "utils/lib.h"
 #include "utils/timer.h"
 #include "utils/lexical_cast.h"
-#include "simulation/simulation.h"
-#include "simulation/ball.h"
 #include "simulation/boids.h"
 #include <sstream>
 #include <IL/ilut.h>
@@ -72,10 +70,6 @@ struct Scene
 
     std::shared_ptr<sb::Shader> fogShader;
     
-    sb::Line xaxis;
-    sb::Line yaxis;
-    sb::Line zaxis;
-
     sb::Sprite crosshair;
     sb::Model skybox;
     sb::Model dragon;
@@ -94,12 +88,6 @@ struct Scene
         textureLightShader(gResourceMgr.getShader("proj_texture_normal.vert", "texture_normal.frag")),
         shadowShader(gResourceMgr.getShader("proj_shadow.vert", "shadow.frag")),
         fogShader(gResourceMgr.getShader("fog_shader.vert","fog.frag")),
-        xaxis(Vec3(1000.f, 0.f, 0.f),
-              sb::Color::Red, colorShader),
-        yaxis(Vec3(0.f, 1000.f, 0.f),
-              sb::Color::Blue, colorShader),
-        zaxis(Vec3(0.f, 0.f, 1000.f),
-              sb::Color::Green, colorShader),
         crosshair("dot.png", textureShader),
         skybox("skybox.obj", textureShader,
                gResourceMgr.getTexture("miramar_no_sun.jpg")),
@@ -163,15 +151,10 @@ public:
     Accumulator fpsDeltaTime;
     std::string fpsString;
 
-    Sim::Simulation sim;
     Sim::Boids boids;
 
     Accumulator throwVelocity;
     Accumulator windVelocity;
-
-    bool displayHelp;
-    bool displaySimInfo;
-    bool displayBallInfo;
 
     Game():
         wnd(1280, 1024),
@@ -181,21 +164,14 @@ public:
         fpsCounter(0.0f),
         fpsCurrValue(0.0f),
         fpsDeltaTime(0.0f, 0.0f),
-        sim(Sim::Simulation::SimSingleThrow,
-            scene.textureLightShader, scene.colorShader),
         boids(90, scene.textureLightShader),
         throwVelocity(10.f, 0.5f),
-        windVelocity(0.5f, 0.5f),
-        displayHelp(false),
-        displaySimInfo(false),
-        displayBallInfo(false)
+        windVelocity(0.5f, 0.5f)
     {
         wnd.setTitle("Sandbox");
         wnd.lockCursor();
         wnd.hideCursor();
         wnd.getCamera().lookAt(Vec3(5.f, 5.f, 20.f), Vec3(5.f, 5.f, 0.f));
-
-        sim.setThrowStart(Vec3d(0., 1., 0.), Vec3d(30., 30., 0.));
 
         deltaTime.reset();
         fpsDeltaTime.reset();
@@ -203,36 +179,6 @@ public:
 
     void drawStrings()
     {
-        static const std::string helpString =
-            "controls:\n"
-            "wasdqz + mouse - moving\n"
-            "123456 - camera presets\n"
-            "esc - exit\n"
-            "f1 - show/hide controls info\n"
-            "f2 - show/hide simulation info\n"
-            "f3 - show/hide ball info\n"
-            "f4 - show/hide ball launcher lines\n"
-            "f8 - exit + display debug info\n"
-            "print screen - save screenshot\n"
-            "p - pause simulation\n"
-            "o - switch vector display mode (forces/accelerations)\n"
-            "i - enable/disable auto-pause when a ball hits ground\n"
-            "t - reset simulation (single ball)\n"
-            "r - reset simulation (multiple balls)\n"
-            "mouse left - set throw position/initial velocity*\n"
-            "mouse right - set wind force*\n"
-            "cf - decrease/increase slow motion factor\n"
-            "vg - decrease/increase line width\n"
-            "bh - decrease/increase air density\n"
-            "nj - decrease/increase ball path length\n"
-            "mk - decrease/increase ball spawn delay\n"
-            ",l - decrease/increase ball limit by 5\n"
-            ".; - decrease/increase ball mass**\n"
-            "/' - decrease/increase ball radius**\n"
-            "* hold button to adjust value\n"
-            "** doesn't affect existing balls";
-        static const uint32_t helpStringLines = 27u;
-
         uint32_t nextLine = 0u;
         wnd.drawString(fpsString, { 0.0f, 0.0f },
                        (fpsCurrValue > 30.f
@@ -257,30 +203,6 @@ public:
                            Radians(wnd.getCamera().getVerticalAngle())),
                        { 0.f, 0.f }, sb::Color::White, nextLine);
         nextLine += 6;
-
-        wnd.drawString(sb::utils::format("throw velocity = {0}",
-                                         throwVelocity.getValue()),
-                       { 0.f, 0.f }, Sim::ColorThrow, nextLine++);
-        wnd.drawString(sb::utils::format("wind velocity = {0}",
-                                         windVelocity.getValue()),
-                       { 0.f, 0.f }, Sim::ColorWind, nextLine++);
-
-        if (displayHelp)
-        {
-            wnd.drawString(helpString, { 0.f, 0.0f },
-                           sb::Color::White, ++nextLine);
-            nextLine += helpStringLines;
-        }
-        if (displaySimInfo) {
-            nextLine = sim.printParametersToScreen(wnd, { 0.f, 0.f }, ++nextLine);
-        }
-        if (displayBallInfo) {
-            nextLine = sim.printBallParametersToScreen(
-                    wnd, sim.raycast(wnd.getCamera().getEye(),
-                                     wnd.getCamera().getFront().normalized()),
-                    { 0.f, 0.0f }, nextLine);
-        }
-
     }
 
     void draw()
@@ -297,17 +219,8 @@ public:
 
         drawBoids();
 
-        // axes - disable edpth test to prevent blinking
-        wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest, false);
-        wnd.draw(scene.xaxis);
-        wnd.draw(scene.yaxis);
-        wnd.draw(scene.zaxis);
-        wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest);
-
         wnd.draw(scene.dragon);
-        // balls & forces
 
-        sim.drawAll(wnd.getRenderer());
         // crosshair
         wnd.draw(scene.crosshair);
 
@@ -343,13 +256,11 @@ public:
 
     void updateFixedStep(float timeStep)
     {
-        sim.update(timeStep);
-
         throwVelocity.update();
         windVelocity.update();
 
         static Radians angle(0.0f);
-        angle = Radians(angle.value() + 0.001f);
+        angle = Radians(angle.value() + 0.1f * timeStep);
 
         Vec3 lightPos(20.0f * std::sin(angle.value()),
                       -50.0f * std::sin(angle.value()) + 20.0f,
@@ -416,24 +327,8 @@ public:
         switch(e.data.mouse.button)
         {
         case sb::Mouse::ButtonLeft:
-            {
-                Vec3 pos = wnd.getCamera().getEye();
-                if (pos.y < sim.getBallRadius()) {
-                    pos.y = (float)sim.getBallRadius();
-                }
-
-                Vec3 v = wnd.getCamera().getFront().normalized()
-                                        * throwVelocity.getValue();
-                sim.setThrowStart(Vec3d(pos), Vec3d(v));
-                sim.reset();
-                throwVelocity.stop();
-                break;
-            }
             break;
         case sb::Mouse::ButtonRight:
-            sim.setWind(Vec3d(wnd.getCamera().getFront().normalized()
-                              * windVelocity.getValue()));
-            windVelocity.stop();
             break;
         default:
             break;
@@ -474,54 +369,12 @@ public:
             wnd.getCamera().lookAt(Vec3(0.f, 0.f, -50.f),
                                    Vec3(0.f, 0.f, 0.f));
             break;
-        case sb::Key::N:
-            sim.increaseBallPathLength(-1.0);
-            break;
-        case sb::Key::J:
-            sim.increaseBallPathLength(1.0);
-            break;
-        case sb::Key::M:
-            sim.increaseBallThrowDelay(-0.1f);
-            break;
-        case sb::Key::K:
-            sim.increaseBallThrowDelay(0.1f);
-            break;
-        case sb::Key::B:
-            sim.increaseAirDensity(-0.01);
-            break;
-        case sb::Key::H:
-            sim.increaseAirDensity(0.01);
-            break;
-        case sb::Key::Comma:
-            sim.increaseMaxBalls(-5);
-            break;
-        case sb::Key::L:
-            sim.increaseMaxBalls(5);
-            break;
         case sb::Key::A: speed.x = -SPEED; break;
         case sb::Key::D: speed.x = SPEED; break;
         case sb::Key::S: speed.z = -SPEED; break;
         case sb::Key::W: speed.z = SPEED; break;
         case sb::Key::Q: speed.y = SPEED; break;
         case sb::Key::Z: speed.y = -SPEED; break;
-        case sb::Key::C:
-            sim.increaseSloMoFactor(-0.1f);
-            break;
-        case sb::Key::F:
-            sim.increaseSloMoFactor(0.1f);
-            break;
-        case sb::Key::Slash:
-            sim.increaseBallRadius(-0.1f);
-            break;
-        case sb::Key::Apostrophe:
-            sim.increaseBallRadius(0.1f);
-            break;
-        case sb::Key::Period:
-            sim.increaseBallMass(-0.1f);
-            break;
-        case sb::Key::Colon:
-            sim.increaseBallMass(0.1f);
-            break;
         case sb::Key::Esc:
             wnd.close();
             break;
@@ -545,53 +398,6 @@ public:
         case sb::Key::Q:
         case sb::Key::Z:
             speed.y = 0.f;
-            break;
-        case sb::Key::P:
-            sim.togglePause();
-            break;
-        case sb::Key::O:
-            sim.toggleVectorDisplayType();
-            break;
-        case sb::Key::I:
-            sim.togglePauseOnGroundHit();
-            break;
-        case sb::Key::R:
-            sim = Sim::Simulation(Sim::Simulation::SimContiniousThrow,
-                                  scene.textureShader, scene.colorShader);
-            break;
-        case sb::Key::T:
-            sim = Sim::Simulation(Sim::Simulation::SimSingleThrow,
-                                  scene.textureShader, scene.colorShader);
-            break;
-        case sb::Key::V:
-            {
-                GLfloat lineWidth = 0.f;
-                GL_CHECK(glGetFloatv(GL_LINE_WIDTH, &lineWidth));
-                if (lineWidth > 1.f) {
-                    GL_CHECK(glLineWidth(lineWidth / 2.f));
-                }
-                break;
-            }
-        case sb::Key::G:
-            {
-                GLfloat lineWidth = 0.f;
-                GL_CHECK(glGetFloatv(GL_LINE_WIDTH, &lineWidth));
-                if (lineWidth < 9.f) {
-                    GL_CHECK(glLineWidth(lineWidth * 2.f));
-                }
-                break;
-            }
-        case sb::Key::F1:
-            displayHelp = !displayHelp;
-            break;
-        case sb::Key::F2:
-            displaySimInfo = !displaySimInfo;
-            break;
-        case sb::Key::F3:
-            displayBallInfo = !displayBallInfo;
-            break;
-        case sb::Key::F4:
-            sim.toggleShowLauncherLines();
             break;
         case sb::Key::PrintScreen:
             {
