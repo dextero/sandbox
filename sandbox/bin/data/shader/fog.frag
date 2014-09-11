@@ -1,6 +1,7 @@
 #version 330
 
 #include "data/shader/parts/fog.frag"
+#include "data/shader/parts/light.frag"
 
 uniform sampler2D tex;
 
@@ -8,15 +9,16 @@ uniform vec4 color;
 
 in vec3 ps_position;
 in vec2 ps_texcoord;
+in vec3 ps_normal;
 
 out vec4 out_color;
 
 void main()
 {
-    const vec3 FOG_COLOR = vec3(0.4, 0.4, 0.45);
-    const float FOG_DENSITY = 0.01;
+    const float FOG_DENSITY = 0.002;
 
     out_color = texture2D(tex, ps_texcoord) * color;
-    out_color = applyFog(out_color, ps_position, FOG_COLOR, FOG_DENSITY);
+    out_color = applyLight(out_color, ps_position, ps_normal, 0.001, 1.0, 0.0);
+    out_color = applyFog(out_color, ps_position, FOG_DENSITY);
 }
 

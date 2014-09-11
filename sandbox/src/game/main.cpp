@@ -81,6 +81,7 @@ struct Scene
     sb::Model dragon;
     sb::Terrain terrain;
     sb::Model tree;
+    sb::Model sun;
     
     std::vector<Vec3> treeCoordinates;
     
@@ -101,13 +102,14 @@ struct Scene
               sb::Color::Green, colorShader),
         crosshair("dot.png", textureShader),
         skybox("skybox.obj", textureShader,
-               gResourceMgr.getTexture("miramar.jpg")),
+               gResourceMgr.getTexture("miramar_no_sun.jpg")),
         dragon("salamon.obj", fogShader),
         terrain("hmap_perlin.jpg", "ground.jpg", fogShader),
         tree("Tree.obj", fogShader, gResourceMgr.getTexture("Tree.jpg")),
+        sun("sphere.obj", colorShader),
         treeCoordinates(),
-        pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f)),
-        parallelLight(sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f))
+        pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 1.0f)),
+        parallelLight(sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 1.0f))
     {
         dragon.setPosition(5.f, 1.f, 1.f);
         dragon.setScale(10.f);
@@ -116,10 +118,13 @@ struct Scene
 
         skybox.setScale(1000.f);
 
-        terrain.setScale(10.f, 20.f, 10.f);
-        terrain.setPosition(-640.f, -10.0f, -640.f);
+        terrain.setScale(10.f, 50.f, 10.f);
+        terrain.setPosition(-640.f, -25.0f, -640.f);
         terrain.setTexture("tex2", gResourceMgr.getTexture("blue_marble.jpg"));
         gLog.debug("terrain @ 0, 0: %f", terrain.getHeightAt(0.0f, 0.0f));
+
+        sun.setScale(100.0f);
+        sun.setColor(sb::Color(1.0f, 1.0f, 0.8f));
         
         srand((unsigned)time(0));
         for (int i =-5; i< 5; i++ ) {
@@ -283,7 +288,7 @@ public:
         wnd.clear(sb::Color(0.f, 0.f, 0.5f));
 
         wnd.setAmbientLightColor(sb::Color(0.2f, 0.2f, 0.2f));
-        wnd.addLight(scene.pointLight);
+        //wnd.addLight(scene.pointLight);
         wnd.addLight(scene.parallelLight);
 
         // environment
@@ -310,6 +315,8 @@ public:
             scene.tree.setPosition(position);
             wnd.draw(scene.tree);
         }
+
+        wnd.draw(scene.sun);
         
         drawStrings();
 
@@ -342,8 +349,17 @@ public:
         windVelocity.update();
 
         static Radians angle(0.0f);
-        angle = Radians(angle.value() + 0.02f);
-        scene.parallelLight.pos = Vec3(20.0f * std::sin(angle.value()), -20.0f, 20.0f * std::cos(angle.value()));
+        angle = Radians(angle.value() + 0.001f);
+
+        Vec3 lightPos(20.0f * std::sin(angle.value()),
+                      -50.0f * std::sin(angle.value()) + 20.0f,
+                      20.0f * std::cos(angle.value()));
+        scene.parallelLight.pos = lightPos;
+
+        Vec3 sunPos = lightPos.normalized() * 900.0f;
+        sunPos.y = -sunPos.y;
+        sunPos += wnd.getCamera().getEye();
+        scene.sun.setPosition(sunPos);
     }
 
     void update(float delta)

@@ -28,7 +28,7 @@ vec4 diffuse(vec3 position,
     vec4 outColor = vec4(0.0, 0.0, 0.0, 1.0);
 
     for (uint i = 0u; i < numParallelLights; ++i) {
-        vec3 lightDir = parallelLights[i].direction;
+        vec3 lightDir = normalize(parallelLights[i].direction);
         lightDir.y = -lightDir.y;
         outColor.rgb += parallelLights[i].color.rgb * parallelLights[i].intensity * dot(lightDir, normal);
     }
@@ -64,12 +64,14 @@ vec4 applyLight(vec4 inColor,
                 float diffuseCoefficient,
                 float specularCoefficient)
 {
+    normal = normalize(normal);
+
     vec4 ambientColor = ambientCoefficient * ambientLightColor;
     vec4 diffuseColor = diffuseCoefficient * diffuse(position, normal);
     vec4 specularColor = specularCoefficient * specular(position, normal);
 
     vec4 lightColor = ambientColor + diffuseColor + specularColor;
 
-    return vec4(clamp(inColor.xyz * lightColor.xyz, 0.0, 1.0), inColor.w);
+    return vec4(clamp(inColor.rgb * lightColor.rgb, 0.0, 1.0), inColor.a);
 }
 

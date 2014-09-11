@@ -5,7 +5,6 @@ uniform vec3 eyePos;
 
 vec4 applyFog(vec4 inColor,
               vec3 worldPos,
-              vec3 fogColor,
               float fogDensity)
 {
     float dist = distance(eyePos, worldPos);

@@ -22,6 +22,7 @@ namespace sb
                            | (((rgba) & 0x0000ff00) << 16))
                         / (float)0xffffff00;
         }
+
     private:
         std::shared_ptr<Image> mImg;
     };

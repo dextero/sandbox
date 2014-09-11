@@ -277,7 +277,30 @@ std::shared_ptr<Mesh> ResourceMgr::loadTerrain(const std::string& heightmap)
         }
     }
 
-    std::vector<Vec3> normals; // TODO
+    std::vector<Vec3> normals(vertices.size(), Vec3(0.0f, 0.0f, 0.0f));
+    for (uint32_t x = 0; x < (w - 1); ++x) {
+        for (uint32_t y = 0; y < (h - 1); ++y) {
+            uint32_t idx = x * h + y;
+
+            Vec3 a = vertices[idx];
+            Vec3 b = vertices[idx + w];
+            Vec3 c = vertices[idx + 1];
+            Vec3 d = vertices[idx + w + 1];
+
+            Vec3 ba = (b - a).normalized();
+            Vec3 ca = (c - a).normalized();
+            Vec3 cb = (c - b).normalized();
+            Vec3 db = (d - b).normalized();
+            Vec3 dc = (c - d).normalized();
+
+            normals[idx] += ba.cross(ca).normalized();             // (b - a).cross(c - a).normalized();
+            normals[idx + 1] += (-ca).cross(-cb).normalized();     // (a - c).cross(b - c).normalized();
+            normals[idx + 1] += (-cb).cross(dc).normalized();      // (b - c).cross(d - c).normalized();
+            normals[idx + w] += cb.cross(-ba).normalized();        // (c - b).cross(a - b).normalized();
+            normals[idx + w] += db.cross(cb).normalized();         // (d - b).cross(c - b).normalized();
+            normals[idx + w + 1] += (-dc).cross(-db).normalized(); // (c - d).cross(b - d).normalized();
+        }
+    }
 
     return std::make_shared<Mesh>(Mesh::Shape::Triangle,
                                   vertices, texcoords,
