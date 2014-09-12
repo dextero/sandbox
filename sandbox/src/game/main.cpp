@@ -142,6 +142,7 @@ struct Scene
     Scene():
         colorShader(gResourceMgr.getShader("proj_basic.vert", "color.frag")),
         textureShader(gResourceMgr.getShader("proj_texture.vert", "texture.frag")),
+        bumpmapShader(gResourceMgr.getShader("bumpmap.vert", "texture_bumpmap.frag")),
         lightShader(gResourceMgr.getShader("proj_texture_normal.vert", "texture_normal.frag")),
         shadowShader(gResourceMgr.getShader("proj_shadow.vert", "shadow.frag")),
         fogShader(gResourceMgr.getShader("fog_shader.vert","fog.frag")),
@@ -149,7 +150,7 @@ struct Scene
         skybox("skybox.obj", textureShader,
                gResourceMgr.getTexture("miramar_no_sun.jpg")),
         dragon("salamon.obj", fogShader),
-        terrain("hmap_perlin.jpg", "ground.jpg", fogShader),
+        terrain("hmap_perlin.jpg", "ground2.jpg", bumpmapShader),
         tree("Tree.obj", fogShader, gResourceMgr.getTexture("Tree.jpg")),
         sun("sphere.obj", colorShader),
         goat("koza.obj", lightShader, gResourceMgr.getTexture("goat.png")),
@@ -159,6 +160,7 @@ struct Scene
     {
         shaderToggler.add("color", colorShader);
         shaderToggler.add("texture", textureShader);
+        shaderToggler.add("bumpmap", bumpmapShader);
         shaderToggler.add("light", lightShader);
         shaderToggler.add("shadow", shadowShader);
         shaderToggler.add("fog", fogShader);
@@ -173,7 +175,8 @@ struct Scene
 
         terrain.setScale(10.f, 50.f, 10.f);
         terrain.setPosition(-640.f, -25.0f, -640.f);
-        terrain.setTexture("tex2", gResourceMgr.getTexture("blue_marble.jpg"));
+        terrain.setTexture("bumpmap", gResourceMgr.getTexture("ground2_normal.jpg"));
+        terrain.setTexture("heightTex", gResourceMgr.getTexture("ground_height.jpg"));
         gLog.debug("terrain @ 0, 0: %f", terrain.getHeightAt(0.0f, 0.0f));
 
         sun.setScale(100.0f);
@@ -181,7 +184,7 @@ struct Scene
         goat.setScale(10.0f);
         
         srand((unsigned)time(0));
-        const size_t NUM_TREES = 100;
+        const size_t NUM_TREES = 25;
         for (size_t i = 0; i < NUM_TREES; i++ ) {
             Vec3 pos((rand() % 300) - 150, 0, (rand() % 300) - 150);
             pos.y = terrain.getHeightAt(pos.x, pos.z);
@@ -218,6 +221,11 @@ public:
 
     Accumulator throwVelocity;
     Accumulator windVelocity;
+
+    bool showBoids = true;
+    bool showModels = true;
+    bool showTrees = true;
+    bool showSun = true;
 
     Game():
         wnd(1280, 1024),
@@ -269,6 +277,12 @@ public:
 
         wnd.drawString("terrain shader: " + scene.shaderToggler.getName(),
                        { 0.f, 0.f }, sb::Color::Green, nextLine++);
+        wnd.drawString(sb::utils::format("showing:{0}{1}{2}{3}",
+                                         showBoids ? " boids" : "",
+                                         showModels ? " models" : "",
+                                         showTrees ? " trees" : "",
+                                         showSun ? " sun" : ""),
+                       { 0.f, 0.f }, sb::Color::White, nextLine++);
     }
 
     void draw()
@@ -283,20 +297,28 @@ public:
         wnd.draw(scene.skybox);
         wnd.draw(scene.terrain);
 
-        drawBoids();
+        if (showBoids) {
+            drawBoids();
+        }
 
-        wnd.draw(scene.dragon);
-        wnd.draw(scene.goat);
+        if (showModels) {
+            wnd.draw(scene.dragon);
+            wnd.draw(scene.goat);
+        }
 
         // crosshair
         wnd.draw(scene.crosshair);
 
-        for (Vec3 position : scene.treeCoordinates){ 
-            scene.tree.setPosition(position);
-            wnd.draw(scene.tree);
+        if (showTrees) {
+            for (Vec3 position: scene.treeCoordinates) {
+                scene.tree.setPosition(position);
+                wnd.draw(scene.tree);
+            }
         }
 
-        wnd.draw(scene.sun);
+        if (showSun) {
+            wnd.draw(scene.sun);
+        }
         
         drawStrings();
 
@@ -326,8 +348,8 @@ public:
         throwVelocity.update();
         windVelocity.update();
 
-        static Radians angle(0.0f);
-        angle = Radians(angle.value() + 0.1f * timeStep);
+        static Radians angle(0.2f);
+        angle = Radians(angle.value() + 0.03f * timeStep);
 
         Vec3 lightPos(20.0f * std::sin(angle.value()),
                       -50.0f * std::sin(angle.value()) + 20.0f,
@@ -459,6 +481,10 @@ public:
     {
         switch (e.data.key)
         {
+        case sb::Key::F1: showBoids = !showBoids; break;
+        case sb::Key::F2: showModels = !showModels; break;
+        case sb::Key::F3: showTrees = !showTrees; break;
+        case sb::Key::F4: showSun = !showSun; break;
         case sb::Key::Space:
             scene.shaderToggler.toggle();
             scene.terrain.setShader(scene.shaderToggler.get());
