@@ -238,6 +238,11 @@ void Drawable::draw(Renderer::State& state) const
         mShader->setUniform("matView", state.camera->getViewMatrix());
     }
 
+    if (mShader->hasUniform("matNormal")) {
+        Mat33 matNormal = glm::transpose(glm::inverse(Mat33(getTransformationMatrix())));
+        mShader->setUniform("matNormal", matNormal);
+    }
+
     std::vector<bind_guard<Texture>> textureBinds;
     std::vector<bind_guard<Texture>> shadowBinds;
     if (!state.isRenderingShadow) {

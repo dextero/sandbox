@@ -8,6 +8,7 @@ in vec3 in_normal; // NORMAL
 
 uniform mat4 matModel;
 uniform mat4 matViewProjection;
+uniform mat3 matNormal;
 
 out vec3 ps_position;
 out vec2 ps_texcoord;
@@ -21,7 +22,7 @@ void main()
 
     ps_position = worldPos.xyz;
     ps_texcoord = in_texcoord;
-    ps_normal = normalize(transpose(inverse(mat3(matModel))) * in_normal);
+    ps_normal = normalize(matNormal * in_normal);
 
     gl_Position = matViewProjection * worldPos;
 }

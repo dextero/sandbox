@@ -440,6 +440,7 @@ DEFINE_UNIFORM_SETTER(int, GLint, glUniform1iv)
 DEFINE_UNIFORM_SETTER(unsigned, GLuint, glUniform1uiv)
 
 DEFINE_UNIFORM_SETTER(Mat44, GLfloat, glUniformMatrix4fv, GL_FALSE)
+DEFINE_UNIFORM_SETTER(Mat33, GLfloat, glUniformMatrix3fv, GL_FALSE)
 
 void Shader::bind(const VertexBuffer& vb) const
 {

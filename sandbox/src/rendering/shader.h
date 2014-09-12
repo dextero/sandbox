@@ -177,6 +177,9 @@ namespace sb
                         const Mat44* value_array,
                         uint32_t elements) const;
         bool setUniform(const char* name,
+                        const Mat33* value_array,
+                        uint32_t elements) const;
+        bool setUniform(const char* name,
                         const int* value_array,
                         uint32_t elements) const;
         bool setUniform(const char* name,
