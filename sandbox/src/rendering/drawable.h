@@ -45,6 +45,9 @@ namespace sb
         const Color& getColor() const { return mColor; }
         void setColor(const Color& color) { mColor = color; }
 
+        const std::shared_ptr<Shader>& getShader() const { return mShader; }
+        void setShader(const std::shared_ptr<Shader>& shader) { mShader = shader; }
+
         void setTexture(const std::shared_ptr<const Texture>& tex);
         void setTexture(const std::string& uniformName,
                         const std::shared_ptr<const Texture>& tex);

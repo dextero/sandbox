@@ -61,12 +61,68 @@ public:
     bool running() const { return mRunning; }
 };
 
+class ShaderToggler
+{
+public:
+    ShaderToggler():
+        currentIndex(0)
+    {
+    }
+
+    void add(const std::string& name,
+             const std::shared_ptr<sb::Shader>& shader)
+    {
+        shaders.emplace_back(name, shader);
+    }
+
+    const std::string& getName()
+    {
+        sbAssert(currentIndex < shaders.size(),
+                 "invalid shader index: %u", currentIndex);
+        return shaders[currentIndex].first;
+    }
+
+    const std::shared_ptr<sb::Shader>& get()
+    {
+        sbAssert(currentIndex < shaders.size(),
+                 "invalid shader index: %u", currentIndex);
+        return shaders[currentIndex].second;
+    }
+
+    void setCurrent(const std::shared_ptr<sb::Shader>& current)
+    {
+        for (currentIndex = 0; currentIndex < shaders.size(); ++currentIndex) {
+            if (get() == current) {
+                return;
+            }
+        }
+
+        gLog.err("toggler: shader not found");
+        currentIndex = 0;
+    }
+
+    void toggle()
+    {
+        sbAssert(shaders.size() > 0, "no shaders");
+        currentIndex = (currentIndex + 1) % shaders.size();
+    }
+
+private:
+    typedef std::shared_ptr<sb::Shader> ShaderPtr;
+    typedef std::pair<std::string, ShaderPtr> NamedShaderPtr;
+
+    std::vector<NamedShaderPtr> shaders;
+    size_t currentIndex;
+};
+
 struct Scene
 {
     std::shared_ptr<sb::Shader> colorShader;
     std::shared_ptr<sb::Shader> textureShader;
-    std::shared_ptr<sb::Shader> textureLightShader;
+    std::shared_ptr<sb::Shader> bumpmapShader;
+    std::shared_ptr<sb::Shader> lightShader;
     std::shared_ptr<sb::Shader> shadowShader;
+    ShaderToggler shaderToggler;
 
     std::shared_ptr<sb::Shader> fogShader;
     
@@ -86,7 +142,7 @@ struct Scene
     Scene():
         colorShader(gResourceMgr.getShader("proj_basic.vert", "color.frag")),
         textureShader(gResourceMgr.getShader("proj_texture.vert", "texture.frag")),
-        textureLightShader(gResourceMgr.getShader("proj_texture_normal.vert", "texture_normal.frag")),
+        lightShader(gResourceMgr.getShader("proj_texture_normal.vert", "texture_normal.frag")),
         shadowShader(gResourceMgr.getShader("proj_shadow.vert", "shadow.frag")),
         fogShader(gResourceMgr.getShader("fog_shader.vert","fog.frag")),
         crosshair("dot.png", textureShader),
@@ -96,11 +152,18 @@ struct Scene
         terrain("hmap_perlin.jpg", "ground.jpg", fogShader),
         tree("Tree.obj", fogShader, gResourceMgr.getTexture("Tree.jpg")),
         sun("sphere.obj", colorShader),
-        goat("koza.obj", textureLightShader, gResourceMgr.getTexture("goat.png")),
+        goat("koza.obj", lightShader, gResourceMgr.getTexture("goat.png")),
         treeCoordinates(),
         pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 1.0f)),
         parallelLight(sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 1.0f))
     {
+        shaderToggler.add("color", colorShader);
+        shaderToggler.add("texture", textureShader);
+        shaderToggler.add("light", lightShader);
+        shaderToggler.add("shadow", shadowShader);
+        shaderToggler.add("fog", fogShader);
+        shaderToggler.setCurrent(terrain.getShader());
+
         dragon.setPosition(5.f, 1.f, 1.f);
         dragon.setScale(10.f);
         crosshair.setPosition(0.f, 0.f, 0.f);
@@ -164,7 +227,7 @@ public:
         fpsCounter(0.0f),
         fpsCurrValue(0.0f),
         fpsDeltaTime(0.0f, 0.0f),
-        boids(90, scene.textureLightShader),
+        boids(90, scene.lightShader),
         throwVelocity(10.f, 0.5f),
         windVelocity(0.5f, 0.5f)
     {
@@ -203,6 +266,9 @@ public:
                            Radians(wnd.getCamera().getVerticalAngle())),
                        { 0.f, 0.f }, sb::Color::White, nextLine);
         nextLine += 6;
+
+        wnd.drawString("terrain shader: " + scene.shaderToggler.getName(),
+                       { 0.f, 0.f }, sb::Color::Green, nextLine++);
     }
 
     void draw()
@@ -393,6 +459,10 @@ public:
     {
         switch (e.data.key)
         {
+        case sb::Key::Space:
+            scene.shaderToggler.toggle();
+            scene.terrain.setShader(scene.shaderToggler.get());
+            break;
         case sb::Key::A:
         case sb::Key::D:
             speed.x = 0.f;
