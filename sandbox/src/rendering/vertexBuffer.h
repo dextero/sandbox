@@ -22,6 +22,8 @@ namespace sb
             Texcoord,
             Color,
             Normal,
+            Tangent,
+            Bitangent,
         };
 
         std::string kindAsString;
@@ -49,7 +51,9 @@ namespace sb
         VertexBuffer(const std::vector<Vec3>& vertices,
                      const std::vector<Vec2>& texcoords,
                      const std::vector<Color>& colors,
-                     const std::vector<Vec3>& normals);
+                     const std::vector<Vec3>& normals,
+                     const std::vector<Vec3>& tangents,
+                     const std::vector<Vec3>& bitangents);
         VertexBuffer(const VertexBuffer& copy) = delete;
         ~VertexBuffer();
 

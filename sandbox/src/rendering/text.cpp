@@ -58,6 +58,7 @@ std::shared_ptr<Mesh> makeMeshForText(const std::string& text,
     return std::make_shared<Mesh>(Mesh::Shape::Triangle,
                                   vertices, texcoords,
                                   std::vector<Color>(), std::vector<Vec3>(),
+                                  std::vector<Vec3>(), std::vector<Vec3>(),
                                   indices, font->getTexture());
 }
 

@@ -16,6 +16,8 @@ const std::map<std::string, Attrib::Kind> ATTRIB_KINDS {
     { "TEXCOORD", Attrib::Kind::Texcoord },
     { "COLOR", Attrib::Kind::Color },
     { "NORMAL", Attrib::Kind::Normal },
+    { "TANGENT", Attrib::Kind::Tangent },
+    { "BITANGENT", Attrib::Kind::Bitangent },
     { "", Attrib::Kind::Unspecified }
 };
 

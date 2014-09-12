@@ -15,10 +15,12 @@
 namespace sb {
 
 const std::map<Attrib::Kind, Attrib> ATTRIBS {
-    { Attrib::Kind::Position, { "position", GL_FLOAT, 3, sizeof(Vec3) } },
-    { Attrib::Kind::Texcoord, { "texcoord", GL_FLOAT, 2, sizeof(Vec2) } },
-    { Attrib::Kind::Color,    { "color",    GL_FLOAT, 4, sizeof(Vec4) } },
-    { Attrib::Kind::Normal,   { "normal",   GL_FLOAT, 3, sizeof(Vec3) } }
+    { Attrib::Kind::Position,  { "position",  GL_FLOAT, 3, sizeof(Vec3) } },
+    { Attrib::Kind::Texcoord,  { "texcoord",  GL_FLOAT, 2, sizeof(Vec2) } },
+    { Attrib::Kind::Color,     { "color",     GL_FLOAT, 4, sizeof(Vec4) } },
+    { Attrib::Kind::Normal,    { "normal",    GL_FLOAT, 3, sizeof(Vec3) } },
+    { Attrib::Kind::Tangent,   { "tangent",   GL_FLOAT, 3, sizeof(Vec3) } },
+    { Attrib::Kind::Bitangent, { "bitangent", GL_FLOAT, 3, sizeof(Vec3) } }
 };
 
 void VertexBuffer::addBuffer(const Attrib::Kind& kind,
@@ -41,7 +43,9 @@ void VertexBuffer::addBuffer(const Attrib::Kind& kind,
 VertexBuffer::VertexBuffer(const std::vector<Vec3>& vertices,
                            const std::vector<Vec2>& texcoords,
                            const std::vector<Color>& colors,
-                           const std::vector<Vec3>& normals):
+                           const std::vector<Vec3>& normals,
+                           const std::vector<Vec3>& tangents,
+                           const std::vector<Vec3>& bitangents):
     mVAO(0),
     mBuffers()
 {
@@ -80,6 +84,22 @@ VertexBuffer::VertexBuffer(const std::vector<Vec3>& vertices,
                       vertices.size(), normals.size());
         }
         addBuffer(Attrib::Kind::Normal, &normals[0], normals.size());
+    }
+
+    if (tangents.size() > 0) {
+        if (vertices.size() != tangents.size()) {
+            gLog.warn("%lu vertices, but %lu tangents\n",
+                      vertices.size(), tangents.size());
+        }
+        addBuffer(Attrib::Kind::Tangent, &tangents[0], tangents.size());
+    }
+
+    if (bitangents.size() > 0) {
+        if (vertices.size() != bitangents.size()) {
+            gLog.warn("%lu vertices, but %lu bitangents\n",
+                      vertices.size(), bitangents.size());
+        }
+        addBuffer(Attrib::Kind::Bitangent, &bitangents[0], bitangents.size());
     }
 }
 

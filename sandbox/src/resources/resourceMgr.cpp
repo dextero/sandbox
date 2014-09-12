@@ -75,12 +75,14 @@ ResourceMgr::ResourceMgr(const std::string& basePath):
     auto line = std::make_shared<Mesh>(Mesh::Shape::Line,
                                        lineVertices, std::vector<Vec2>(),
                                        std::vector<Color>(), std::vector<Vec3>(),
+                                       std::vector<Vec3>(), std::vector<Vec3>(),
                                        lineIndices, std::shared_ptr<Texture>());
     mMeshes.addSpecial("line", line);
 
     auto quad = std::make_shared<Mesh>(Mesh::Shape::TriangleStrip,
                                        quadVertices, quadTexcoords,
                                        std::vector<Color>(), std::vector<Vec3>(),
+                                       std::vector<Vec3>(), std::vector<Vec3>(),
                                        quadIndices, std::shared_ptr<Texture>());
     mMeshes.addSpecial("quad", quad);
 
@@ -127,7 +129,9 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
     const uint32_t importerFlags = aiProcess_Triangulate
                                    | aiProcess_JoinIdenticalVertices
                                    | aiProcess_SortByPType
-                                   | aiProcess_GenSmoothNormals;
+                                   | aiProcess_GenSmoothNormals
+                                   //| aiProcess_CalcTangentSpace // TODO: this causes SIGFPE
+                                   ;
     const aiScene* scene = importer.ReadFile(name, importerFlags);
 
     sbAssert(scene != nullptr, "cannot load mesh: %s", name.c_str());
@@ -140,6 +144,8 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
     std::vector<Vec3> vertices;
     std::vector<Vec2> texcoords;
     std::vector<Vec3> normals;
+    std::vector<Vec3> tangents;
+    std::vector<Vec3> bitangents;
     std::vector<uint32_t> indices;
     for (uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx) {
         aiMesh* mesh = scene->mMeshes[meshIdx];
@@ -167,6 +173,16 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
             for (size_t i = 0; i < mesh->mNumVertices; ++i) {
                 const aiVector3D& n = mesh->mVertices[i];
                 normals.emplace_back(n.x, n.y, n.z);
+            }
+        }
+
+        if (mesh->HasTangentsAndBitangents()) {
+            vertices.reserve(verticesSoFar + mesh->mNumVertices);
+            for (size_t i = 0; i < mesh->mNumVertices; ++i) {
+                const aiVector3D& tang = mesh->mTangents[i];
+                tangents.emplace_back(tang.x, tang.y, tang.z);
+                const aiVector3D& bitang = mesh->mBitangents[i];
+                bitangents.emplace_back(bitang.x, bitang.y, bitang.z);
             }
         }
 
@@ -216,6 +232,7 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
     return std::make_shared<Mesh>(Mesh::Shape::Triangle,
                                   vertices, texcoords,
                                   std::vector<Color>(), normals,
+                                  tangents, bitangents,
                                   indices, texture);
 }
 
@@ -278,6 +295,8 @@ std::shared_ptr<Mesh> ResourceMgr::loadTerrain(const std::string& heightmap)
     }
 
     std::vector<Vec3> normals(vertices.size(), Vec3(0.0f, 0.0f, 0.0f));
+    std::vector<Vec3> tangents(vertices.size(), Vec3(0.0f, 0.0f, 0.0f));
+    std::vector<Vec3> bitangents(vertices.size(), Vec3(0.0f, 0.0f, 0.0f));
     for (uint32_t x = 0; x < (w - 1); ++x) {
         for (uint32_t y = 0; y < (h - 1); ++y) {
             uint32_t idx = x * h + y;
@@ -302,9 +321,19 @@ std::shared_ptr<Mesh> ResourceMgr::loadTerrain(const std::string& heightmap)
         }
     }
 
+    for (size_t i = 0; i < normals.size(); ++i) {
+        Vec3& normal = normals[i];
+        normal = normal.normalized();
+
+        Vec3& tangent = tangents[i];
+        tangent = normal.cross(Vec3(0.0f, 0.0f, -1.0f)).normalized();
+        bitangents[i] = -tangent.cross(normal).normalized();
+    }
+
     return std::make_shared<Mesh>(Mesh::Shape::Triangle,
                                   vertices, texcoords,
                                   std::vector<Color>(), normals,
+                                  tangents, bitangents,
                                   indices, std::shared_ptr<Texture>());
 }
 
