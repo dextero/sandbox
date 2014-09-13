@@ -1,6 +1,6 @@
 struct Shadow {
     mat4 projectionMatrix;
-    sampler2DShadow map;
+    sampler2D map;
 };
 
 uniform Shadow shadows[4];
@@ -17,13 +17,14 @@ vec4 applyShadow(vec4 inColor)
     float shadowCoefficient = 0.0;
     for (uint i = 0u; i < numShadows; ++i) {
         vec4 shadowPosition = ps_shadow_position[i];
-        shadowPosition.z -= shadowPosition.w * SELF_SHADOWING_FACTOR;
+        shadowPosition.xyz /= shadowPosition.w;
+        shadowPosition.z -= SELF_SHADOWING_FACTOR;
 
-        for (uint i = 0u; i < numShadows; ++i) {
-            if (shadowPosition.x >= 0.0 && shadowPosition.x <= 1.0
-                    && shadowPosition.y >= 0.0 && shadowPosition.y <= 1.0) {
-                shadowCoefficient += 1.0 - textureProj(shadows[0].map, shadowPosition);
-            }
+        if (shadowPosition.x >= 0.0 && shadowPosition.x <= 1.0
+                && shadowPosition.y >= 0.0 && shadowPosition.y <= 1.0) {
+            float depth = texture2D(shadows[i].map, shadowPosition.xy).r;
+            float shadowFactor = (depth < shadowPosition.z) ? 1.0 : 0.0;
+            shadowCoefficient += clamp(shadowFactor, 0.0, 1.0);
         }
     }
     shadowCoefficient = 1.0 - shadowCoefficient / numShadows;
