@@ -362,10 +362,13 @@ public:
         sunPos += wnd.getCamera().getEye();
         scene.sun.setPosition(sunPos);
 
-        Vec3 pos(std::sin(angle.value() * 5.0f), 0.0f, std::cos(angle.value() * 5.0f));
+        float goatAngle = angle.value() * 20.0f;
+        float goatJumpAngle = angle.value() * 75.0f;
+        Vec3 pos(std::sin(goatAngle), 0.0f, std::cos(goatAngle));
         pos *= 10.0f;
-        pos.y = scene.terrain.getHeightAt(pos.x, pos.z);
+        pos.y = scene.terrain.getHeightAt(pos.x, pos.z) + 10.0f * fabs(sin(goatJumpAngle));
         scene.goat.setPosition(pos);
+        scene.goat.setRotation(Vec3(0.0f, 1.0f, 0.0f), Radians(goatAngle + PI_2));
     }
 
     void update(float delta)
