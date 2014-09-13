@@ -22,6 +22,88 @@ namespace sb
 
     class Renderer
     {
+    private:
+        struct UniformValue
+        {
+            enum class Type {
+                Int,
+                UInt,
+                Float,
+                Vec2,
+                Vec3,
+                Vec4,
+                Mat3,
+                Mat4
+            } type;
+
+            union ValueUnion {
+                int32_t asInt;
+                uint32_t asUInt;
+                float asFloat;
+                Vec2 asVec2;
+                Vec3 asVec3;
+                Vec4 asVec4;
+                Mat33 asMat3;
+                Mat44 asMat4;
+
+                ValueUnion() {}
+            } value;
+
+            UniformValue(): UniformValue((int32_t)0) {}
+
+            UniformValue(const UniformValue& copy) { *this = copy; }
+            UniformValue& operator =(const UniformValue& copy)
+            {
+                type = copy.type;
+                switch (type) {
+                case Type::Int: value.asInt = copy.value.asInt; break;
+                case Type::UInt: value.asUInt = copy.value.asUInt; break;
+                case Type::Float: value.asFloat = copy.value.asFloat; break;
+                case Type::Vec2: value.asVec2 = copy.value.asVec2; break;
+                case Type::Vec3: value.asVec3 = copy.value.asVec3; break;
+                case Type::Vec4: value.asVec4 = copy.value.asVec4; break;
+                case Type::Mat3: value.asMat3 = copy.value.asMat3; break;
+                case Type::Mat4: value.asMat4 = copy.value.asMat4; break;
+                default: sbFail("invalid type");
+                }
+
+                return *this;
+            }
+
+            template<typename T>
+            UniformValue(const T& val)
+            {
+                sbFail("invalid uniform type");
+            }
+
+            UniformValue(int32_t v):      type(Type::Int)   { value.asInt = v; }
+            UniformValue(uint32_t v):     type(Type::UInt)  { value.asUInt = v; }
+            UniformValue(float v):        type(Type::Float) { value.asFloat = v; }
+            UniformValue(const Vec2& v):  type(Type::Vec2)  { value.asVec2 = v; }
+            UniformValue(const Vec3& v):  type(Type::Vec3)  { value.asVec3 = v; }
+            UniformValue(const Vec4& v):  type(Type::Vec4)  { value.asVec4 = v; }
+            UniformValue(const Mat33& v): type(Type::Mat3)  { value.asMat3 = v; }
+            UniformValue(const Mat44& v): type(Type::Mat4)  { value.asMat4 = v; }
+
+            bool set(const std::string& name,
+                     const Shader& shader) const
+            {
+                switch (type) {
+                case Type::Int:   return shader.setUniform(name, value.asInt);
+                case Type::UInt:  return shader.setUniform(name, value.asUInt);
+                case Type::Float: return shader.setUniform(name, value.asFloat);
+                case Type::Vec2:  return shader.setUniform(name, value.asVec2);
+                case Type::Vec3:  return shader.setUniform(name, value.asVec3);
+                case Type::Vec4:  return shader.setUniform(name, value.asVec4);
+                case Type::Mat3:  return shader.setUniform(name, value.asMat3);
+                case Type::Mat4:  return shader.setUniform(name, value.asMat4);
+                }
+
+                sbFail("invalid type");
+                return false;
+            }
+        };
+
     public:
         struct Shadow
         {
@@ -40,6 +122,7 @@ namespace sb
             std::vector<Light> pointLights;
             std::vector<Light> parallelLights;
             std::vector<Shadow> shadows;
+            const std::map<std::string, UniformValue>& uniforms;
 
             bool isRenderingShadow;
             ProjectionType shadowProjectionType;
@@ -47,12 +130,14 @@ namespace sb
         private:
             State(Camera& camera,
                   const Color& ambientLightColor,
-                  const std::vector<Light>& allLights):
+                  const std::vector<Light>& allLights,
+                  const std::map<std::string, UniformValue>& uniforms):
                 shader(),
                 texture(),
                 projectionType(ProjectionType::Perspective),
                 camera(&camera),
                 ambientLightColor(ambientLightColor),
+                uniforms(uniforms),
                 isRenderingShadow(false)
             {
                 std::copy_if(allLights.begin(), allLights.end(),
@@ -102,6 +187,13 @@ namespace sb
         void enableFeature(EFeature feature, bool enable = true);
         void saveScreenshot(const std::string& filename, int width, int height);
 
+        template<typename T>
+        void setUniform(const std::string& name,
+                        const T& value)
+        {
+            mUserUniforms[name] = UniformValue(value);
+        }
+
     private:
         Color mClearColor;
         IntRect mViewport;
@@ -113,6 +205,7 @@ namespace sb
         std::vector<std::shared_ptr<Drawable>> mDrawablesBuffer;
         Color mAmbientLightColor;
         std::vector<Light> mLights;
+        std::map<std::string, UniformValue> mUserUniforms;
 
         bool initGLEW();
 

@@ -262,6 +262,15 @@ void Drawable::draw(Renderer::State& state) const
         setShadowUniforms(state, mShader, boundTextures, shadowBinds);
     }
 
+    for (const auto &name_value_pair: state.uniforms) {
+        const std::string& name = name_value_pair.first;
+        const auto& value = name_value_pair.second;
+
+        if (mShader->hasUniform(name)) {
+            value.set(name, *mShader);
+        }
+    }
+
     GL_CHECK(glDrawElements((GLuint)mMesh->getShape(),
                             mMesh->getIndexBufferSize(),
                             GL_UNSIGNED_INT, (void*)NULL));

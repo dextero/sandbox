@@ -181,7 +181,7 @@ void Renderer::drawTo(Framebuffer& framebuffer,
     GL_CHECK(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
     clear();
 
-    State rendererState(camera, Color::White, {});
+    State rendererState(camera, Color::White, {}, mUserUniforms);
     rendererState.isRenderingShadow = true;
     rendererState.projectionType = ProjectionType::Orthographic; // TODO
 
@@ -205,7 +205,8 @@ void Renderer::drawAll()
 #endif
     State rendererState(mCamera,
                         mAmbientLightColor,
-                        mLights);
+                        mLights,
+                        mUserUniforms);
 
     for (const Light& light: mLights) {
         if (light.makesShadows) {
