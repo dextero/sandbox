@@ -244,6 +244,19 @@ void Renderer::drawAll()
         d->draw(rendererState);
     }
 
+#if DEBUG_DEPTH_TEXTURE
+    static Sprite sprite(gResourceMgr.getShader("proj_depth_texture.vert", "depth_texture.frag"));
+    static constexpr float SPRITE_WIDTH = 256.0f;
+    static Vec3 spriteSize(SPRITE_WIDTH, SPRITE_WIDTH * 0.75f, 1.0f);
+    sprite.setPosition(Vec3(1280.0f - SPRITE_WIDTH, SPRITE_WIDTH * 0.75f, 0.0f));
+    sprite.setScale(spriteSize);
+    sprite.setTexture(rendererState.shadows[0].shadowMap);
+    sprite.setColor(Color(1.0f, 1.0f, 1.0f, 0.5f));
+
+    rendererState.camera = &mSpriteCamera;
+    sprite.draw(rendererState);
+#endif
+
     mAmbientLightColor = Color::White;
     mLights.clear();
     mDrawablesBuffer.clear();
