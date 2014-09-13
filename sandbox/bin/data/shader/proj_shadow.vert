@@ -4,20 +4,26 @@
 
 uniform mat4 matViewProjection;
 uniform mat4 matModel;
+uniform mat3 matNormal;
 
 in vec3 position; // POSITION
 in vec2 texcoord; // TEXCOORD
+in vec3 normal; // NORMAL
 
-out vec4 ps_position;
+out vec3 ps_position;
 out vec2 ps_texcoord;
+out vec3 ps_normal;
 
 void main()
 {
     applyShadow(matModel, position);
 
-    ps_position = matViewProjection * matModel * vec4(position, 1.0);
-    ps_texcoord = texcoord;
+    vec4 worldPos = matModel * vec4(position, 1.0);
 
-    gl_Position = ps_position;
+    ps_position = worldPos.xyz;
+    ps_texcoord = texcoord;
+    ps_normal = matNormal * normal;
+
+    gl_Position = matViewProjection * worldPos;
 }
 

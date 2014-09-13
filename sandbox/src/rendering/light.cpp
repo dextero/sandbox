@@ -2,7 +2,7 @@
 
 namespace sb {
 namespace {
-    const unsigned SHADOWMAP_WIDTH = 1024;
+    const unsigned SHADOWMAP_WIDTH = 4 * 1024;
     const unsigned SHADOWMAP_HEIGHT = SHADOWMAP_WIDTH;
 } // namespace
 

@@ -326,7 +326,7 @@ std::shared_ptr<Mesh> ResourceMgr::loadTerrain(const std::string& heightmap)
         normal = normal.normalized();
 
         Vec3& tangent = tangents[i];
-        tangent = normal.cross(Vec3(0.0f, 0.0f, -1.0f)).normalized();
+        tangent = normal.cross(Vec3(0.0f, 0.0f, 1.0f)).normalized();
         bitangents[i] = -tangent.cross(normal).normalized();
     }
 

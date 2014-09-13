@@ -212,7 +212,8 @@ void Renderer::drawAll()
             sbAssert(light.type == Light::Type::Parallel, "TODO: shadows for point lights");
 
             Camera camera = Camera::orthographic(-100.0, 100.0, -100.0, 100.0, -1000.0, 1000.0);
-            camera.lookAt(-light.pos, Vec3(0.0, 0.0, 0.0));
+            Vec3 eye(light.pos.x, -light.pos.y, light.pos.z);
+            camera.lookAt(eye + mCamera.getEye(), mCamera.getEye());
 
             IntRect savedViewport = mViewport;
             Vec2i shadowFbSize = light.shadowFramebuffer->getSize();

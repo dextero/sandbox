@@ -22,7 +22,8 @@ Drawable::Drawable(ProjectionType projType,
     mPosition(0.f, 0.f, 0.f),
     mScale(1.f, 1.f, 1.f),
     mRotation(),
-    mProjectionType(projType)
+    mProjectionType(projType),
+    mCastsShadow(true)
 {}
 
 void Drawable::recalculateMatrices() const
@@ -222,7 +223,7 @@ void setShadowUniforms(Renderer::State& state,
 void Drawable::draw(Renderer::State& state) const
 {
     if (state.isRenderingShadow
-            && mProjectionType == ProjectionType::Orthographic) {
+            && (!mCastsShadow || mProjectionType == ProjectionType::Orthographic)) {
         return;
     }
 

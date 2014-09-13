@@ -52,6 +52,8 @@ namespace sb
         void setTexture(const std::string& uniformName,
                         const std::shared_ptr<const Texture>& tex);
 
+        void setCastsShadow(bool castsShadow) { mCastsShadow = castsShadow; }
+
     protected:
         std::shared_ptr<Mesh> mMesh;
         std::map<std::string, std::shared_ptr<const Texture>> mTextures;
@@ -76,6 +78,8 @@ namespace sb
         Quat mRotation;
 
         ProjectionType mProjectionType;
+
+        bool mCastsShadow;
 
         Drawable(ProjectionType projType,
                  const std::shared_ptr<Mesh>& mesh,
