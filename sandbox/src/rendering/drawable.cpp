@@ -220,10 +220,32 @@ void setShadowUniforms(Renderer::State& state,
 
 } // namespace
 
+void Drawable::drawShadow(Renderer::State& state) const
+{
+    static const std::shared_ptr<const Shader> shader =
+            gResourceMgr.getShader("simple.vert", "depth.frag");
+
+    auto vaoBind = make_bind(mMesh->getVertexBuffer());
+    auto indexBind = make_bind(mMesh->getIndexBuffer());
+    auto shaderBind = make_bind(*shader, mMesh->getVertexBuffer());
+
+    shader->setUniform("matModelViewProjection",
+                        state.camera->getViewProjectionMatrix()
+                            * getTransformationMatrix());
+
+    GL_CHECK(glDrawElements((GLuint)mMesh->getShape(),
+                            mMesh->getIndexBufferSize(),
+                            GL_UNSIGNED_INT, (void*)NULL));
+}
+
 void Drawable::draw(Renderer::State& state) const
 {
-    if (state.isRenderingShadow
-            && (!mCastsShadow || mProjectionType == ProjectionType::Orthographic)) {
+    if (state.isRenderingShadow) {
+        if (!mCastsShadow || mProjectionType == ProjectionType::Orthographic) {
+            return;
+        }
+
+        drawShadow(state);
         return;
     }
 

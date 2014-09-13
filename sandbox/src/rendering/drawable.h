@@ -88,6 +88,7 @@ namespace sb
 
         void recalculateMatrices() const;
 
+        void drawShadow(Renderer::State& rendererState) const;
         virtual void draw(Renderer::State& rendererState) const;
 
         friend class Renderer;
