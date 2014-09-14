@@ -79,6 +79,39 @@ void printPreprocessedCompileLog(const std::string& log,
     }
 }
 
+void printPreprocessedLinkLog(const std::string& log,
+                              const PreprocessedCode& vertexSource,
+                              const PreprocessedCode& fragmentSource,
+                              const PreprocessedCode& geometrySource)
+{
+    std::vector<std::string> logLines = utils::split(log, "\n");
+    const PreprocessedCode* currentSource = &vertexSource;
+
+    ssize_t lineNum = -1;
+    for (const auto& logLine: logLines) {
+        if (logLine == "Vertex info") {
+            currentSource = &vertexSource;
+        } else if (logLine == "Fragment info") {
+            currentSource = &fragmentSource;
+        } else if (logLine == "Geometry info") {
+            currentSource = &geometrySource;
+        }
+
+        ssize_t newLineNum = extractLineNum(logLine);
+        if (newLineNum >= 0 && newLineNum != lineNum) {
+            if (lineNum >= 0) {
+                printWithContext(*currentSource, (size_t)lineNum - 1);
+            }
+            lineNum = newLineNum;
+        }
+        gLog.printf("%s", logLine.c_str());
+    }
+
+    if (lineNum >= 0) {
+        printWithContext(*currentSource, (size_t)lineNum - 1);
+    }
+}
+
 bool isInputLine(const std::string& line,
                  const std::vector<std::string>& words,
                  bool warnOnUntagged) {
@@ -184,12 +217,11 @@ void detectOptimizedOutUniforms(GLuint program,
 
 } // namespace
 
-std::set<Input> ConcreteShader::parseInputs(const PreprocessedCode& code,
-                                            bool warnOnUntagged)
+std::set<Input> ConcreteShader::parseInputs(bool warnOnUntagged)
 {
     std::set<Input> ret;
 
-    for (const auto& node: code) {
+    for (const auto& node: mPreprocessedSource) {
         if (node.isLine()) {
             extractInput(ret, node.getLine(), warnOnUntagged);
         }
@@ -198,11 +230,11 @@ std::set<Input> ConcreteShader::parseInputs(const PreprocessedCode& code,
     return ret;
 }
 
-std::set<Output> ConcreteShader::parseOutputs(const PreprocessedCode& code)
+std::set<Output> ConcreteShader::parseOutputs()
 {
     std::set<Output> ret;
 
-    for (const auto& node: code) {
+    for (const auto& node: mPreprocessedSource) {
         if (node.isLine()) {
             extractOutput(ret, node.getLine());
         }
@@ -211,11 +243,11 @@ std::set<Output> ConcreteShader::parseOutputs(const PreprocessedCode& code)
     return ret;
 }
 
-std::set<Uniform> ConcreteShader::parseUniforms(const PreprocessedCode& code)
+std::set<Uniform> ConcreteShader::parseUniforms()
 {
     std::set<Uniform> ret;
 
-    for (const auto& node: code) {
+    for (const auto& node: mPreprocessedSource) {
         if (!node.isLine()) {
             continue;
         }
@@ -243,7 +275,7 @@ std::set<Uniform> ConcreteShader::parseUniforms(const PreprocessedCode& code)
     return ret;
 }
 
-bool ConcreteShader::shaderCompilationSucceeded(const PreprocessedCode& source)
+bool ConcreteShader::shaderCompilationSucceeded()
 {
     GLint retval;
     GL_CHECK_RET(glGetShaderiv(mShader, GL_COMPILE_STATUS, &retval), false);
@@ -260,7 +292,7 @@ bool ConcreteShader::shaderCompilationSucceeded(const PreprocessedCode& source)
             buffer.resize(retval);
             GL_CHECK_RET(glGetShaderInfoLog(mShader, retval - 1,
                                             &retval, &buffer[0]), false);
-            printPreprocessedCompileLog(buffer, source); 
+            printPreprocessedCompileLog(buffer, mPreprocessedSource);
         }
 
         return false;
@@ -325,6 +357,9 @@ void checkInputOutputCompatbility(
 Shader::Shader(const std::shared_ptr<ConcreteShader>& vertex,
                const std::shared_ptr<ConcreteShader>& fragment,
                const std::shared_ptr<ConcreteShader>& geometry):
+    mVertexShader(vertex),
+    mFragmentShader(fragment),
+    mGeometryShader(geometry),
     mProgram(linkShader(vertex, fragment, geometry)),
     mFilenames({ vertex->getFilename(), fragment->getFilename() }),
     mInputs(vertex->makeInputsMap())
@@ -397,7 +432,10 @@ bool Shader::shaderLinkSucceeded(ProgramId program)
 
             GL_CHECK_RET(glGetProgramInfoLog(program, retval - 1,
                                              &retval, &buffer[0]), false);
-            gLog.printf("%s", buffer.c_str());
+            printPreprocessedLinkLog(buffer,
+                                     mVertexShader->getPreprocessedSource(),
+                                     mFragmentShader->getPreprocessedSource(),
+                                     mGeometryShader->getPreprocessedSource());
         }
 
         return false;

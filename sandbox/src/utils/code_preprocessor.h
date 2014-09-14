@@ -220,6 +220,7 @@ std::ostream& operator <<(std::ostream& os,
 class PreprocessedCode
 {
 public:
+    PreprocessedCode() = default;
     PreprocessedCode(const std::string &filename)
     {
         std::set<std::string> includedFiles;

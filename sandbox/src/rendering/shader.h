@@ -76,11 +76,11 @@ namespace sb
             mShader(0),
             mFilename(path)
         {
-            PreprocessedCode preprocessed(path);
+            mPreprocessedSource = PreprocessedCode(path);
 
             GL_CHECK(mShader = glCreateShader(shaderType));
 
-            std::string code = preprocessed.getCode();
+            std::string code = mPreprocessedSource.getCode();
             //gLog.debug("code:\n%s", code.c_str());
             const GLchar* codePtr = (const GLchar*)&code[0];
             GL_CHECK(glShaderSource(mShader, 1, &codePtr, NULL));
@@ -94,13 +94,13 @@ namespace sb
             gLog.trace("compiling %s shader: %s",
                        SHADERS[shaderType].c_str(), path.c_str());
             GL_CHECK(glCompileShader(mShader));
-            if (!shaderCompilationSucceeded(preprocessed)) {
+            if (!shaderCompilationSucceeded()) {
                 sbFail("shader compilation failed");
             }
 
-            mInputs = parseInputs(preprocessed, shaderType == GL_VERTEX_SHADER);
-            mOutputs = parseOutputs(preprocessed);
-            mUniforms = parseUniforms(preprocessed);
+            mInputs = parseInputs(shaderType == GL_VERTEX_SHADER);
+            mOutputs = parseOutputs();
+            mUniforms = parseUniforms();
         }
 
         ~ConcreteShader()
@@ -115,6 +115,7 @@ namespace sb
         const std::set<Output> getOutputs() const { return mOutputs; }
         const std::set<Uniform> getUniforms() const { return mUniforms; }
         const std::string& getFilename() const { return mFilename; }
+        const PreprocessedCode& getPreprocessedSource() const { return mPreprocessedSource; }
 
         std::map<Attrib::Kind, Input> makeInputsMap() const {
             std::map<Attrib::Kind, Input> ret;
@@ -132,17 +133,17 @@ namespace sb
         }
 
     private:
-        bool shaderCompilationSucceeded(const PreprocessedCode& source);
-        static std::set<Input> parseInputs(const PreprocessedCode& code,
-                                           bool warnOnUntagged);
-        static std::set<Output> parseOutputs(const PreprocessedCode& code);
-        static std::set<Uniform> parseUniforms(const PreprocessedCode& code);
+        bool shaderCompilationSucceeded();
+        std::set<Input> parseInputs(bool warnOnUntagged);
+        std::set<Output> parseOutputs();
+        std::set<Uniform> parseUniforms();
 
         GLuint mShader;
         std::string mFilename;
         std::set<Input> mInputs;
         std::set<Output> mOutputs;
         std::set<Uniform> mUniforms;
+        PreprocessedCode mPreprocessedSource;
     };
 
     class Shader
@@ -241,6 +242,9 @@ namespace sb
         }
 
     private:
+        std::shared_ptr<ConcreteShader> mVertexShader;
+        std::shared_ptr<ConcreteShader> mFragmentShader;
+        std::shared_ptr<ConcreteShader> mGeometryShader;
         ProgramId mProgram;
         std::vector<std::string> mFilenames;
         std::map<Attrib::Kind, Input> mInputs;
@@ -254,7 +258,7 @@ namespace sb
                              const std::shared_ptr<ConcreteShader>& fragment,
                              const std::shared_ptr<ConcreteShader>& geometry);
 
-        static bool shaderLinkSucceeded(ProgramId program);
+        bool shaderLinkSucceeded(ProgramId program);
 
         friend class ResourceMgr;
     };
