@@ -235,6 +235,8 @@ public:
     bool showTrees = true;
     bool showLightSources = true;
 
+    bool canFly = false;
+
     Game():
         wnd(1280, 1024),
         scene(),
@@ -408,8 +410,17 @@ public:
             updateFixedStep(PHYSICS_UPDATE_STEP);
         }
 
-        // drawing
         wnd.getCamera().moveRelative(speed);
+
+        if (!canFly) {
+            constexpr float CAMERA_HOVER_HEIGHT = 5.0f;
+
+            Vec3 newPos = wnd.getCamera().getEye();
+            float actualHeight = scene.terrain.getHeightAt(newPos.x, newPos.z);
+            float heightDelta = actualHeight - newPos.y + CAMERA_HOVER_HEIGHT;
+
+            wnd.getCamera().move(Vec3(0.0f, heightDelta, 0.0f));
+        }
 
         // move skybox, so player won't go out of it
         scene.skybox.setPosition(wnd.getCamera().getEye());
@@ -503,6 +514,7 @@ public:
         case sb::Key::F2: showModels = !showModels; break;
         case sb::Key::F3: showTrees = !showTrees; break;
         case sb::Key::F4: showLightSources = !showLightSources; break;
+        case sb::Key::F12: canFly = !canFly; break;
         case sb::Key::Space:
             scene.shaderToggler.toggle();
             scene.terrain.setShader(scene.shaderToggler.get());

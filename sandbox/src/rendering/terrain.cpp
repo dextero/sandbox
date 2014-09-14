@@ -60,6 +60,6 @@ namespace sb
         }
 
         float height = math::bilerp(xMod, zMod, heights[0][0], heights[1][0], heights[0][1], heights[1][1]);
-        return height * scale.y + position.y - 0.1f;
+        return height * scale.y + position.y;
     }
 } // namespace sb
