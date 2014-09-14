@@ -132,12 +132,13 @@ struct Scene
     sb::Terrain terrain;
     sb::Model tree;
     sb::Model sun;
+    sb::Model lightSource;
     sb::Model goat;
     
     std::vector<Vec3> treeCoordinates;
     
-    sb::Light pointLight = sb::Light::point(Vec3(10.0, 10.0, 0.0), 1000.0f);
-    sb::Light parallelLight = sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 1.0f);
+    sb::Light pointLight;
+    sb::Light parallelLight;
 
     Scene():
         colorShader(gResourceMgr.getShader("proj_basic.vert", "color.frag")),
@@ -153,6 +154,7 @@ struct Scene
         terrain("hmap_perlin.jpg", "ground2.jpg", shadowShader),
         tree("Tree.obj", fogShader, gResourceMgr.getTexture("Tree.jpg")),
         sun("sphere.obj", colorShader),
+        lightSource("sphere.obj", colorShader),
         goat("koza.obj", lightShader, gResourceMgr.getTexture("goat.png")),
         treeCoordinates(),
         pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 1.0f)),
@@ -172,6 +174,7 @@ struct Scene
         crosshair.setScale(0.01f, 0.01f * 1.33f, 1.f);
 
         skybox.setScale(1000.f);
+        skybox.setCastsShadow(false);
 
         terrain.setScale(10.f, 50.f, 10.f);
         terrain.setPosition(-640.f, -25.0f, -640.f);
@@ -182,6 +185,10 @@ struct Scene
         sun.setScale(100.0f);
         sun.setColor(sb::Color(1.0f, 1.0f, 0.8f));
         sun.setCastsShadow(false);
+
+        lightSource.setColor(sb::Color::White);
+        lightSource.setCastsShadow(false);
+
         goat.setScale(10.0f);
         
         srand((unsigned)time(0));
@@ -226,7 +233,7 @@ public:
     bool showBoids = true;
     bool showModels = true;
     bool showTrees = true;
-    bool showSun = true;
+    bool showLightSources = true;
 
     Game():
         wnd(1280, 1024),
@@ -243,7 +250,7 @@ public:
         wnd.setTitle("Sandbox");
         wnd.lockCursor();
         wnd.hideCursor();
-        wnd.getCamera().lookAt(Vec3(5.f, 5.f, 20.f), Vec3(5.f, 5.f, 0.f));
+        wnd.getCamera().lookAt(Vec3(5.f, 25.f, 20.f), Vec3(5.f, 5.f, 0.f));
 
         deltaTime.reset();
         fpsDeltaTime.reset();
@@ -282,7 +289,7 @@ public:
                                          showBoids ? " boids" : "",
                                          showModels ? " models" : "",
                                          showTrees ? " trees" : "",
-                                         showSun ? " sun" : ""),
+                                         showLightSources ? " lights" : ""),
                        { 0.f, 0.f }, sb::Color::White, nextLine++);
     }
 
@@ -317,8 +324,9 @@ public:
             }
         }
 
-        if (showSun) {
+        if (showLightSources) {
             wnd.draw(scene.sun);
+            wnd.draw(scene.lightSource);
         }
         
         drawStrings();
@@ -361,6 +369,12 @@ public:
         sunPos.y = -sunPos.y;
         sunPos += wnd.getCamera().getEye();
         scene.sun.setPosition(sunPos);
+
+        Vec3 pointLightPos(20.0f * std::sin(angle.value() * 10.0f),
+                           10.0f,
+                           20.0f * std::cos(angle.value() * 10.0f));
+        scene.pointLight.pos = pointLightPos;
+        scene.lightSource.setPosition(scene.pointLight.pos);
 
         float goatAngle = angle.value() * 20.0f;
         float goatJumpAngle = angle.value() * 75.0f;
@@ -488,7 +502,7 @@ public:
         case sb::Key::F1: showBoids = !showBoids; break;
         case sb::Key::F2: showModels = !showModels; break;
         case sb::Key::F3: showTrees = !showTrees; break;
-        case sb::Key::F4: showSun = !showSun; break;
+        case sb::Key::F4: showLightSources = !showLightSources; break;
         case sb::Key::Space:
             scene.shaderToggler.toggle();
             scene.terrain.setShader(scene.shaderToggler.get());

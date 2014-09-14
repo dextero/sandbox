@@ -244,17 +244,27 @@ void Renderer::drawAll()
         d->draw(rendererState);
     }
 
+#define DEBUG_DEPTH_TEXTURE 0
 #if DEBUG_DEPTH_TEXTURE
+    float maxHeight = 1000.0f;
+    float spriteWidth = 4.0f / 3.0f * maxHeight / (float)rendererState.shadows.size();
+    float spriteHeight = spriteWidth * 0.75f;
+    Vec3 spriteSize(spriteWidth / 2.0f, spriteHeight / 2.0f, 1.0f);
+
     static Sprite sprite(gResourceMgr.getShader("proj_depth_texture.vert", "depth_texture.frag"));
-    static constexpr float SPRITE_WIDTH = 256.0f;
-    static Vec3 spriteSize(SPRITE_WIDTH, SPRITE_WIDTH * 0.75f, 1.0f);
-    sprite.setPosition(Vec3(1280.0f - SPRITE_WIDTH, SPRITE_WIDTH * 0.75f, 0.0f));
     sprite.setScale(spriteSize);
-    sprite.setTexture(rendererState.shadows[0].shadowMap);
     sprite.setColor(Color(1.0f, 1.0f, 1.0f, 0.5f));
 
-    rendererState.camera = &mSpriteCamera;
-    sprite.draw(rendererState);
+    for (size_t idx = 0; idx < rendererState.shadows.size(); ++idx) {
+        const Shadow& shadow = rendererState.shadows[idx];
+        sprite.setPosition(Vec3(1280.0f - spriteWidth / 2.0f,
+                                ((float)idx * 2.01f + 1.0f) * spriteHeight / 2.0f,
+                                0.0f));
+        sprite.setTexture(shadow.shadowMap);
+
+        rendererState.camera = &mSpriteCamera;
+        sprite.draw(rendererState);
+    }
 #endif
 
     mAmbientLightColor = Color::White;

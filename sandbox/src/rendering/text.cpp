@@ -73,6 +73,7 @@ Text::Text(const std::string& text,
              shader),
     mFont(font)
 {
+    setCastsShadow(false);
 }
 
 } // namespace sb

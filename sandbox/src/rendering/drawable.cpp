@@ -241,7 +241,7 @@ void Drawable::drawShadow(Renderer::State& state) const
 void Drawable::draw(Renderer::State& state) const
 {
     if (state.isRenderingShadow) {
-        if (!mCastsShadow || mProjectionType == ProjectionType::Orthographic) {
+        if (!mCastsShadow) {
             return;
         }
 
@@ -268,21 +268,21 @@ void Drawable::draw(Renderer::State& state) const
 
     std::vector<bind_guard<Texture>> textureBinds;
     std::vector<bind_guard<Texture>> shadowBinds;
-    if (!state.isRenderingShadow) {
+    if (mShader->hasUniform("color")) {
         mShader->setUniform("color", mColor);
-
-        size_t boundTextures = 0;
-        for (const auto& pair: mTextures) {
-            if (mShader->hasUniform(pair.first)) {
-                textureBinds.emplace_back(make_bind(*pair.second, boundTextures));
-                mShader->setUniform(pair.first, (GLint)boundTextures);
-                ++boundTextures;
-            }
-        }
-
-        setLightUniforms(state, mShader);
-        setShadowUniforms(state, mShader, boundTextures, shadowBinds);
     }
+
+    size_t boundTextures = 0;
+    for (const auto& pair: mTextures) {
+        if (mShader->hasUniform(pair.first)) {
+            textureBinds.emplace_back(make_bind(*pair.second, boundTextures));
+            mShader->setUniform(pair.first, (GLint)boundTextures);
+            ++boundTextures;
+        }
+    }
+
+    setLightUniforms(state, mShader);
+    setShadowUniforms(state, mShader, boundTextures, shadowBinds);
 
     for (const auto &name_value_pair: state.uniforms) {
         const std::string& name = name_value_pair.first;
