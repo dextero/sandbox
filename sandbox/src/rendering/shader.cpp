@@ -79,39 +79,6 @@ void printPreprocessedCompileLog(const std::string& log,
     }
 }
 
-void printPreprocessedLinkLog(const std::string& log,
-                              const PreprocessedCode& vertexSource,
-                              const PreprocessedCode& fragmentSource,
-                              const PreprocessedCode& geometrySource)
-{
-    std::vector<std::string> logLines = utils::split(log, "\n");
-    const PreprocessedCode* currentSource = &vertexSource;
-
-    ssize_t lineNum = -1;
-    for (const auto& logLine: logLines) {
-        if (logLine == "Vertex info") {
-            currentSource = &vertexSource;
-        } else if (logLine == "Fragment info") {
-            currentSource = &fragmentSource;
-        } else if (logLine == "Geometry info") {
-            currentSource = &geometrySource;
-        }
-
-        ssize_t newLineNum = extractLineNum(logLine);
-        if (newLineNum >= 0 && newLineNum != lineNum) {
-            if (lineNum >= 0) {
-                printWithContext(*currentSource, (size_t)lineNum - 1);
-            }
-            lineNum = newLineNum;
-        }
-        gLog.printf("%s", logLine.c_str());
-    }
-
-    if (lineNum >= 0) {
-        printWithContext(*currentSource, (size_t)lineNum - 1);
-    }
-}
-
 bool isInputLine(const std::string& line,
                  const std::vector<std::string>& words,
                  bool warnOnUntagged) {
@@ -414,10 +381,33 @@ ProgramId Shader::linkShader(const std::shared_ptr<ConcreteShader>& vertex,
     return id;
 }
 
+namespace {
+
+void printSource(const PreprocessedCode& code)
+{
+    std::string currFile = "";
+    size_t currLine = 0;
+
+    for (auto it = code.begin(); it != code.end(); ++it) {
+        const std::vector<BacktraceNode> backtrace = it.getBacktrace();
+        if (currFile != backtrace[0].file) {
+            currFile = backtrace[0].file;
+            gLog.printf("// file: %s", currFile.c_str());
+        }
+
+        gLog.printf("% 4u: %s\n", (unsigned)(currLine + 1),
+                    it->getLine().c_str());
+        ++currLine;
+    }
+}
+
+} // namespace
+
 bool Shader::shaderLinkSucceeded(ProgramId program)
 {
     GLint retval;
     GL_CHECK_RET(glGetProgramiv(program, GL_LINK_STATUS, &retval), false);
+
     if (retval == GL_FALSE)
     {
         // link failed!
@@ -432,10 +422,19 @@ bool Shader::shaderLinkSucceeded(ProgramId program)
 
             GL_CHECK_RET(glGetProgramInfoLog(program, retval - 1,
                                              &retval, &buffer[0]), false);
-            printPreprocessedLinkLog(buffer,
-                                     mVertexShader->getPreprocessedSource(),
-                                     mFragmentShader->getPreprocessedSource(),
-                                     mGeometryShader->getPreprocessedSource());
+
+            if (mVertexShader) {
+                gLog.info("vertex shader code:");
+                printSource(mVertexShader->getPreprocessedSource());
+            }
+            if (mGeometryShader) {
+                gLog.info("geometry shader code:");
+                printSource(mGeometryShader->getPreprocessedSource());
+            }
+            if (mFragmentShader) {
+                gLog.info("fragment shader code:");
+                printSource(mGeometryShader->getPreprocessedSource());
+            }
         }
 
         return false;
