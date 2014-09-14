@@ -422,6 +422,7 @@ bool Shader::shaderLinkSucceeded(ProgramId program)
 
             GL_CHECK_RET(glGetProgramInfoLog(program, retval - 1,
                                              &retval, &buffer[0]), false);
+            gLog.printf("%s", buffer.c_str());
 
             if (mVertexShader) {
                 gLog.info("vertex shader code:");
