@@ -128,7 +128,6 @@ struct Scene
 
     sb::Sprite crosshair;
     sb::Model skybox;
-    sb::Model dragon;
     sb::Terrain terrain;
     sb::Model tree;
     sb::Model sun;
@@ -150,7 +149,6 @@ struct Scene
         crosshair("dot.png", textureShader),
         skybox("skybox.obj", textureShader,
                gResourceMgr.getTexture("miramar_no_sun.jpg")),
-        dragon("salamon.obj", fogShader),
         terrain("hmap_perlin.jpg", "ground2.jpg", shadowShader),
         tree("Tree.obj", fogShader, gResourceMgr.getTexture("Tree.jpg")),
         sun("sphere.obj", colorShader),
@@ -168,8 +166,6 @@ struct Scene
         shaderToggler.add("fog", fogShader);
         shaderToggler.setCurrent(terrain.getShader());
 
-        dragon.setPosition(5.f, 1.f, 1.f);
-        dragon.setScale(10.f);
         crosshair.setPosition(0.f, 0.f, 0.f);
         crosshair.setScale(0.01f, 0.01f * 1.33f, 1.f);
 
@@ -313,7 +309,6 @@ public:
         }
 
         if (showModels) {
-            wnd.draw(scene.dragon);
             wnd.draw(scene.goat);
         }
 
@@ -379,11 +374,11 @@ public:
 
         float goatAngle = angle.value() * 20.0f;
         float goatJumpAngle = angle.value() * 75.0f;
-        Vec3 pos(std::sin(goatAngle), 0.0f, std::cos(goatAngle));
+        Vec3 pos(40 * std::sin(3*goatAngle + 12.0f), 0.0f, std::cos(goatAngle)* 10.f);
         pos *= 10.0f;
-        pos.y = scene.terrain.getHeightAt(pos.x, pos.z) + 10.0f * fabs(sin(goatJumpAngle));
+        pos.y = scene.terrain.getHeightAt(pos.x, pos.z);// * fabs(sin(goatJumpAngle));
         scene.goat.setPosition(pos);
-        scene.goat.setRotation(Vec3(0.0f, 1.0f, 0.0f), Radians(goatAngle + PI_2));
+        scene.goat.setRotation(Vec3(0.0f, 1.0f, 0.0f), Radians(3*goatAngle + PI_2));
     }
 
     void update(float delta)
@@ -530,7 +525,7 @@ public:
         case sb::Key::Z:
             speed.y = 0.f;
             break;
-        case sb::Key::PrintScreen:
+        case sb::Key::P:
             {
 #ifdef PLATFORM_WIN32
                 SYSTEMTIME systime;
