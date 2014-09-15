@@ -125,7 +125,7 @@ struct Scene
     ShaderToggler shaderToggler;
 
     std::shared_ptr<sb::Shader> fogShader;
-    
+
     sb::Sprite crosshair;
     sb::Model skybox;
     sb::Model dragon;
@@ -134,9 +134,9 @@ struct Scene
     sb::Model sun;
     sb::Model lightSource;
     sb::Model goat;
-    
+
     std::vector<Vec3> treeCoordinates;
-    
+
     sb::Light pointLight;
     sb::Light parallelLight;
 
@@ -190,7 +190,7 @@ struct Scene
         lightSource.setCastsShadow(false);
 
         goat.setScale(10.0f);
-        
+
         srand((unsigned)time(0));
         const size_t NUM_TREES = 25;
         for (size_t i = 0; i < NUM_TREES; i++ ) {
@@ -198,7 +198,7 @@ struct Scene
             pos.y = terrain.getHeightAt(pos.x, pos.z);
 
             treeCoordinates.push_back(pos);
-        }      
+        }
 
         tree.setPosition(1.f, 1.f, 1.f);
         tree.setScale(15.0f);
@@ -330,7 +330,7 @@ public:
             wnd.draw(scene.sun);
             wnd.draw(scene.lightSource);
         }
-        
+
         drawStrings();
 
         wnd.display();
@@ -338,13 +338,8 @@ public:
 
 
     void drawBoids()
-    { 
-        for(sb::Fish &fish : boids.shoalOfFish) {
-            fish.setVelocity(boids.calculateVelocity(fish, wnd.getCamera().getEye()));
-        }
-
-        for(sb::Fish &fish : boids.shoalOfFish) {
-            fish.setPosition(boids.calculatePosition(fish));
+    {
+        for(sb::Fish &fish: boids.shoalOfFish) {
             wnd.draw(fish);
         }
     }
@@ -359,6 +354,9 @@ public:
         throwVelocity.update();
         windVelocity.update();
 
+        Vec3 cameraPos = wnd.getCamera().getEye();
+        boids.update(timeStep, cameraPos);
+
         static Radians angle(0.2f);
         angle = Radians(angle.value() + 0.03f * timeStep);
 
@@ -369,7 +367,7 @@ public:
 
         Vec3 sunPos = lightPos.normalized() * 900.0f;
         sunPos.y = -sunPos.y;
-        sunPos += wnd.getCamera().getEye();
+        sunPos += cameraPos;
         scene.sun.setPosition(sunPos);
 
         Vec3 pointLightPos(20.0f * std::sin(angle.value() * 10.0f),

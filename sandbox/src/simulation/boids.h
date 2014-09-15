@@ -1,35 +1,24 @@
 #ifndef BOIDS_H
 #define BOIDS_H
 
-#include "../window/window.h"
-#include "../rendering/fish.h"
-namespace Sim 
-{ 
+#include "window/window.h"
+#include "rendering/fish.h"
+#include "utils/types.h"
 
-    class Boids
-    {
+namespace Sim {
 
-    public:
-    	std::vector<sb::Fish> shoalOfFish;
+class Boids
+{
+public:
+    std::vector<sb::Fish> shoalOfFish;
 
-    	Boids(int size, std::shared_ptr<sb::Shader> textureShader);
-    	
-    	Vec3 massRule(sb::Fish fish);
-    	Vec3 notSoCloseRule(sb::Fish fish);
-    	Vec3 similarVelocityRule(sb::Fish fish);
+    Boids(int size,
+          const std::shared_ptr<sb::Shader>& textureShader);
 
-    	Vec3 tendToPlace(sb::Fish fish, Vec3 place);
-    	Vec3 notSoFast(sb::Fish fish, float max_speed);
-    	Vec3 avoidPredator(sb::Fish fish, Vec3 predator_position);
+    void update(float dt,
+                const Vec3& predatorPos);
+};
 
-    	Vec3 calculateVelocity(sb::Fish& fish, Vec3 predator_position);
-    	Vec3 calculatePosition(sb::Fish fish);
-    	double distance(Vec3 A, Vec3 B);
-
-    	// void updateBoidsState();
-
-    };
-}
-
+} // namespace Sim
 
 #endif // BOIDS_H

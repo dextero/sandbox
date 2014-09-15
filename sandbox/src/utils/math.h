@@ -2,6 +2,7 @@
 #define MATHUTILS_H
 
 #include "types.h"
+#include <random>
 
 #ifdef near
 #   undef near
@@ -12,6 +13,13 @@
 
 namespace sb {
 namespace math {
+
+template<typename T>
+inline T random_float(T min, T max)
+{
+    static std::random_device device;
+    return std::uniform_real_distribution<T>(min, max)(device);
+}
 
 static const float EPSILON = 0.0001f;
 

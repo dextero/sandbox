@@ -70,6 +70,21 @@ namespace sb
             return glm::length((const base_type&)*this);
         }
 
+        inline float length2() const
+        {
+            return glm::length2((const base_type&)*this);
+        }
+
+        inline float distanceTo(const base_type& v) const
+        {
+            return glm::distance((const base_type&)*this, v);
+        }
+
+        inline float distance2To(const base_type& v) const
+        {
+            return glm::distance2((const base_type&)*this, v);
+        }
+
         inline float dot(const base_type& v) const
         {
             return glm::dot((const base_type&)*this, v);
@@ -114,6 +129,21 @@ namespace sb
         inline float length() const
         {
             return glm::length((const base_type&)*this);
+        }
+
+        inline float length2() const
+        {
+            return glm::length2((const base_type&)*this);
+        }
+
+        inline float distanceTo(const base_type& v) const
+        {
+            return glm::distance((const base_type&)*this, v);
+        }
+
+        inline float distance2To(const base_type& v) const
+        {
+            return glm::distance2((const base_type&)*this, v);
         }
 
         inline float dot(const base_type& v) const
@@ -169,6 +199,21 @@ namespace sb
         inline float length() const
         {
             return glm::length((const base_type&)*this);
+        }
+
+        inline float length2() const
+        {
+            return glm::length2((const base_type&)*this);
+        }
+
+        inline float distanceTo(const base_type& v) const
+        {
+            return glm::distance((const base_type&)*this, v);
+        }
+
+        inline float distance2To(const base_type& v) const
+        {
+            return glm::distance2((const base_type&)*this, v);
         }
 
         inline float dot(const base_type& v) const
