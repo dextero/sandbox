@@ -119,6 +119,7 @@ struct Scene
 {
     std::shared_ptr<sb::Shader> colorShader;
     std::shared_ptr<sb::Shader> textureShader;
+    std::shared_ptr<sb::Shader> skyboxShader;
     std::shared_ptr<sb::Shader> bumpmapShader;
     std::shared_ptr<sb::Shader> lightShader;
     std::shared_ptr<sb::Shader> shadowShader;
@@ -142,13 +143,13 @@ struct Scene
     Scene():
         colorShader(gResourceMgr.getShader("proj_basic.vert", "color.frag")),
         textureShader(gResourceMgr.getShader("proj_texture.vert", "texture.frag")),
+        skyboxShader(gResourceMgr.getShader("skybox_proj_texture.vert", "skybox_texture.frag")),
         bumpmapShader(gResourceMgr.getShader("bumpmap.vert", "texture_bumpmap.frag")),
         lightShader(gResourceMgr.getShader("proj_texture_normal.vert", "texture_normal.frag")),
         shadowShader(gResourceMgr.getShader("proj_shadow.vert", "shadow.frag")),
         fogShader(gResourceMgr.getShader("fog_shader.vert","fog.frag")),
         crosshair("dot.png", textureShader),
-        skybox("skybox.obj", textureShader,
-               gResourceMgr.getTexture("miramar_no_sun.jpg")),
+        skybox("skybox.obj", skyboxShader, gResourceMgr.getTexture("miramar_no_sun.jpg")),
         terrain("hmap_perlin.jpg", "ground2.jpg", shadowShader),
         tree("Tree.obj", fogShader, gResourceMgr.getTexture("Tree.jpg")),
         sun("sphere.obj", colorShader),
@@ -171,7 +172,6 @@ struct Scene
 
         skybox.setScale(1000.f);
         skybox.setCastsShadow(false);
-
         terrain.setScale(10.f, 50.f, 10.f);
         terrain.setPosition(-640.f, -25.0f, -640.f);
         terrain.setCastsShadow(false);
@@ -355,7 +355,7 @@ public:
         float minimalBoidsY = scene.terrain.getHeightAt(boidsPos.x, boidsPos.z) + 2.0f;
         boids.update(timeStep, cameraPos, minimalBoidsY);
 
-        static Radians angle(0.2f);
+        static Radians angle(-0.2f);
         angle = Radians(angle.value() + 0.03f * timeStep);
 
         Vec3 lightPos(20.0f * std::sin(angle.value()),
@@ -375,12 +375,15 @@ public:
         scene.lightSource.setPosition(scene.pointLight.pos);
 
         float goatAngle = angle.value() * 20.0f;
-        float goatJumpAngle = angle.value() * 75.0f;
         Vec3 pos(40 * std::sin(3*goatAngle + 12.0f), 0.0f, std::cos(goatAngle)* 10.f);
         pos *= 10.0f;
-        pos.y = scene.terrain.getHeightAt(pos.x, pos.z);// * fabs(sin(goatJumpAngle));
+        pos.y = scene.terrain.getHeightAt(pos.x, pos.z);
         scene.goat.setPosition(pos);
         scene.goat.setRotation(Vec3(0.0f, 1.0f, 0.0f), Radians(3*goatAngle + PI_2));
+        float dotProdSun = Vec3(0,1,0).dot(scene.sun.getPosition().normalized())*1.2 + 0.4;
+        dotProdSun = sb::math::clamp(dotProdSun, 0.f, 1.f);
+        dotProdSun += 0.3;
+        scene.skybox.setColor(sb::Color(dotProdSun));
     }
 
     void update(float delta)
