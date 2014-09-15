@@ -23,11 +23,12 @@ vec4 applyShadow(vec4 inColor)
         if (shadowPosition.x >= 0.0 && shadowPosition.x <= 1.0
                 && shadowPosition.y >= 0.0 && shadowPosition.y <= 1.0) {
             float depth = texture2D(shadows[i].map, shadowPosition.xy).r;
-            float shadowFactor = (depth < shadowPosition.z) ? 1.0 : 0.0;
+            float depthDiff = exp(100.0 * (depth - shadowPosition.z));
+            float shadowFactor = (depth < shadowPosition.z) ? depthDiff : 0.0;
             shadowCoefficient += clamp(shadowFactor, 0.0, 1.0);
         }
     }
-    shadowCoefficient = 1.0 - shadowCoefficient / numShadows;
+    shadowCoefficient = clamp((1.0 - shadowCoefficient / numShadows)/* + 0.5*/, 0.0, 1.0);
 
     return mix(BLACK, inColor, shadowCoefficient);
 }

@@ -192,7 +192,7 @@ struct Scene
         const size_t NUM_TREES = 25;
         for (size_t i = 0; i < NUM_TREES; i++ ) {
             Vec3 pos((rand() % 300) - 150, 0, (rand() % 300) - 150);
-            pos.y = terrain.getHeightAt(pos.x, pos.z);
+            pos.y = terrain.getHeightAt(pos.x, pos.z) - 0.3f;
 
             treeCoordinates.push_back(pos);
         }
