@@ -106,6 +106,7 @@ inline void updatePosition(Fish& fish,
                            float dt,
                            float minimalYPos)
 {
+    constexpr float MAX_Y_OVER_GROUND = 30.0f;
     const Vec3& v = fish.getVelocity();
     const Vec3& pos = fish.getPosition();
 
@@ -114,6 +115,10 @@ inline void updatePosition(Fish& fish,
     if (currPos.y < minimalYPos)  {
         Vec3 newV = v;
         newV.y += exp(math::clamp(currPos.y - 2.0f, 0.0f, 2.0f));
+        fish.setVelocity(newV);
+    } else if (currPos.y > minimalYPos + MAX_Y_OVER_GROUND) {
+        Vec3 newV = v;
+        newV.y -= exp(math::clamp(MAX_Y_OVER_GROUND - currPos.y - 2.0f, 0.0f, 2.0f));
         fish.setVelocity(newV);
     }
 
