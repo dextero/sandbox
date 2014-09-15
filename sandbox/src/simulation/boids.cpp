@@ -19,6 +19,7 @@ inline Vec3 notSoCloseRule(const Fish& fish,
 {
     constexpr float MIN_DISTANCE = 1.5f;
     constexpr float MIN_DISTANCE_SQUARED = MIN_DISTANCE * MIN_DISTANCE;
+    constexpr float CLOSENESS_FACTOR = 0.3f;
 
     Vec3 closeness(0.f, 0.f, 0.f);
     const Vec3& pos = fish.getPosition();
@@ -26,7 +27,7 @@ inline Vec3 notSoCloseRule(const Fish& fish,
     for (const Fish& other: allFish) {
         const Vec3& otherPos = other.getPosition();
         if (otherPos.distance2To(pos) < MIN_DISTANCE_SQUARED) {
-            closeness -= (otherPos - pos) / 100.0f;
+            closeness -= (otherPos - pos) * CLOSENESS_FACTOR;
         }
     }
 
@@ -36,12 +37,16 @@ inline Vec3 notSoCloseRule(const Fish& fish,
 inline Vec3 similarVelocityRule(const Fish& fish,
                                 const Vec3& avgVelocity)
 {
-    return (avgVelocity - fish.getVelocity()) / 100;
+    constexpr float SIMILAR_VELOCITY_FACTOR = 0.3f;
+
+    return (avgVelocity - fish.getVelocity()) * SIMILAR_VELOCITY_FACTOR;
 }
 
 inline Vec3 tendToPlace(const Fish& fish, Vec3 place)
 {
-    return (place - fish.getPosition()) / 10000;
+    constexpr float TEND_SPEED_FACTOR = 0.003f;
+
+    return (place - fish.getPosition()) * TEND_SPEED_FACTOR;
 }
 
 inline Vec3 notSoFast(const Fish& fish,
@@ -60,8 +65,10 @@ inline Vec3 avoidPredator(const Fish& fish,
 {
     constexpr float ESCAPE_DISTANCE = 3.0f;
     constexpr float ESCAPE_DISTANCE_SQUARED = ESCAPE_DISTANCE * ESCAPE_DISTANCE;
+    constexpr float ESCAPE_SPEED_FACTOR = 0.15f;
+
     if (predatorPosition.distance2To(fish.getPosition()) < ESCAPE_DISTANCE_SQUARED) {
-        return (fish.getPosition() - predatorPosition) * 0.005f;
+        return (fish.getPosition() - predatorPosition) * ESCAPE_SPEED_FACTOR;
     }
 
     return { 0.0f, 0.0f, 0.0f };
@@ -118,9 +125,9 @@ Boids::Boids(int size,
         fish.setPosition(math::random_float(-10.0f, 10.0f),
                          math::random_float(0.0f, 20.0f),
                          math::random_float(-10.0f, 10.0f));
-        fish.setVelocity(math::random_float(-0.5f, 0.5f),
-                         math::random_float(-0.5f, 0.5f),
-                         math::random_float(-0.5f, 0.5f));
+        fish.setVelocity(math::random_float(-10.0f, 10.0f),
+                         math::random_float(-10.0f, 10.0f),
+                         math::random_float(-10.0f, 10.0f));
         fish.setScale(0.003f);
         shoalOfFish.push_back(fish);
     }
@@ -147,8 +154,13 @@ void Boids::update(float dt,
         updatePosition(fish, dt);
 
         const Vec3& v = fish.getVelocity();
-        Vec3 rotationAxis = INITIAL_ORIENTATION.cross(v);
-        float rotationAngle = acos(INITIAL_ORIENTATION.dot(v));
+        if (v.isZero()) {
+            continue;
+        }
+
+        Vec3 normalizedV = v.normalized();
+        Vec3 rotationAxis = INITIAL_ORIENTATION.cross(normalizedV);
+        float rotationAngle = acos(INITIAL_ORIENTATION.dot(normalizedV));
 
         if (!rotationAxis.isZero()) {
             fish.setRotation(rotationAxis, Radians(rotationAngle));

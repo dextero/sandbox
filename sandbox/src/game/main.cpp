@@ -178,8 +178,9 @@ struct Scene
 
         terrain.setScale(10.f, 50.f, 10.f);
         terrain.setPosition(-640.f, -25.0f, -640.f);
-        //terrain.setTexture("bumpmap", gResourceMgr.getTexture("ground2_normal.jpg"));
-        //terrain.setTexture("heightTex", gResourceMgr.getTexture("ground_height.jpg"));
+        terrain.setCastsShadow(false);
+        terrain.setTexture("bumpmap", gResourceMgr.getTexture("ground2_normal.jpg"));
+        terrain.setTexture("heightTex", gResourceMgr.getTexture("ground_height.jpg"));
         gLog.debug("terrain @ 0, 0: %f", terrain.getHeightAt(0.0f, 0.0f));
 
         sun.setScale(100.0f);
