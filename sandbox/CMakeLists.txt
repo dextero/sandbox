@@ -26,7 +26,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(ROOT_DIR ${PROJECT_SOURCE_DIR})
 set(LIBRARY_OUTPUT_PATH ${ROOT_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${ROOT_DIR}/bin)
-set(CMAKE_BUILD_TYPE Debug)
+
+if(NOT DEFINED RELEASE_BUILD OR NOT RELEASE_BUILD)
+    set(CMAKE_BUILD_TYPE Debug)
+else()
+    set(CMAKE_BUILD_TYPE Release)
+endif()
 
 # external libraries
 add_external_library(AssImp REQUIRED)
