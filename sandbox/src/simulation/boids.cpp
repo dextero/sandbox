@@ -11,7 +11,9 @@ namespace boids {
 inline Vec3 massRule(const Fish& fish,
                      const Vec3& shoalCenter)
 {
-    return (shoalCenter - fish.getPosition()) / 10000;
+    Vec3 delta = shoalCenter - fish.getPosition();
+    float distanceSquared = delta.length2();
+    return delta * exp(math::clamp(distanceSquared, 0.0f, 2.0f)) / 1000.0f;
 }
 
 inline Vec3 notSoCloseRule(const Fish& fish,
@@ -19,7 +21,7 @@ inline Vec3 notSoCloseRule(const Fish& fish,
 {
     constexpr float MIN_DISTANCE = 1.5f;
     constexpr float MIN_DISTANCE_SQUARED = MIN_DISTANCE * MIN_DISTANCE;
-    constexpr float CLOSENESS_FACTOR = 0.3f;
+    constexpr float CLOSENESS_FACTOR = 1.0f;
 
     Vec3 closeness(0.f, 0.f, 0.f);
     const Vec3& pos = fish.getPosition();
@@ -37,14 +39,14 @@ inline Vec3 notSoCloseRule(const Fish& fish,
 inline Vec3 similarVelocityRule(const Fish& fish,
                                 const Vec3& avgVelocity)
 {
-    constexpr float SIMILAR_VELOCITY_FACTOR = 0.3f;
+    constexpr float SIMILAR_VELOCITY_FACTOR = 0.01f;
 
     return (avgVelocity - fish.getVelocity()) * SIMILAR_VELOCITY_FACTOR;
 }
 
 inline Vec3 tendToPlace(const Fish& fish, Vec3 place)
 {
-    constexpr float TEND_SPEED_FACTOR = 0.003f;
+    constexpr float TEND_SPEED_FACTOR = 0.0001f;
 
     return (place - fish.getPosition()) * TEND_SPEED_FACTOR;
 }
@@ -63,12 +65,14 @@ inline Vec3 notSoFast(const Fish& fish,
 inline Vec3 avoidPredator(const Fish& fish,
                           Vec3 predatorPosition)
 {
-    constexpr float ESCAPE_DISTANCE = 3.0f;
+    constexpr float ESCAPE_DISTANCE = 10.0f;
     constexpr float ESCAPE_DISTANCE_SQUARED = ESCAPE_DISTANCE * ESCAPE_DISTANCE;
-    constexpr float ESCAPE_SPEED_FACTOR = 0.15f;
+    constexpr float ESCAPE_SPEED_FACTOR = 10.0f;
 
-    if (predatorPosition.distance2To(fish.getPosition()) < ESCAPE_DISTANCE_SQUARED) {
-        return (fish.getPosition() - predatorPosition) * ESCAPE_SPEED_FACTOR;
+    Vec3 delta = fish.getPosition() - predatorPosition;
+    float distance = delta.length2();
+    if (distance < ESCAPE_DISTANCE_SQUARED) {
+        return delta.normalized() * exp(-distance / 100.0f) * ESCAPE_SPEED_FACTOR;
     }
 
     return { 0.0f, 0.0f, 0.0f };
@@ -83,11 +87,14 @@ inline void updateVelocity(Fish& fish,
                            const Vec3& avgVelocity)
 {
     const Vec3 TARGET { 0.0f, 5.0f, 1.0f };
+    const float MAX_VELOCITY = 5.0f;
+    const float MAX_VELOCITY_SQUARED = MAX_VELOCITY * MAX_VELOCITY;
     const Vec3& v = fish.getVelocity();
 
     Vec3 newV = v;
     newV += boids::tendToPlace(fish, TARGET);
     newV += boids::massRule(fish, shoalCenter);
+    newV += boids::notSoFast(fish, MAX_VELOCITY_SQUARED);
     newV += boids::notSoCloseRule(fish, allFish);
     newV += boids::similarVelocityRule(fish, avgVelocity);
     newV += boids::avoidPredator(fish, predatorPos);
@@ -96,17 +103,18 @@ inline void updateVelocity(Fish& fish,
 }
 
 inline void updatePosition(Fish& fish,
-                           float dt)
+                           float dt,
+                           float minimalYPos)
 {
     const Vec3& v = fish.getVelocity();
     const Vec3& pos = fish.getPosition();
 
     Vec3 currPos = pos + v * dt;
 
-    if (currPos.y < 1.0f)  {
-        if (v.y < 0.0f)  {
-            fish.setVelocity(Vec3(v.x, 0.0f, v.z));
-        }
+    if (currPos.y < minimalYPos)  {
+        Vec3 newV = v;
+        newV.y += exp(math::clamp(currPos.y - 2.0f, 0.0f, 2.0f));
+        fish.setVelocity(newV);
     }
 
     fish.setPosition(currPos);
@@ -134,7 +142,8 @@ Boids::Boids(int size,
 }
 
 void Boids::update(float dt,
-                   const Vec3& predatorPos)
+                   const Vec3& predatorPos,
+                   float minimalYPos)
 {
     const Vec3 INITIAL_ORIENTATION { 0.f, 0.f, 1.f };
 
@@ -148,10 +157,12 @@ void Boids::update(float dt,
     shoalCenter /= (float)shoalOfFish.size();
     avgVelocity /= (float)shoalOfFish.size();
 
+    currentPosition = shoalCenter;
+
     for (Fish& fish: shoalOfFish) {
         updateVelocity(fish, shoalOfFish,
                        predatorPos, shoalCenter, avgVelocity);
-        updatePosition(fish, dt);
+        updatePosition(fish, dt, minimalYPos);
 
         const Vec3& v = fish.getVelocity();
         if (v.isZero()) {

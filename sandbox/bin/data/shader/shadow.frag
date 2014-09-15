@@ -15,13 +15,12 @@ out vec4 out_color;
 
 void main()
 {
+    const float FOG_DENSITY = 0.002;
+
     out_color = vec4((color * texture2D(tex, ps_texcoord)).rgb, 1.0);
 
     out_color = applyLight(out_color, ps_position, ps_normal, 0.001, 1.0, 0.001);
     out_color = applyShadow(out_color);
-
-
-    const float FOG_DENSITY = 0.002;
     out_color = applyFog(out_color, ps_position, FOG_DENSITY);
 
 }

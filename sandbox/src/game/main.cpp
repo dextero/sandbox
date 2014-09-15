@@ -351,7 +351,9 @@ public:
         windVelocity.update();
 
         Vec3 cameraPos = wnd.getCamera().getEye();
-        boids.update(timeStep, cameraPos);
+        Vec3 boidsPos = boids.currentPosition;
+        float minimalBoidsY = scene.terrain.getHeightAt(boidsPos.x, boidsPos.z) + 2.0f;
+        boids.update(timeStep, cameraPos, minimalBoidsY);
 
         static Radians angle(0.2f);
         angle = Radians(angle.value() + 0.03f * timeStep);

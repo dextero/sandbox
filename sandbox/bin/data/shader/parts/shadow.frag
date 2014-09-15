@@ -36,7 +36,7 @@ vec4 applyShadow(vec4 inColor)
         shadowCoefficient += clamp(shadowFactor, 0.0, 1.0);
     }
 
-    shadowCoefficient = 1.0 - shadowCoefficient / numShadows;
+    shadowCoefficient = clamp((1.0 - shadowCoefficient / numShadows) + 0.5, 0.0, 1.0);
 
     return mix(BLACK, inColor, shadowCoefficient);
 }
