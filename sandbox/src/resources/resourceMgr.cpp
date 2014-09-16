@@ -229,6 +229,8 @@ std::shared_ptr<Mesh> ResourceMgr::loadMesh(const std::string& name)
         texture = gResourceMgr.getTexture(filename.data);
     }
 
+    gLog.info("%u vertices, %u triangles", vertices.size(), indices.size() / 3);
+
     return std::make_shared<Mesh>(Mesh::Shape::Triangle,
                                   vertices, texcoords,
                                   std::vector<Color>(), normals,
