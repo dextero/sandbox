@@ -136,6 +136,7 @@ struct Scene
     sb::Model goat;
 
     std::vector<Vec3> treeCoordinates;
+    std::vector<float> treeScales;
 
     sb::Light pointLight;
     sb::Light parallelLight;
@@ -190,16 +191,20 @@ struct Scene
         goat.setScale(10.0f);
 
         srand((unsigned)time(0));
-        const size_t NUM_TREES = 25;
+        const size_t NUM_TREES = 30;
+        constexpr float HALF_SQUARE_WIDTH = 320.0f;
+        constexpr float MIN_SCALE = 12.0f;
+        constexpr float MAX_SCALE = 30.0f;
         for (size_t i = 0; i < NUM_TREES; i++ ) {
-            Vec3 pos((rand() % 300) - 150, 0, (rand() % 300) - 150);
+            Vec3 pos(sb::math::random_float(-HALF_SQUARE_WIDTH, HALF_SQUARE_WIDTH),
+                     0.0f,
+                     sb::math::random_float(-HALF_SQUARE_WIDTH, HALF_SQUARE_WIDTH));
             pos.y = terrain.getHeightAt(pos.x, pos.z) - 0.3f;
 
             treeCoordinates.push_back(pos);
+            treeScales.push_back(sb::math::random_float(MIN_SCALE, MAX_SCALE));
         }
 
-        tree.setPosition(1.f, 1.f, 1.f);
-        tree.setScale(15.0f);
         gLog.info("all data loaded!\n");
     }
 };
@@ -317,9 +322,16 @@ public:
         wnd.draw(scene.crosshair);
 
         if (showTrees) {
-            for (Vec3 position: scene.treeCoordinates) {
-                scene.tree.setPosition(position);
-                wnd.draw(scene.tree);
+            constexpr float MAX_DISTANCE = 200.0f;
+            constexpr float MAX_DISTANCE_SQUARED = MAX_DISTANCE * MAX_DISTANCE;
+            const Vec3& cameraPos = wnd.getCamera().getEye();
+
+            for (size_t i = 0; i < scene.treeCoordinates.size(); ++i) {
+                if (scene.treeCoordinates[i].distance2To(cameraPos) < MAX_DISTANCE_SQUARED) {
+                    scene.tree.setPosition(scene.treeCoordinates[i]);
+                    scene.tree.setScale(scene.treeScales[i]);
+                    wnd.draw(scene.tree);
+                }
             }
         }
 
