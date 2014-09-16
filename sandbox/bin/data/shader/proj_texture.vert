@@ -11,9 +11,11 @@ out vec2 ps_texcoord;
 
 void main()
 {
-    ps_position = matViewProjection * matModel * vec4(position, 1.0);
+    vec4 worldPos = matModel * vec4(position, 1.0);
+
+    ps_position = worldPos;
     ps_texcoord = texcoord;
 
-    gl_Position = ps_position;
+    gl_Position = matViewProjection * worldPos;
 }
 

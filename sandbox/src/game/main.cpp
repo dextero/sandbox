@@ -143,7 +143,7 @@ struct Scene
     Scene():
         colorShader(gResourceMgr.getShader("proj_basic.vert", "color.frag")),
         textureShader(gResourceMgr.getShader("proj_texture.vert", "texture.frag")),
-        skyboxShader(gResourceMgr.getShader("skybox_proj_texture.vert", "skybox_texture.frag")),
+        skyboxShader(gResourceMgr.getShader("proj_texture.vert", "skybox.frag")),
         bumpmapShader(gResourceMgr.getShader("bumpmap.vert", "texture_bumpmap.frag")),
         lightShader(gResourceMgr.getShader("proj_texture_normal.vert", "texture_normal.frag")),
         shadowShader(gResourceMgr.getShader("proj_shadow.vert", "shadow.frag")),
@@ -249,7 +249,7 @@ public:
         wnd.setTitle("Sandbox");
         wnd.lockCursor();
         wnd.hideCursor();
-        wnd.getCamera().lookAt(Vec3(5.f, 25.f, 20.f), Vec3(5.f, 5.f, 0.f));
+        wnd.getCamera().lookAt(Vec3(0.f, 5.f, 0.f), Vec3(1.f, 5.f, 1.f));
 
         deltaTime.reset();
         fpsDeltaTime.reset();
@@ -355,8 +355,8 @@ public:
         float minimalBoidsY = scene.terrain.getHeightAt(boidsPos.x, boidsPos.z) + 2.0f;
         boids.update(timeStep, cameraPos, minimalBoidsY);
 
-        static Radians angle(-0.2f);
-        angle = Radians(angle.value() + 0.03f * timeStep);
+        static Radians angle(0.3f);
+        angle = Radians(angle.value() + 0.01f * timeStep);
 
         Vec3 lightPos(20.0f * std::sin(angle.value()),
                       -50.0f * std::sin(angle.value()) + 20.0f,
@@ -384,6 +384,8 @@ public:
         dotProdSun = sb::math::clamp(dotProdSun, 0.f, 1.f);
         dotProdSun += 0.3;
         scene.skybox.setColor(sb::Color(dotProdSun));
+
+        wnd.getRenderer().setUniform("sunPos", sunPos);
     }
 
     void update(float delta)
