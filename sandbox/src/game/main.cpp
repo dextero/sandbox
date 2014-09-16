@@ -156,7 +156,7 @@ struct Scene
         lightSource("sphere.obj", colorShader),
         goat("koza.obj", lightShader, gResourceMgr.getTexture("goat.png")),
         treeCoordinates(),
-        pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 1.0f)),
+        pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f, sb::Color(0.5f, 0.5f, 1.0f))),
         parallelLight(sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 1.0f))
     {
         shaderToggler.add("color", colorShader);
@@ -185,6 +185,7 @@ struct Scene
 
         lightSource.setColor(sb::Color::White);
         lightSource.setCastsShadow(false);
+        lightSource.setColor(pointLight.color);
 
         goat.setScale(10.0f);
 
@@ -386,6 +387,15 @@ public:
         scene.skybox.setColor(sb::Color(dotProdSun));
 
         wnd.getRenderer().setUniform("sunPos", sunPos);
+        float sunColorFactor = std::exp(-std::fabs(sunPos.y / 90.0f));
+        sb::Color sunColor(1.0f, 1.0f - sunColorFactor * 0.4, 1.0f - sunColorFactor * 0.6f);
+        scene.sun.setColor(sunColor);
+
+        float lightColorAngle = angle.value() * 100.0f;
+        scene.pointLight.color = sb::Color(0.5f + std::sin(lightColorAngle) * 0.5f,
+                                           0.5f + std::cos(lightColorAngle) * 0.5f,
+                                           0.5f + -std::sin(lightColorAngle) * 0.5f);
+        scene.lightSource.setColor(scene.pointLight.color);
     }
 
     void update(float delta)

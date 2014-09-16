@@ -40,7 +40,7 @@ vec4 diffuse(vec3 position,
         vec3 lightDir = normalize(diff);
         float distSquared = dot(diff, diff);
         outColor.rgb += pointLights[i].color.rgb
-                        //* distSquared
+                        / distSquared
                         * pointLights[i].intensity
                         * dot(lightDir, normal);
     }
