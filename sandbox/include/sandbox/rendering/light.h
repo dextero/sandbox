@@ -1,10 +1,10 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
-#include "color.h"
-#include "utils/types.h"
-#include "utils/debug.h"
-#include "rendering/framebuffer.h" 
+#include <sandbox/rendering/color.h>
+#include <sandbox/utils/types.h>
+#include <sandbox/utils/debug.h>
+#include <sandbox/rendering/framebuffer.h> 
 
 namespace sb
 {

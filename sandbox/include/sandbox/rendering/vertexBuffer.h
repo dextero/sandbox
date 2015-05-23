@@ -1,14 +1,14 @@
 #ifndef SHAREDVERTEXBUFFER_H
 #define SHAREDVERTEXBUFFER_H
 
-#include "types.h"
-#include "utils/types.h"
-#include "utils/lib.h"
-#include "utils/misc.h"
-#include "utils/logger.h"
-#include "rendering/color.h"
-#include "rendering/buffer.h"
-#include "rendering/indexBuffer.h"
+#include <sandbox/rendering/types.h>
+#include <sandbox/utils/types.h>
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/misc.h>
+#include <sandbox/utils/logger.h>
+#include <sandbox/rendering/color.h>
+#include <sandbox/rendering/buffer.h>
+#include <sandbox/rendering/indexBuffer.h>
 
 #include <vector>
 #include <map>

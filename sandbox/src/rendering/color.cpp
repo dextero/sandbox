@@ -1,4 +1,4 @@
-#include "color.h"
+#include <sandbox/rendering/color.h>
 
 namespace sb
 {

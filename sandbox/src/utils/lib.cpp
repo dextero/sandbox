@@ -2,9 +2,9 @@
 #   define NO_CHECK_MACROS
 #endif
 
-#include "utils/lib.h"
-#include "utils/logger.h"
-#include "utils/debug.h"
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/logger.h>
+#include <sandbox/utils/debug.h>
 
 #ifdef PLATFORM_WIN32
 #   define WIN32_LEAN_AND_MEAN
@@ -12,7 +12,7 @@
 #endif // PLATFORM_WIN32
 
 #define TRACE_GL_CALLS 0
-#include "rendering/includeGL.h"
+#include <sandbox/rendering/includeGL.h>
 
 #include <IL/ilu.h>
 

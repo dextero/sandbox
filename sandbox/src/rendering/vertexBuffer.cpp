@@ -1,9 +1,9 @@
-#include "rendering/vertexBuffer.h"
-#include "rendering/color.h"
+#include <sandbox/rendering/vertexBuffer.h>
+#include <sandbox/rendering/color.h>
 
-#include "utils/lib.h"
-#include "utils/logger.h"
-#include "utils/debug.h"
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/logger.h>
+#include <sandbox/utils/debug.h>
 
 #include <algorithm>
 

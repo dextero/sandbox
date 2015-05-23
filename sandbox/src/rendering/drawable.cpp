@@ -1,8 +1,8 @@
-#include "drawable.h"
-#include "shader.h"
+#include <sandbox/rendering/drawable.h>
+#include <sandbox/rendering/shader.h>
 
-#include "resources/mesh.h"
-#include "resources/image.h"
+#include <sandbox/resources/mesh.h>
+#include <sandbox/resources/image.h>
 
 namespace sb {
 

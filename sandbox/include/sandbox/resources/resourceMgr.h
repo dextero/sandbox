@@ -1,14 +1,14 @@
 #ifndef RESOURCEMGR_H
 #define RESOURCEMGR_H
 
-#include "rendering/types.h"
-#include "rendering/shader.h"
-#include "rendering/texture.h"
-#include "utils/logger.h"
-#include "utils/singleton.h"
-#include "utils/stringUtils.h"
-#include "utils/lib.h"
-#include "utils/debug.h"
+#include <sandbox/rendering/types.h>
+#include <sandbox/rendering/shader.h>
+#include <sandbox/rendering/texture.h>
+#include <sandbox/utils/logger.h>
+#include <sandbox/utils/singleton.h>
+#include <sandbox/utils/stringUtils.h>
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/debug.h>
 
 #include <map>
 #include <vector>

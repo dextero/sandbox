@@ -5,10 +5,10 @@
 
 #include <X11/Xlib.h>
 
-#include "rendering/renderer.h"
-#include "rendering/color.h"
-#include "rendering/camera.h"
-#include "window/event.h"
+#include <sandbox/rendering/renderer.h>
+#include <sandbox/rendering/color.h>
+#include <sandbox/rendering/camera.h>
+#include <sandbox/window/event.h>
 
 
 namespace sb

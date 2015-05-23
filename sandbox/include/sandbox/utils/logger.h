@@ -1,14 +1,14 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include "utils/singleton.h"
+#include <sandbox/utils/singleton.h>
+
+#include <sandbox/utils/debug.h>
 
 #include <cstdarg>
 #include <cstdio>
 #include <deque>
 #include <sstream>
-
-#include "utils/debug.h"
 
 namespace sb {
 

@@ -1,7 +1,7 @@
 #ifndef RENDERING_INDEXBUFFER_H
 #define RENDERING_INDEXBUFFER_H
 
-#include "rendering/buffer.h"
+#include <sandbox/rendering/buffer.h>
 
 #include <vector>
 

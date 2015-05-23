@@ -1,8 +1,8 @@
-#include "mesh.h"
+#include <sandbox/resources/mesh.h>
 
-#include "utils/lib.h"
-#include "utils/logger.h"
-#include "resources/resourceMgr.h"
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/logger.h>
+#include <sandbox/resources/resourceMgr.h>
 
 namespace sb
 {

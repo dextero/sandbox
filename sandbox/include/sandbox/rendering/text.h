@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 
-#include "rendering/drawable.h"
+#include <sandbox/rendering/drawable.h>
 
 namespace sb {
 

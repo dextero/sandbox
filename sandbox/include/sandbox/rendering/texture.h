@@ -3,8 +3,8 @@
 
 #include <memory>
 
-#include "rendering/types.h"
-#include "resources/image.h"
+#include <sandbox/rendering/types.h>
+#include <sandbox/resources/image.h>
 
 namespace sb
 {

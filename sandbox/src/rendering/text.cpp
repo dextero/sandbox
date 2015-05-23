@@ -1,9 +1,9 @@
-#include "rendering/text.h"
+#include <sandbox/rendering/text.h>
 
-#include "resources/mesh.h"
-#include "resources/font.h"
+#include <sandbox/resources/mesh.h>
+#include <sandbox/resources/font.h>
 
-#include "utils/stringUtils.h"
+#include <sandbox/utils/stringUtils.h>
 
 #include <vector>
 

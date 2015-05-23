@@ -1,8 +1,8 @@
-#include "rendering/framebuffer.h"
+#include <sandbox/rendering/framebuffer.h>
 
-#include "utils/lib.h"
-#include "utils/misc.h"
-#include "utils/debug.h"
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/misc.h>
+#include <sandbox/utils/debug.h>
 
 namespace sb {
 

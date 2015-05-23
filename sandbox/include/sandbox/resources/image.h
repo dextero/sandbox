@@ -5,8 +5,8 @@
 
 #include <IL/il.h>
 
-#include "rendering/types.h"
-#include "utils/types.h"
+#include <sandbox/rendering/types.h>
+#include <sandbox/utils/types.h>
 
 namespace sb
 {

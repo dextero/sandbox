@@ -4,11 +4,11 @@
 #include <memory>
 #include <vector>
 
-#include "rendering/types.h"
-#include "rendering/color.h"
-#include "rendering/texture.h"
-#include "rendering/vertexBuffer.h"
-#include "utils/types.h"
+#include <sandbox/rendering/types.h>
+#include <sandbox/rendering/color.h>
+#include <sandbox/rendering/texture.h>
+#include <sandbox/rendering/vertexBuffer.h>
+#include <sandbox/utils/types.h>
 
 namespace sb
 {

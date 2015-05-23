@@ -1,7 +1,8 @@
-#include "image.h"
-#include "utils/lib.h"
-#include "utils/logger.h"
-#include "utils/stringUtils.h"
+#include <sandbox/resources/image.h>
+
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/logger.h>
+#include <sandbox/utils/stringUtils.h>
 
 #include <IL/ilu.h>
 

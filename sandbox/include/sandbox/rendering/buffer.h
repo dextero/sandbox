@@ -1,7 +1,7 @@
 #ifndef RENDERING_BUFFER_H
 #define RENDERING_BUFFER_H
 
-#include "rendering/types.h"
+#include <sandbox/rendering/types.h>
 
 namespace sb
 {

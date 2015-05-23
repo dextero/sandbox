@@ -1,17 +1,18 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "rendering/includeGL.h"
+#include <sandbox/rendering/includeGL.h>
+
+#include <sandbox/rendering/color.h>
+#include <sandbox/rendering/shader.h>
+#include <sandbox/rendering/texture.h>
+#include <sandbox/rendering/camera.h>
+#include <sandbox/rendering/light.h>
+#include <sandbox/rendering/framebuffer.h>
+
+#include <sandbox/utils/rect.h>
+
 #include <X11/Xlib.h>
-
-#include "rendering/color.h"
-#include "rendering/shader.h"
-#include "rendering/texture.h"
-#include "rendering/camera.h"
-#include "rendering/light.h"
-#include "rendering/framebuffer.h"
-
-#include "utils/rect.h"
 
 #include <vector>
 #include <algorithm>

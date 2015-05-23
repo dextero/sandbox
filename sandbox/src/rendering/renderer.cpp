@@ -1,17 +1,17 @@
 #include <algorithm>
 
-#include "rendering/renderer.h"
-#include "rendering/drawable.h"
-#include "rendering/string.h"
-#include "rendering/sprite.h"
-#include "utils/lib.h"
-#include "utils/stringUtils.h"
-#include "utils/logger.h"
-#include "utils/stl.h"
-#include "utils/debug.h"
-#include "resources/mesh.h"
-#include "resources/image.h"
-#include "rendering/model.h"
+#include <sandbox/rendering/renderer.h>
+#include <sandbox/rendering/drawable.h>
+#include <sandbox/rendering/string.h>
+#include <sandbox/rendering/sprite.h>
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/stringUtils.h>
+#include <sandbox/utils/logger.h>
+#include <sandbox/utils/stl.h>
+#include <sandbox/utils/debug.h>
+#include <sandbox/resources/mesh.h>
+#include <sandbox/resources/image.h>
+#include <sandbox/rendering/model.h>
 
 namespace sb {
 namespace {

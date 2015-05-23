@@ -1,9 +1,10 @@
 #include "simulation.h"
 
+#include <sandbox/rendering/string.h>
+#include <sandbox/utils/stringUtils.h>
+#include <sandbox/utils/logger.h>
+
 #include "ball.h"
-#include "rendering/string.h"
-#include "utils/stringUtils.h"
-#include "utils/logger.h"
 
 using sb::utils::toString;
 

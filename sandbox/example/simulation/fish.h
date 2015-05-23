@@ -1,7 +1,7 @@
 #ifndef FISH_H
 #define FISH_H
 
-#include "model.h"
+#include <sandbox/rendering/model.h>
 #include <string>
 
 namespace sb

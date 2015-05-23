@@ -1,7 +1,7 @@
 #ifndef UTILS_RECT_H
 #define UTILS_RECT_H
 
-#include "utils/vector.h"
+#include <sandbox/utils/vector.h>
 
 namespace sb {
 

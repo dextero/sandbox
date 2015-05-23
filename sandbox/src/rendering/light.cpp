@@ -1,4 +1,4 @@
-#include "light.h"
+#include <sandbox/rendering/light.h>
 
 namespace sb {
 namespace {

@@ -1,9 +1,9 @@
 #ifndef STRING_H
 #define STRING_H
 
-#include "rendering/color.h"
-#include "rendering/types.h"
-#include "utils/types.h"
+#include <sandbox/rendering/color.h>
+#include <sandbox/rendering/types.h>
+#include <sandbox/utils/types.h>
 
 #include <string>
 #include <GL/glx.h>

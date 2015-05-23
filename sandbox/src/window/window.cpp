@@ -1,13 +1,13 @@
-#include "window.h"
+#include <sandbox/window/window.h>
 
-#include "utils/stringUtils.h"
-#include "utils/logger.h"
-#include "utils/debug.h"
+#include <sandbox/utils/stringUtils.h>
+#include <sandbox/utils/logger.h>
+#include <sandbox/utils/debug.h>
 
-#include "resources/font.h"
-#include "resources/resourceMgr.h"
+#include <sandbox/resources/font.h>
+#include <sandbox/resources/resourceMgr.h>
 
-#include "rendering/text.h"
+#include <sandbox/rendering/text.h>
 
 #include <X11/Xutil.h>
 #include <cstring>

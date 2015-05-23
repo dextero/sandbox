@@ -1,5 +1,5 @@
-#include "terrain.h"
-#include "../resources/resourceMgr.h"
+#include <sandbox/rendering/terrain.h>
+#include <sandbox/resources/resourceMgr.h>
 
 namespace sb
 {

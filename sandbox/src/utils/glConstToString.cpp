@@ -1,5 +1,5 @@
-#include "rendering/includeGL.h"
-#include "utils/glDebug.h"
+#include <sandbox/rendering/includeGL.h>
+#include <sandbox/utils/glDebug.h>
 
 #include <map>
 #include <string>

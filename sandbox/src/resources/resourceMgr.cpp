@@ -8,16 +8,16 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 
-#include "resourceMgr.h"
+#include <sandbox/resources/resourceMgr.h>
 
-#include "utils/lib.h"
-#include "utils/stringUtils.h"
-#include "utils/types.h"
-#include "utils/logger.h"
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/stringUtils.h>
+#include <sandbox/utils/types.h>
+#include <sandbox/utils/logger.h>
 
-#include "mesh.h"
-#include "image.h"
-#include "font.h"
+#include <sandbox/resources/mesh.h>
+#include <sandbox/resources/image.h>
+#include <sandbox/resources/font.h>
 
 namespace sb {
 

@@ -37,7 +37,7 @@ add_external_library(GLEW REQUIRED)
 set(LIBS -ldl ${LIBS} ${IL_LIBRARIES} ${ILU_LIBRARIES} ${ILUT_LIBRARIES})
 
 # project sources
-include_directories(${ROOT_DIR}/src)
+include_directories(${ROOT_DIR}/include)
 find_sources(SANDBOX_HEADERS ${ROOT_DIR}/src ".h" "include")
 find_sources(SANDBOX_CPP_SOURCES ${ROOT_DIR}/src ".cpp" "src")
 set(SANDBOX_SOURCES ${SANDBOX_HEADERS}
@@ -48,6 +48,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++11 -Wno-variadic-m
 add_library(sandbox ${SANDBOX_SOURCES})
 
 # example
+find_sources(EXAMPLE_HEADERS ${ROOT_DIR}/example ".h" "include")
 find_sources(EXAMPLE_SOURCES ${ROOT_DIR}/example ".cpp" "src")
 add_executable(sandbox_example ${EXAMPLE_SOURCES})
 target_link_libraries(sandbox_example sandbox ${LIBS})

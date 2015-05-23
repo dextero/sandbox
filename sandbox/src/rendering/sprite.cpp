@@ -1,5 +1,5 @@
-#include "sprite.h"
-#include "../resources/resourceMgr.h"
+#include <sandbox/rendering/sprite.h>
+#include <sandbox/resources/resourceMgr.h>
 
 namespace sb
 {

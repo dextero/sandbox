@@ -14,7 +14,7 @@
 #endif // GL_CONTINIOUS_TRACE
 
 #if _DEBUG && GL_TRACE_CALLS
-#   include "utils/glDebug.h"
+#   include <sandbox/utils/glDebug.h>
 #endif // _DEBUG && TRACE_GL_CALLS
 
 #endif // INCLUDEGL_H

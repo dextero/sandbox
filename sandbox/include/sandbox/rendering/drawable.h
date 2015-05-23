@@ -1,11 +1,11 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
-#include "rendering/types.h"
-#include "rendering/color.h"
-#include "rendering/shader.h"
-#include "rendering/renderer.h"
-#include "resources/resourceMgr.h"
+#include <sandbox/rendering/types.h>
+#include <sandbox/rendering/color.h>
+#include <sandbox/rendering/shader.h>
+#include <sandbox/rendering/renderer.h>
+#include <sandbox/resources/resourceMgr.h>
 
 #include <vector>
 

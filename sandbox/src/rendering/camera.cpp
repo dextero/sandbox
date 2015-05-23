@@ -1,8 +1,8 @@
-#include "camera.h"
-#include "utils/math.h"
-#include "utils/logger.h"
-#include "utils/stringUtils.h"
-#include "utils/debug.h"
+#include <sandbox/rendering/camera.h>
+#include <sandbox/utils/math.h>
+#include <sandbox/utils/logger.h>
+#include <sandbox/utils/stringUtils.h>
+#include <sandbox/utils/debug.h>
 
 namespace sb
 {

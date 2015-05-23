@@ -1,9 +1,9 @@
-#include "rendering/includeGL.h"
-#include "rendering/string.h"
-#include "rendering/shader.h"
-#include "utils/lib.h"
-#include "utils/stringUtils.h"
-#include "utils/logger.h"
+#include <sandbox/rendering/includeGL.h>
+#include <sandbox/rendering/string.h>
+#include <sandbox/rendering/shader.h>
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/stringUtils.h>
+#include <sandbox/utils/logger.h>
 
 #include <X11/Xlib.h>
 

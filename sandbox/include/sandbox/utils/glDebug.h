@@ -3,9 +3,9 @@
 
 #include <utility>
 
-#include "rendering/includeGL.h"
-#include "utils/stringUtils.h"
-#include "utils/logger.h"
+#include <sandbox/rendering/includeGL.h>
+#include <sandbox/utils/stringUtils.h>
+#include <sandbox/utils/logger.h>
 
 namespace sb {
 

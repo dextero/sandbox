@@ -1,11 +1,11 @@
-#include "rendering/texture.h"
+#include <sandbox/rendering/texture.h>
+
+#include <sandbox/utils/logger.h>
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/math.h>
+#include <sandbox/utils/misc.h>
 
 #include <vector>
-
-#include "utils/logger.h"
-#include "utils/lib.h"
-#include "utils/math.h"
-#include "utils/misc.h"
 
 namespace sb {
 namespace {

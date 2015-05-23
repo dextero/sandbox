@@ -12,8 +12,8 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
-#include "utils/vector.h"
-#include "utils/angles.h"
+#include <sandbox/utils/vector.h>
+#include <sandbox/utils/angles.h>
 
 typedef glm::float4x4 Mat44f;
 typedef glm::float3x3 Mat33f;

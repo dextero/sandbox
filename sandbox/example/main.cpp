@@ -2,23 +2,25 @@
 
 #include <cmath>
 
-#include "window/window.h"
-#include "rendering/sprite.h"
-#include "rendering/line.h"
-#include "rendering/model.h"
-#include "rendering/string.h"
-#include "rendering/terrain.h"
-#include "rendering/text.h"
-#include "utils/logger.h"
-#include "utils/stringUtils.h"
-#include "utils/lib.h"
-#include "utils/timer.h"
-#include "utils/lexical_cast.h"
+#include <sandbox/window/window.h>
+#include <sandbox/rendering/sprite.h>
+#include <sandbox/rendering/line.h>
+#include <sandbox/rendering/model.h>
+#include <sandbox/rendering/string.h>
+#include <sandbox/rendering/terrain.h>
+#include <sandbox/rendering/text.h>
+#include <sandbox/utils/logger.h>
+#include <sandbox/utils/stringUtils.h>
+#include <sandbox/utils/lib.h>
+#include <sandbox/utils/timer.h>
+#include <sandbox/utils/lexical_cast.h>
+
+#include <sstream>
+#include <IL/ilut.h>
+
 #include "simulation/simulation.h"
 #include "simulation/ball.h"
 #include "simulation/boids.h"
-#include <sstream>
-#include <IL/ilut.h>
 
 class Accumulator
 {

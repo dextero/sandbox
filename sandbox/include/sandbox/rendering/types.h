@@ -6,7 +6,7 @@
 #   include <Windows.h>
 #endif // PLATFORM_WIN32
 
-#include "rendering/includeGL.h"
+#include <sandbox/rendering/includeGL.h>
 
 namespace sb
 {

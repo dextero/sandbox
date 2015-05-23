@@ -1,10 +1,10 @@
 #ifndef SIM_BALL_H
 #define SIM_BALL_H
 
-#include "utils/types.h"
-#include "../rendering/model.h"
-#include "../rendering/line.h"
-#include "../rendering/renderer.h"
+#include <sandbox/utils/types.h>
+#include <sandbox/rendering/model.h>
+#include <sandbox/rendering/line.h>
+#include <sandbox/rendering/renderer.h>
 
 #include <list>
 

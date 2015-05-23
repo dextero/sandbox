@@ -1,8 +1,9 @@
 #ifndef BOIDS_H
 #define BOIDS_H
 
-#include "../window/window.h"
-#include "../rendering/fish.h"
+#include <sandbox/window/window.h>
+#include "fish.h"
+
 namespace Sim 
 { 
 

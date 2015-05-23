@@ -1,4 +1,4 @@
-#include "model.h"
+#include <sandbox/rendering/model.h>
 
 namespace sb
 {

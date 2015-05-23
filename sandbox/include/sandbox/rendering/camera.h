@@ -3,9 +3,9 @@
 
 #include <cmath>
 
-#include "types.h"
-#include "utils/math.h"
-#include "utils/types.h"
+#include <sandbox/rendering/types.h>
+#include <sandbox/utils/math.h>
+#include <sandbox/utils/types.h>
 
 namespace sb
 {
@@ -18,7 +18,7 @@ namespace sb
                                   float aspectRatio = 1.33f,
                                   float near = Z_NEAR,
                                   float far = Z_FAR);
-            
+
         static Camera orthographic(float left = -1.f,
                                    float right = 1.f,
                                    float bottom = -1.f,

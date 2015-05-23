@@ -3,9 +3,9 @@
 
 #include <array>
 
-#include "rendering/texture.h"
-#include "utils/rect.h"
-#include "utils/lexical_cast.h"
+#include <sandbox/rendering/texture.h>
+#include <sandbox/utils/rect.h>
+#include <sandbox/utils/lexical_cast.h>
 
 namespace sb {
 

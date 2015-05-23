@@ -3,8 +3,8 @@
 
 #include <memory>
 
-#include "rendering/types.h"
-#include "rendering/texture.h"
+#include <sandbox/rendering/types.h>
+#include <sandbox/rendering/texture.h>
 
 #define WITH_RENDERBUFFER 1
 

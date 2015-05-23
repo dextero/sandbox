@@ -2,9 +2,9 @@
 #define SIM_SIMULATION_H
 
 #include <list>
-#include "utils/types.h"
-#include "rendering/line.h"
-#include "window/window.h"
+#include <sandbox/utils/types.h>
+#include <sandbox/rendering/line.h>
+#include <sandbox/window/window.h>
 
 namespace sb
 {
