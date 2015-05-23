@@ -14,8 +14,18 @@ sandbox/sandbox.vcxproj.*
 ########
 # Other
 ########
-sandbox/*.zip
+sandbox/build
+sandbox/bin
+sandbox/lib
 sandbox/extlibs
 sandbox/unused-gfx
 *.o
 *.d
+.ycm_extra_conf.py
+.ycm_extra_conf.pyc
+*.swp
+*.swo
+*~
+tags
+*.log
+*.zip
