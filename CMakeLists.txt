@@ -43,7 +43,7 @@ find_sources(SANDBOX_CPP_SOURCES ${ROOT_DIR}/src ".cpp" "src")
 set(SANDBOX_SOURCES ${SANDBOX_HEADERS}
                     ${SANDBOX_CPP_SOURCES})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas -DGLM_FORCE_RADIANS -DGLM_SWIZZLE")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++11 -Wno-variadic-macros -Wno-pragmas -Wno-unknown-pragmas")
 
 add_library(sandbox ${SANDBOX_SOURCES})
 

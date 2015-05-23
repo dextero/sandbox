@@ -1,6 +1,12 @@
 #ifndef UTILS_ANGLES_H
 #define UTILS_ANGLES_H
 
+#ifndef GLM_FORCE_RADIANS
+#   define GLM_FORCE_RADIANS
+#endif
+#ifndef GLM_SWIZZLE
+#   define GLM_SWIZZLE
+#endif
 #include <glm/glm.hpp>
 
 namespace sb

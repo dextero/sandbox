@@ -5,6 +5,12 @@
 #include <utility>
 #include <functional>
 
+#ifndef GLM_FORCE_RADIANS
+#   define GLM_FORCE_RADIANS
+#endif
+#ifndef GLM_SWIZZLE
+#   define GLM_SWIZZLE
+#endif
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/compatibility.hpp>
