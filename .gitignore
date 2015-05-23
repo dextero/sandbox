@@ -14,11 +14,11 @@ sandbox/sandbox.vcxproj.*
 ########
 # Other
 ########
-sandbox/build
-sandbox/bin
-sandbox/lib
-sandbox/extlibs
-sandbox/unused-gfx
+build/
+bin/
+lib/
+extlibs/
+unused-gfx/
 *.o
 *.d
 .ycm_extra_conf.py
