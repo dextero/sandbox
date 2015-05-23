@@ -166,7 +166,7 @@ private:
 
         if (bytes_written > 5
                 && buffer[bytes_written - 5] != '\n'
-                && bytes_written + 1 < sizeof(buffer)) {
+                && (size_t)bytes_written + 1 < sizeof(buffer)) {
             buffer[bytes_written] = '\n';
             buffer[bytes_written + 1] = '\0';
         }
