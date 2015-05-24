@@ -13,6 +13,10 @@ namespace sb
               const std::shared_ptr<Shader>& shader,
               const std::shared_ptr<Texture>& texture = {});
 
+        Model(const std::shared_ptr<Mesh>& mesh,
+              const std::shared_ptr<Shader>& shader,
+              const std::shared_ptr<Texture>& texture = {});
+
         bool loadFromFile(const std::string& path);
     };
 } // namespace sb
