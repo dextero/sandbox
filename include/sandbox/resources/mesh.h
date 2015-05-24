@@ -18,6 +18,7 @@ namespace sb
         enum Shape {
             Point = SHAPE_POINTS,
             Line = SHAPE_LINES,
+            LineStrip = SHAPE_LINE_STRIP,
             Triangle = SHAPE_TRIANGLES,
             TriangleStrip = SHAPE_TRIANGLE_STRIP
         };

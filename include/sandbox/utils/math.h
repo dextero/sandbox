@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+#include <algorithm>
+
 #ifdef near
 #   undef near
 #endif
@@ -55,6 +57,18 @@ namespace sb
         T nextPowerOf2(T value)
         {
             return detail::nextPowerOf2<T>()(value);
+        }
+
+        template<typename T>
+        inline std::vector<T> range(size_t count)
+        {
+            std::vector<T> ret;
+            ret.reserve(count);
+
+            T counter = 0;
+            std::generate_n(std::back_inserter(ret), count,
+                            [&counter]() { return counter++; });
+            return ret;
         }
     } // namespace Math
 } // namespace sb

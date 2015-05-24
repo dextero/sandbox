@@ -30,6 +30,7 @@ namespace sb
 
 #define SHAPE_POINTS                GL_POINTS
 #define SHAPE_LINES                 GL_LINES
+#define SHAPE_LINE_STRIP            GL_LINE_STRIP
 #define SHAPE_TRIANGLES             GL_TRIANGLES
 #define SHAPE_QUADS                 GL_QUADS
 #define SHAPE_TRIANGLE_STRIP        GL_TRIANGLE_STRIP
