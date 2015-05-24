@@ -41,7 +41,7 @@ namespace sb
 #endif
             };
         }
- 
+
         namespace detail
         {
             uint32_t nextPowerOf2<uint32_t>::operator ()(uint32_t value)
@@ -73,7 +73,7 @@ namespace sb
 } // namespace sb
 
 std::ostream& operator <<(std::ostream& os,
-                          const Mat44& mat)
+                          const sb::Mat44& mat)
 {
     constexpr std::streamsize PRECISION = 8;
 

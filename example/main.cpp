@@ -79,26 +79,26 @@ struct Scene
     sb::Model skybox;
     sb::Terrain terrain;
 
-    sb::Light pointLight = sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f);
-    sb::Light parallelLight = sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f);
+    sb::Light pointLight = sb::Light::point(sb::Vec3(10.0, 10.0, 0.0), 100.0f);
+    sb::Light parallelLight = sb::Light::parallel(sb::Vec3(5.0f, -10.0f, 5.0f), 100.0f);
 
     Scene():
         colorShader(gResourceMgr.getShader("proj_basic.vert", "color.frag")),
         textureShader(gResourceMgr.getShader("proj_texture.vert", "texture.frag")),
         textureLightShader(gResourceMgr.getShader("proj_texture_normal.vert", "texture_normal.frag")),
         shadowShader(gResourceMgr.getShader("proj_shadow.vert", "shadow.frag")),
-        xaxis(Vec3(1000.f, 0.f, 0.f),
+        xaxis(sb::Vec3(1000.f, 0.f, 0.f),
               sb::Color::Red, colorShader),
-        yaxis(Vec3(0.f, 1000.f, 0.f),
+        yaxis(sb::Vec3(0.f, 1000.f, 0.f),
               sb::Color::Blue, colorShader),
-        zaxis(Vec3(0.f, 0.f, 1000.f),
+        zaxis(sb::Vec3(0.f, 0.f, 1000.f),
               sb::Color::Green, colorShader),
         crosshair("dot.png", textureShader),
         skybox("skybox.obj", textureShader,
                gResourceMgr.getTexture("miramar.jpg")),
         terrain("hmap_flat.jpg", "ground.jpg", shadowShader),
-        pointLight(sb::Light::point(Vec3(10.0, 10.0, 0.0), 100.0f)),
-        parallelLight(sb::Light::parallel(Vec3(5.0f, -10.0f, 5.0f), 100.0f))
+        pointLight(sb::Light::point(sb::Vec3(10.0, 10.0, 0.0), 100.0f)),
+        parallelLight(sb::Light::parallel(sb::Vec3(5.0f, -10.0f, 5.0f), 100.0f))
     {
         crosshair.setPosition(0.f, 0.f, 0.f);
         crosshair.setScale(0.01f, 0.01f * 1.33f, 1.f);
@@ -123,7 +123,7 @@ public:
     sb::Window wnd;
     Scene scene;
 
-    Vec3 speed;
+    sb::Vec3 speed;
 
     Accumulator deltaTime;
 
@@ -162,9 +162,9 @@ public:
         wnd.setTitle("Sandbox");
         wnd.lockCursor();
         wnd.hideCursor();
-        wnd.getCamera().lookAt(Vec3(5.f, 5.f, 20.f), Vec3(5.f, 5.f, 0.f));
+        wnd.getCamera().lookAt(sb::Vec3(5.f, 5.f, 20.f), sb::Vec3(5.f, 5.f, 0.f));
 
-        sim.setThrowStart(Vec3d(0., 1., 0.), Vec3d(30., 30., 0.));
+        sim.setThrowStart(sb::Vec3d(0., 1., 0.), sb::Vec3d(30., 30., 0.));
 
         deltaTime.reset();
         fpsDeltaTime.reset();
@@ -220,10 +220,10 @@ public:
                            wnd.getCamera().getFront().length(),
                            wnd.getCamera().getRight(),
                            wnd.getCamera().getUpReal(),
-                           Degrees(wnd.getCamera().getHorizontalAngle()),
-                           Radians(wnd.getCamera().getHorizontalAngle()),
-                           Degrees(wnd.getCamera().getVerticalAngle()),
-                           Radians(wnd.getCamera().getVerticalAngle())),
+                           sb::Degrees(wnd.getCamera().getHorizontalAngle()),
+                           sb::Radians(wnd.getCamera().getHorizontalAngle()),
+                           sb::Degrees(wnd.getCamera().getVerticalAngle()),
+                           sb::Radians(wnd.getCamera().getVerticalAngle())),
                        { 0.f, 0.f }, sb::Color::White, nextLine);
         nextLine += 6;
 
@@ -309,9 +309,9 @@ public:
         throwVelocity.update();
         windVelocity.update();
 
-        static Radians angle(0.0f);
-        angle = Radians(angle.value() + 0.02f);
-        scene.parallelLight.pos = Vec3(20.0f * std::sin(angle.value()), -20.0f, 20.0f * std::cos(angle.value()));
+        static sb::Radians angle(0.0f);
+        angle = sb::Radians(angle.value() + 0.02f);
+        scene.parallelLight.pos = sb::Vec3(20.0f * std::sin(angle.value()), -20.0f, 20.0f * std::cos(angle.value()));
     }
 
     void update(float delta)
@@ -369,21 +369,21 @@ public:
         {
         case sb::Mouse::ButtonLeft:
             {
-                Vec3 pos = wnd.getCamera().getEye();
+                sb::Vec3 pos = wnd.getCamera().getEye();
                 if (pos.y < sim.getBallRadius()) {
                     pos.y = (float)sim.getBallRadius();
                 }
 
-                Vec3 v = wnd.getCamera().getFront().normalized()
+                sb::Vec3 v = wnd.getCamera().getFront().normalized()
                                         * throwVelocity.getValue();
-                sim.setThrowStart(Vec3d(pos), Vec3d(v));
+                sim.setThrowStart(sb::Vec3d(pos), sb::Vec3d(v));
                 sim.reset();
                 throwVelocity.stop();
                 break;
             }
             break;
         case sb::Mouse::ButtonRight:
-            sim.setWind(Vec3d(wnd.getCamera().getFront().normalized()
+            sim.setWind(sb::Vec3d(wnd.getCamera().getFront().normalized()
                               * windVelocity.getValue()));
             windVelocity.stop();
             break;
@@ -397,34 +397,34 @@ public:
         switch (e.data.key)
         {
         case sb::Key::Num1:
-            speed = Vec3(0.0f, 0.0f, 0.0f);
-            wnd.getCamera().lookAt(Vec3(50.f, 0.f, 0.f),
-                                   Vec3(0.f, 0.f, 0.f));
+            speed = sb::Vec3(0.0f, 0.0f, 0.0f);
+            wnd.getCamera().lookAt(sb::Vec3(50.f, 0.f, 0.f),
+                                   sb::Vec3(0.f, 0.f, 0.f));
             break;
         case sb::Key::Num2:
-            speed = Vec3(0.0f, 0.0f, 0.0f);
-            wnd.getCamera().lookAt(Vec3(-50.f, 0.f, 0.f),
-                                   Vec3(0.f, 0.f, 0.f));
+            speed = sb::Vec3(0.0f, 0.0f, 0.0f);
+            wnd.getCamera().lookAt(sb::Vec3(-50.f, 0.f, 0.f),
+                                   sb::Vec3(0.f, 0.f, 0.f));
             break;
         case sb::Key::Num3:
-            speed = Vec3(0.0f, 0.0f, 0.0f);
-            wnd.getCamera().lookAt(Vec3(0.0001f, 50.f, 0.f),
-                                   Vec3(0.f, 0.f, 0.f));
+            speed = sb::Vec3(0.0f, 0.0f, 0.0f);
+            wnd.getCamera().lookAt(sb::Vec3(0.0001f, 50.f, 0.f),
+                                   sb::Vec3(0.f, 0.f, 0.f));
             break;
         case sb::Key::Num4:
-            speed = Vec3(0.0f, 0.0f, 0.0f);
-            wnd.getCamera().lookAt(Vec3(0.0001f, -50.f, 0.f),
-                                   Vec3(0.f, 0.f, 0.f));
+            speed = sb::Vec3(0.0f, 0.0f, 0.0f);
+            wnd.getCamera().lookAt(sb::Vec3(0.0001f, -50.f, 0.f),
+                                   sb::Vec3(0.f, 0.f, 0.f));
             break;
         case sb::Key::Num5:
-            speed = Vec3(0.0f, 0.0f, 0.0f);
-            wnd.getCamera().lookAt(Vec3(0.f, 0.f, 50.f),
-                                   Vec3(0.f, 0.f, 0.f));
+            speed = sb::Vec3(0.0f, 0.0f, 0.0f);
+            wnd.getCamera().lookAt(sb::Vec3(0.f, 0.f, 50.f),
+                                   sb::Vec3(0.f, 0.f, 0.f));
             break;
         case sb::Key::Num6:
-            speed = Vec3(0.0f, 0.0f, 0.0f);
-            wnd.getCamera().lookAt(Vec3(0.f, 0.f, -50.f),
-                                   Vec3(0.f, 0.f, 0.f));
+            speed = sb::Vec3(0.0f, 0.0f, 0.0f);
+            wnd.getCamera().lookAt(sb::Vec3(0.f, 0.f, -50.f),
+                                   sb::Vec3(0.f, 0.f, 0.f));
             break;
         case sb::Key::N:
             sim.increaseBallPathLength(-1.0);
@@ -576,13 +576,13 @@ public:
     {
         if (wnd.hasFocus())
         {
-            Vec2i halfSize = wnd.getSize() / 2;
+            sb::Vec2i halfSize = wnd.getSize() / 2;
             int pixelsDtX = (int)e.data.mouse.x - halfSize.x;
             int pixelsDtY = (int)e.data.mouse.y - halfSize.y;
 
             static const float ROTATION_SPEED = 1.0f;
-            Radians dtX = Radians(ROTATION_SPEED * (float)pixelsDtX / halfSize.x);
-            Radians dtY = Radians(ROTATION_SPEED * (float)pixelsDtY / halfSize.y);
+            sb::Radians dtX = sb::Radians(ROTATION_SPEED * (float)pixelsDtX / halfSize.x);
+            sb::Radians dtY = sb::Radians(ROTATION_SPEED * (float)pixelsDtY / halfSize.y);
 
             wnd.getCamera().mouseLook(dtX, dtY);
         }
@@ -621,7 +621,7 @@ public:
                 {
                     wnd.hideCursor(false);
                     wnd.lockCursor(false);
-                    speed = Vec3(0.0f, 0.0f, 0.0f);
+                    speed = sb::Vec3(0.0f, 0.0f, 0.0f);
                 }
                 break;
             case sb::Event::WindowResized:

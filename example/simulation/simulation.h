@@ -33,22 +33,22 @@ namespace Sim
                    const std::shared_ptr<sb::Shader>& lineShader);
 
         void update(float dt);
-        void setThrowStart(const Vec3d& pos, const Vec3d& v);
-        void setGravity(const Vec3d& g);
-        void setWind(const Vec3d& w);
+        void setThrowStart(const sb::Vec3d& pos, const sb::Vec3d& v);
+        void setGravity(const sb::Vec3d& g);
+        void setWind(const sb::Vec3d& w);
         void drawAll(sb::Renderer& renderer);
         void togglePause();
         void reset();
 
         // returns lines displayed
         uint32_t printParametersToScreen(sb::Window& wnd,
-                                         const Vec2& topLeft = Vec2(0.0f, 0.0f),
+                                         const sb::Vec2& topLeft = sb::Vec2(0.0f, 0.0f),
                                          uint32_t line = 0u);
-        const std::shared_ptr<Ball> raycast(const Vec3& rayOrig,
-                                            const Vec3& rayDir);
+        const std::shared_ptr<Ball> raycast(const sb::Vec3& rayOrig,
+                                            const sb::Vec3& rayDir);
         uint32_t printBallParametersToScreen(sb::Window& wnd,
                                              const std::shared_ptr<Ball> &ball,
-                                             const Vec2& topLeft = Vec2(0.0f, 0.0f),
+                                             const sb::Vec2& topLeft = sb::Vec2(0.0f, 0.0f),
                                              uint32_t line = 0u);
 
         double getBallRadius() const { return mBallRadius; }
@@ -86,10 +86,10 @@ namespace Sim
 
         std::list<std::shared_ptr<Ball>> mBalls;
 
-        Vec3d mThrowStartPos;
-        Vec3d mThrowStartVelocity;
-        Vec3d mGravity;
-        Vec3d mWindVelocity;
+        sb::Vec3d mThrowStartPos;
+        sb::Vec3d mThrowStartVelocity;
+        sb::Vec3d mGravity;
+        sb::Vec3d mWindVelocity;
         std::shared_ptr<sb::Line> mThrowStartLine;
         std::shared_ptr<sb::Line> mGravityLine;
         std::shared_ptr<sb::Line> mWindVelocityLine;

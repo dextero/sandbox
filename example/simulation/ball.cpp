@@ -11,34 +11,34 @@ namespace Sim
     const sb::Color& ColorThrow = sb::Color::Yellow;
     const sb::Color& ColorPath = sb::Color(0.7f, 0.f, 0.7f);
 
-    Ball::Ball(const Vec3d& pos,
-               const Vec3d& velocity,
+    Ball::Ball(const sb::Vec3d& pos,
+               const sb::Vec3d& velocity,
                double mass,
                double radius,
                const std::shared_ptr<sb::Shader>& modelShader,
                const std::shared_ptr<sb::Shader>& lineShader):
-        mVelocity(Vec3d(1., 1., 1.),
-                  sb::Line(Vec3(1.f, 1.f, 1.f),
+        mVelocity(sb::Vec3d(1., 1., 1.),
+                  sb::Line(sb::Vec3(1.f, 1.f, 1.f),
                            sb::Color(ColorVelocity, 0.6f),
                            lineShader)),
-        mAccGravity(Vec3d(1., 1., 1.),
-                    sb::Line(Vec3(1.f, 1.f, 1.f),
+        mAccGravity(sb::Vec3d(1., 1., 1.),
+                    sb::Line(sb::Vec3(1.f, 1.f, 1.f),
                              sb::Color(ColorGravity, 0.6f),
                              lineShader)),
-        mAccDrag(Vec3d(1., 1., 1.),
-                 sb::Line(Vec3(1.f, 1.f, 1.f),
+        mAccDrag(sb::Vec3d(1., 1., 1.),
+                 sb::Line(sb::Vec3(1.f, 1.f, 1.f),
                           sb::Color(ColorDrag, 0.6f),
                           lineShader)),
-        mAccWind(Vec3d(1., 1., 1.),
-                 sb::Line(Vec3(1.f, 1.f, 1.f),
+        mAccWind(sb::Vec3d(1., 1., 1.),
+                 sb::Line(sb::Vec3(1.f, 1.f, 1.f),
                           sb::Color(ColorWind, 0.6f),
                           lineShader)),
-        mAccBuoyancy(Vec3d(1., 1., 1.),
-                     sb::Line(Vec3(1.f, 1.f, 1.f),
+        mAccBuoyancy(sb::Vec3d(1., 1., 1.),
+                     sb::Line(sb::Vec3(1.f, 1.f, 1.f),
                               sb::Color(ColorBuoyancy, 0.6f),
                               lineShader)),
-        mAccNet(Vec3d(1., 1., 1.),
-                sb::Line(Vec3(1.f, 1.f, 1.f),
+        mAccNet(sb::Vec3d(1., 1., 1.),
+                sb::Line(sb::Vec3(1.f, 1.f, 1.f),
                          sb::Color(ColorNet, 0.6f),
                          lineShader)),
         mMass(mass),
@@ -70,7 +70,7 @@ namespace Sim
         attachLines();
     }
 
-    void Ball::set(ColVec& what, const Vec3d& value, bool scaleToForce)
+    void Ball::set(ColVec& what, const sb::Vec3d& value, bool scaleToForce)
     {
         what.first = value;
         if (scaleToForce)
@@ -79,14 +79,14 @@ namespace Sim
             what.second.setScale(value);
     }
 
-    bool Ball::update(double dt, const Vec3d& gravity, const Vec3d& windVelocity, double fluidDensity, double maxPathLength, bool force)
+    bool Ball::update(double dt, const sb::Vec3d& gravity, const sb::Vec3d& windVelocity, double fluidDensity, double maxPathLength, bool force)
     {
         mTime += dt;
         if (mTime < 0.0)
             return true;
 
         // updating position
-        Vec3d delta = mVelocity.first * dt;
+        sb::Vec3d delta = mVelocity.first * dt;
         mPos += delta;
 
         static const double PATH_UPDATE_STEP = 0.5;
@@ -111,7 +111,7 @@ namespace Sim
             mPos.y = mRadius;
             --mTimeToLive;
             // stop ball when touched ground
-            set(mVelocity, Vec3d(0., 0., 0.));
+            set(mVelocity, sb::Vec3d(0., 0., 0.));
         }
 
         mModel->setPosition(mPos);
@@ -135,35 +135,35 @@ namespace Sim
         // Cd - drag coefficient, 0.47 for sphere
         // A - reference area
         static double dragCoefficient = 0.47;
-        Vec3d newDragForce = -mVelocity.first.normalized() * 0.5
+        sb::Vec3d newDragForce = -mVelocity.first.normalized() * 0.5
                              * fluidDensity
                              * mVelocity.first.dot(mVelocity.first)
                              * dragCoefficient
                              * mArea;
 
-        Vec3d dragForceStep = Vec3d(newDragForce * dt);
-        Vec3d momentum = Vec3d(mVelocity.first * mMass);
+        sb::Vec3d dragForceStep = sb::Vec3d(newDragForce * dt);
+        sb::Vec3d momentum = sb::Vec3d(mVelocity.first * mMass);
         if (dragForceStep.dot(dragForceStep) > momentum.dot(momentum))
         {
             // drag force too big!
-            double length = Vec3d(momentum / dt).length();
+            double length = sb::Vec3d(momentum / dt).length();
             set(mAccDrag, newDragForce.normalized() * length, force);
         }
         else
             set(mAccDrag, newDragForce / mMass, force);
 
         // wind
-        Vec3d newWindForce = (windVelocity != Vec3d(0., 0., 0.)
+        sb::Vec3d newWindForce = (windVelocity != sb::Vec3d(0., 0., 0.)
                               ? windVelocity.normalized() * 0.5
                                 * fluidDensity
                                 * windVelocity.dot(windVelocity)
                                 * dragCoefficient
                                 * mArea
-                              : Vec3d(0., 0., 0.));
+                              : sb::Vec3d(0., 0., 0.));
         set(mAccWind, newWindForce / mMass, force);
 
         // buoyancy
-        Vec3d buoyancyForce = fluidDensity * mVolume * -mAccGravity.first;
+        sb::Vec3d buoyancyForce = fluidDensity * mVolume * -mAccGravity.first;
         set(mAccBuoyancy, buoyancyForce / mMass, force);
 
         // net
@@ -187,11 +187,11 @@ namespace Sim
         r.enableFeature(sb::Renderer::FeatureDepthTest, false);
         if (mPath.size() > 1)
         {
-            static sb::Line line(Vec3(1.f, 1.f, 1.f),
+            static sb::Line line(sb::Vec3(1.f, 1.f, 1.f),
                                  sb::Color(ColorPath, 0.6f),
                                  mLineShader);
 
-            std::list<Vec3d>::iterator it, next;
+            std::list<sb::Vec3d>::iterator it, next;
             for (it = mPath.begin(), next = ++it; next != mPath.end(); it = next++)
             {
                 line.setPosition(*it);

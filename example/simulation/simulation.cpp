@@ -16,17 +16,17 @@ namespace Sim
         mBallShader(ballShader),
         mLineShader(lineShader),
         mBalls(),
-        mThrowStartPos(Vec3d(0., 0., 0.)),
-        mThrowStartVelocity(Vec3d(0., 0., 0.)),
+        mThrowStartPos(sb::Vec3d(0., 0., 0.)),
+        mThrowStartVelocity(sb::Vec3d(0., 0., 0.)),
         mGravity(),
         mWindVelocity(),
-        mThrowStartLine(std::make_shared<sb::Line>(Vec3(1.f, 1.f, 1.f),
+        mThrowStartLine(std::make_shared<sb::Line>(sb::Vec3(1.f, 1.f, 1.f),
                                                    sb::Color(ColorThrow, 0.4f),
                                                    lineShader)),
-        mGravityLine(std::make_shared<sb::Line>(Vec3(1.f, 1.f, 1.f),
+        mGravityLine(std::make_shared<sb::Line>(sb::Vec3(1.f, 1.f, 1.f),
                                                 sb::Color(ColorGravity, 0.4f),
                                                 lineShader)),
-        mWindVelocityLine(std::make_shared<sb::Line>(Vec3(1.f, 1.f, 1.f),
+        mWindVelocityLine(std::make_shared<sb::Line>(sb::Vec3(1.f, 1.f, 1.f),
                                                      sb::Color(ColorWind, 0.4f),
                                                      lineShader)),
         mAirDensity(1.204),
@@ -63,9 +63,9 @@ namespace Sim
             break;
         }
 
-        setThrowStart(Vec3d(0., 1., 0.), Vec3d(20., 20., 0.));
-        setGravity(Vec3d(0., -9.81, 0.));
-        setWind(Vec3d(0., 0., 0.));
+        setThrowStart(sb::Vec3d(0., 1., 0.), sb::Vec3d(20., 20., 0.));
+        setGravity(sb::Vec3d(0., -9.81, 0.));
+        setWind(sb::Vec3d(0., 0., 0.));
     }
 
     void Simulation::update(float dt)
@@ -103,7 +103,7 @@ namespace Sim
         }
     }
 
-    void Simulation::setThrowStart(const Vec3d& pos, const Vec3d& v)
+    void Simulation::setThrowStart(const sb::Vec3d& pos, const sb::Vec3d& v)
     {
         gLog.info("simulation: throw_start set to %s\n", toString(v).c_str());
 
@@ -118,7 +118,7 @@ namespace Sim
         mWindVelocityLine->update();
     }
 
-    void Simulation::setGravity(const Vec3d& g)
+    void Simulation::setGravity(const sb::Vec3d& g)
     {
         gLog.info("simulation: gravity set to %s\n", toString(g).c_str());
 
@@ -126,7 +126,7 @@ namespace Sim
         mGravity = g;
     }
 
-    void Simulation::setWind(const Vec3d& w)
+    void Simulation::setWind(const sb::Vec3d& w)
     {
         gLog.info("simulation: wind set to %s\n", toString(w).c_str());
 
@@ -159,7 +159,7 @@ namespace Sim
 
     // returns lines displayed
     uint32_t Simulation::printParametersToScreen(sb::Window& wnd,
-                                                 const Vec2& topLeft,
+                                                 const sb::Vec2& topLeft,
                                                  uint32_t line)
     {
         wnd.drawString(sb::utils::format("velocity = {0} ({1})",
@@ -210,18 +210,18 @@ namespace Sim
         return line;
     }
 
-    const std::shared_ptr<Ball> Simulation::raycast(const Vec3& rayOrig,
-                                                    const Vec3& rayDir)
+    const std::shared_ptr<Ball> Simulation::raycast(const sb::Vec3& rayOrig,
+                                                    const sb::Vec3& rayDir)
     {
-        Vec3d orig = Vec3d(rayOrig);
-        Vec3d dir = Vec3d(rayDir);
+        sb::Vec3d orig = sb::Vec3d(rayOrig);
+        sb::Vec3d dir = sb::Vec3d(rayDir);
         dir = dir.normalized();
 
         double intersection = std::numeric_limits<double>::infinity();
         std::shared_ptr<Ball> ret;
         for (auto &ball_ptr: mBalls)
         {
-            Vec3d origToCenter(orig - ball_ptr->mPos);
+            sb::Vec3d origToCenter(orig - ball_ptr->mPos);
             double b = -dir.dot(origToCenter);
             double det = b * b - origToCenter.dot(origToCenter)
                          + ball_ptr->mRadius * ball_ptr->mRadius;
@@ -251,7 +251,7 @@ namespace Sim
     uint32_t Simulation::printBallParametersToScreen(
             sb::Window& wnd,
             const std::shared_ptr<Ball> &ball,
-            const Vec2& topLeft,
+            const sb::Vec2& topLeft,
             uint32_t line)
     {
         if (ball)

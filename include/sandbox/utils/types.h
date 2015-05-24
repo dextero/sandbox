@@ -21,6 +21,8 @@
 #include <sandbox/utils/vector.h>
 #include <sandbox/utils/angles.h>
 
+namespace sb {
+
 typedef glm::float4x4 Mat44f;
 typedef glm::float3x3 Mat33f;
 typedef glm::fquat Quatf;
@@ -40,7 +42,6 @@ typedef Vec3f Vec3;
 typedef Vec2f Vec2;
 typedef Quatf Quat;
 
-
 #define Z_NEAR 0.01f
 #define Z_FAR 100000.f
 
@@ -54,14 +55,16 @@ typedef Quatf Quat;
 typedef sb::Math::Degrees<float> Degrees;
 typedef sb::Math::Radians<float> Radians;
 
-inline Degrees operator "" _deg(long double degrees)
+} // namespace sb
+
+inline sb::Degrees operator "" _deg(long double degrees)
 {
-    return Degrees(degrees);
+    return sb::Degrees(degrees);
 }
 
-inline Radians operator "" _rad(long double radians)
+inline sb::Radians operator "" _rad(long double radians)
 {
-    return Radians(radians);
+    return sb::Radians(radians);
 }
 
 #endif // UTILS_TYPES_H

@@ -23,7 +23,7 @@ namespace Sim
     class Ball
     {
     public:
-        typedef std::pair<Vec3d, sb::Line> ColVec;
+        typedef std::pair<sb::Vec3d, sb::Line> ColVec;
 
         ColVec mVelocity;
         ColVec mAccGravity;
@@ -42,31 +42,31 @@ namespace Sim
         double mTime;
         double mTotalEnergy;
 
-        Vec3d mPos;
+        sb::Vec3d mPos;
         std::shared_ptr<sb::Model> mModel;
 
         uint32_t mTimeToLive; // after how many ball-ground collisions should we erase the ball?
 
-        Ball(const Vec3d& pos,
-             const Vec3d& velocity,
+        Ball(const sb::Vec3d& pos,
+             const sb::Vec3d& velocity,
              double mass,
              double radius,
              const std::shared_ptr<sb::Shader>& modelShader,
              const std::shared_ptr<sb::Shader>& lineShader);
 
         void set(ColVec& what,
-                 const Vec3d& value,
+                 const sb::Vec3d& value,
                  bool scaleToForce = false);
         bool update(double dt,
-                    const Vec3d& gravity,
-                    const Vec3d& wind,
+                    const sb::Vec3d& gravity,
+                    const sb::Vec3d& wind,
                     double fluidDensity = 1.204, // 1.204 - mass density of air at 1 atm, 20*C
                     double maxPathLength = 10.0,
                     bool forces = false); // forces - should it draw forces or accelerations?
         void drawAll(sb::Renderer& r);
 
     private:
-        std::list<Vec3d> mPath;
+        std::list<sb::Vec3d> mPath;
         std::shared_ptr<sb::Shader> mLineShader;
 
         void attachLines();
