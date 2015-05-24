@@ -94,13 +94,14 @@ namespace sb
         void draw(const std::shared_ptr<Drawable>& d) { draw(*d); }
         void drawAll();
 
-        enum EFeature {
-            FeatureBackfaceCulling = RENDERER_BACKFACE_CULLING,
-            FeatureDepthTest = RENDERER_DEPTH_TEST,
-            FeatureAlphaBlending = RENDERER_ALPHA_BLENDING
+        enum class Feature {
+            BackfaceCulling = RENDERER_BACKFACE_CULLING,
+            DepthTest = RENDERER_DEPTH_TEST,
+            AlphaBlending = RENDERER_ALPHA_BLENDING,
+            WireframeMode,
         };
 
-        void enableFeature(EFeature feature, bool enable = true);
+        void enableFeature(Feature feature, bool enable = true);
         void saveScreenshot(const std::string& filename, int width, int height);
 
     private:
@@ -117,12 +118,12 @@ namespace sb
 
         bool initGLEW();
 
-        enum EFilterType {
-            FilterShader,
-            FilterTexture,
-            FilterDepth,
-            FilterProjection,
-            FilterShaderTextureProjectionDepth
+        enum Filter {
+            Shader,
+            Texture,
+            Depth,
+            Projection,
+            ShaderTextureProjectionDepth
         };
 
         void drawTo(Framebuffer& framebuffer,

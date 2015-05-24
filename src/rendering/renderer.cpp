@@ -247,12 +247,16 @@ void Renderer::drawAll()
     mDrawablesBuffer.clear();
 }
 
-void Renderer::enableFeature(EFeature feature, bool enable)
+void Renderer::enableFeature(Feature feature, bool enable)
 {
-    if (enable) {
-        GL_CHECK(glEnable((GLenum)feature));
+    if (feature == Feature::WireframeMode) {
+        GL_CHECK(glPolygonMode(GL_FRONT_AND_BACK, enable ? GL_LINE : GL_FILL));
     } else {
-        GL_CHECK(glDisable((GLenum)feature));
+        if (enable) {
+            GL_CHECK(glEnable((GLenum)feature));
+        } else {
+            GL_CHECK(glDisable((GLenum)feature));
+        }
     }
 }
 

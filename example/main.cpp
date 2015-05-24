@@ -267,11 +267,11 @@ public:
         drawBoids();
 
         // axes - disable edpth test to prevent blinking
-        wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest, false);
+        wnd.getRenderer().enableFeature(sb::Renderer::Feature::DepthTest, false);
         wnd.draw(scene.xaxis);
         wnd.draw(scene.yaxis);
         wnd.draw(scene.zaxis);
-        wnd.getRenderer().enableFeature(sb::Renderer::FeatureDepthTest);
+        wnd.getRenderer().enableFeature(sb::Renderer::Feature::DepthTest);
 
         // balls & forces
         sim.drawAll(wnd.getRenderer());

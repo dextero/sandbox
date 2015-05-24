@@ -184,7 +184,7 @@ namespace Sim
         r.draw(*mModel);
 
         // temporarily disable depth testing, to make lines fully visible
-        r.enableFeature(sb::Renderer::FeatureDepthTest, false);
+        r.enableFeature(sb::Renderer::Feature::DepthTest, false);
         if (mPath.size() > 1)
         {
             static sb::Line line(sb::Vec3(1.f, 1.f, 1.f),
@@ -208,7 +208,7 @@ namespace Sim
         r.draw(mAccBuoyancy.second);
         r.draw(mAccNet.second);
 
-        r.enableFeature(sb::Renderer::FeatureDepthTest);
+        r.enableFeature(sb::Renderer::Feature::DepthTest);
     }
 
     void Ball::attachLines()
