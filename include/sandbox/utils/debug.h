@@ -20,7 +20,7 @@
 
 # else // _DEBUG
 
-#  define sbAssert(condition, ...) (void)condition
+#  define sbAssert(condition, ...) ((void)(condition))
 
 # endif // _DEBUG
 
