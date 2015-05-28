@@ -33,6 +33,7 @@ add_external_library(AssImp REQUIRED)
 add_external_library(OpenGL REQUIRED)
 add_external_library(DevIL REQUIRED)
 add_external_library(GLEW REQUIRED)
+add_external_library(X11 REQUIRED)
 
 set(LIBS -ldl ${LIBS} ${IL_LIBRARIES} ${ILU_LIBRARIES} ${ILUT_LIBRARIES})
 
