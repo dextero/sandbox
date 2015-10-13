@@ -53,3 +53,6 @@ find_sources(EXAMPLE_HEADERS ${ROOT_DIR}/example ".h" "include")
 find_sources(EXAMPLE_SOURCES ${ROOT_DIR}/example ".cpp" "src")
 add_executable(sandbox_example ${EXAMPLE_SOURCES})
 target_link_libraries(sandbox_example sandbox ${LIBS})
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/sandbox-config.cmake.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sandbox-config.cmake" @ONLY)
