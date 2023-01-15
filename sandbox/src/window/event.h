@@ -232,10 +232,10 @@ namespace sb
             case MousePressed:
             case MouseReleased:
                 data.mouse.button = btn;
-                // no break;
+                // fallthrough
             case MouseWheel:
                 data.mouse.wheelDelta = wheelDelta;
-                // no break;
+                // fallthrough
             case MouseMoved:
                 data.mouse.x = x;
                 data.mouse.y = y;
