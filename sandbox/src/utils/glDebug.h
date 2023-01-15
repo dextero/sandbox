@@ -456,8 +456,6 @@ make_proxy(const char *func_name,
 #define glLoadName(...) sb::proxy_call("glLoadName", glLoadName, ##__VA_ARGS__)
 #define glPushName(...) sb::proxy_call("glPushName", glPushName, ##__VA_ARGS__)
 #define glPopName(...) sb::proxy_call("glPopName", glPopName, ##__VA_ARGS__)
-#define glEGLImageTargetTexture2DOES(...) sb::proxy_call("glEGLImageTargetTexture2DOES", glEGLImageTargetTexture2DOES, ##__VA_ARGS__)
-#define glEGLImageTargetRenderbufferStorageOES(...) sb::proxy_call("glEGLImageTargetRenderbufferStorageOES", glEGLImageTargetRenderbufferStorageOES, ##__VA_ARGS__)
 
 #endif // GLDEBUG_H
 
