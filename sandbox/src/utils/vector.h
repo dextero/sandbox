@@ -44,7 +44,9 @@ namespace sb
     {
         typedef glm::tvec2<ElemT, glm::highp> base_type;
 
-        TVec2() {}
+        TVec2():
+            base_type(0, 0)
+        {}
         TVec2(ElemT x, ElemT y):
             base_type(x, y)
         {}
@@ -112,7 +114,9 @@ namespace sb
     {
         typedef glm::tvec3<ElemT, glm::highp> base_type;
 
-        TVec3() {}
+        TVec3():
+            base_type(0, 0, 0)
+        {}
         TVec3(ElemT x, ElemT y, ElemT z):
             base_type(x, y, z)
         {}
@@ -177,7 +181,9 @@ namespace sb
     {
         typedef glm::tvec4<ElemT, glm::highp> base_type;
 
-        TVec4() {}
+        TVec4():
+            base_type(0, 0, 0, 0)
+        {}
         TVec4(ElemT x, ElemT y, ElemT z, ElemT w):
             base_type(x, y, z, w)
         {}
