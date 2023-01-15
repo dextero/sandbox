@@ -38,8 +38,13 @@ add_external_library(AssImp REQUIRED)
 add_external_library(OpenGL REQUIRED)
 add_external_library(DevIL REQUIRED)
 add_external_library(GLEW REQUIRED)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    find_package(X11 REQUIRED)
+else()
+    set(X11_LIBRARIES)
+endif()
 
-set(LIBS -ldl ${LIBS} ${IL_LIBRARIES} ${ILU_LIBRARIES} ${ILUT_LIBRARIES})
+set(LIBS -ldl ${LIBS} ${IL_LIBRARIES} ${ILU_LIBRARIES} ${ILUT_LIBRARIES} ${X11_LIBRARIES})
 
 # project sources
 include_directories(${ROOT_DIR}/src)
