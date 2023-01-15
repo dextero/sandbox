@@ -7,10 +7,10 @@
 namespace sb
 {
     Camera::Camera():
-        mProjectionMatrix(),
-        mViewMatrix(),
-        mRotationMatrix(),
-        mTranslationMatrix(),
+        mProjectionMatrix(1.0f),
+        mViewMatrix(1.0f),
+        mRotationMatrix(1.0f),
+        mTranslationMatrix(1.0f),
         mEye(0.f, 0.f, 0.f),
         mAt(0.f, 0.f, -1.f),
         mUp(0.f, 1.f, 0.f),
