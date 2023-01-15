@@ -6,7 +6,7 @@ namespace sb
     // please don't hate me
 #define OP1(RetType, op) \
     inline RetType operator op() const \
-    { return glm::detail::operator op((const base_type&)*this); }
+    { return glm::operator op((const base_type&)*this); }
 #define OP2(RetType, ArgType, op) \
     inline RetType operator op(ArgType arg) \
     { base_type::operator op(arg); return *this; }
@@ -16,11 +16,11 @@ namespace sb
     { return (RetType)base_type::operator op(arg); }
 #define OP2_CONST(RetType, ArgType, op) \
     inline RetType operator op(ArgType arg) const \
-    { return RetType(glm::detail::operator op((const base_type&)*this, arg)); }
+    { return RetType(glm::operator op((const base_type&)*this, arg)); }
 #define OP2_CONST_T(Template, RetType, ArgType, op) \
     template<typename OpArgType> \
     inline RetType operator op(const Template<OpArgType>& arg) const \
-    { return RetType(glm::detail::operator op((const base_type&)*this, arg)); }
+    { return RetType(glm::operator op((const base_type&)*this, arg)); }
 
 #define OPERATORS(BaseType, VecType, ElemType) \
     OP1(VecType, +) \
@@ -40,9 +40,9 @@ namespace sb
     OP2_CONST_T(VecType, bool, const VecType&, !=)
 
     template<typename ElemT>
-    struct TVec2: public glm::detail::tvec2<ElemT, glm::highp>
+    struct TVec2: public glm::tvec2<ElemT, glm::highp>
     {
-        typedef glm::detail::tvec2<ElemT, glm::highp> base_type;
+        typedef glm::tvec2<ElemT, glm::highp> base_type;
 
         TVec2() {}
         TVec2(ElemT x, ElemT y):
@@ -61,7 +61,7 @@ namespace sb
         {}
 
         template<typename T, glm::precision P>
-        explicit TVec2(const glm::detail::tvec2<T, P>& v):
+        explicit TVec2(const glm::tvec2<T, P>& v):
             base_type(v)
         {}
 
@@ -100,13 +100,13 @@ namespace sb
             return this->x == (ElemT)0 && this->y == (ElemT)0;
         }
 
-        OPERATORS(glm::detail::tvec2, TVec2, ElemT)
+        OPERATORS(glm::tvec2, TVec2, ElemT)
     };
 
     template<typename ElemT>
-    struct TVec3: public glm::detail::tvec3<ElemT, glm::highp>
+    struct TVec3: public glm::tvec3<ElemT, glm::highp>
     {
-        typedef glm::detail::tvec3<ElemT, glm::highp> base_type;
+        typedef glm::tvec3<ElemT, glm::highp> base_type;
 
         TVec3() {}
         TVec3(ElemT x, ElemT y, ElemT z):
@@ -122,7 +122,7 @@ namespace sb
         {}
 
         template<typename T, glm::precision P>
-        explicit TVec3(const glm::detail::tvec3<T, P>& v):
+        explicit TVec3(const glm::tvec3<T, P>& v):
             base_type(v)
         {}
 
@@ -165,13 +165,13 @@ namespace sb
             return this->x == (ElemT)0 && this->y == (ElemT)0 && this->z == (ElemT)0;
         }
 
-        OPERATORS(glm::detail::tvec3, TVec3, ElemT)
+        OPERATORS(glm::tvec3, TVec3, ElemT)
     };
 
     template<typename ElemT>
-    struct TVec4: public glm::detail::tvec4<ElemT, glm::highp>
+    struct TVec4: public glm::tvec4<ElemT, glm::highp>
     {
-        typedef glm::detail::tvec4<ElemT, glm::highp> base_type;
+        typedef glm::tvec4<ElemT, glm::highp> base_type;
 
         TVec4() {}
         TVec4(ElemT x, ElemT y, ElemT z, ElemT w):
@@ -187,12 +187,12 @@ namespace sb
         {}
 
         template<typename T, glm::precision P>
-        explicit TVec4(const glm::detail::tvec4<T, P>& v):
+        explicit TVec4(const glm::tvec4<T, P>& v):
             base_type(v)
         {}
 
         template<typename T, glm::precision P>
-        explicit TVec4(const glm::detail::tvec3<T, P>& v):
+        explicit TVec4(const glm::tvec3<T, P>& v):
             base_type(v.x, v.y, v.z, (T)1)
         {}
 
@@ -234,7 +234,7 @@ namespace sb
                    && this->w == (ElemT)0;
         }
 
-        OPERATORS(glm::detail::tvec4, TVec4, ElemT)
+        OPERATORS(glm::tvec4, TVec4, ElemT)
     };
 
 #undef OPERATORS
