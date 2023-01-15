@@ -8,37 +8,33 @@ namespace sb {
 template<typename T>
 struct TRect
 {
-    union {
-        TVec2<T> topLeft;
-        struct {
-            T left;
-            T top;
-        };
-    };
-    union {
-        TVec2<T> bottomRight;
-        struct {
-            T right;
-            T bottom;
-        };
-    };
+    T left;
+    T top;
+    T right;
+    T bottom;
 
     TRect():
-        topLeft(),
-        bottomRight()
+        left(0),
+        top(0),
+        right(0),
+        bottom(0)
     {}
 
     TRect(const TVec2<T>& topLeft,
           const TVec2<T>& size):
-        topLeft(topLeft),
-        bottomRight(topLeft + size)
+        left(topLeft.x),
+        top(topLeft.y),
+        right(topLeft.x + size.x),
+        bottom(topLeft.y + size.y)
     {
         fix();
     }
 
     TRect(T left, T right, T bottom, T top):
-        topLeft(top, left),
-        bottomRight(bottom, right)
+        left(left),
+        top(top),
+        right(right),
+        bottom(bottom)
     {
         fix();
     }
@@ -46,16 +42,20 @@ struct TRect
     TRect(const TRect& r): TRect(r.left, r.right, r.bottom, r.top) {}
     TRect& operator =(const TRect& r)
     {
-        topLeft = r.topLeft;
-        bottomRight = r.bottomRight;
+        left = r.left;
+        top = r.top;
+        right = r.right;
+        bottom = r.bottom;
         return *this;
     }
 
     TRect(TRect&& r): TRect(r.left, r.right, r.bottom, r.top) {}
     TRect& operator =(TRect&& r)
     {
-        topLeft = r.topLeft;
-        bottomRight = r.bottomRight;
+        left = r.left;
+        top = r.top;
+        right = r.right;
+        bottom = r.bottom;
         return *this;
     }
 
@@ -90,8 +90,10 @@ struct TRect
         return left == right && top == bottom;
     }
 
+    Vec2 topLeft() const { return { left, top }; }
     Vec2 topRight() const { return { right, top }; }
     Vec2 bottomLeft() const { return { left, bottom }; }
+    Vec2 bottomRight() const { return { right, bottom }; }
 
     TRect& fix()
     {

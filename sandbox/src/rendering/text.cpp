@@ -41,8 +41,8 @@ std::shared_ptr<Mesh> makeMeshForText(const std::string& text,
         vertices.push_back(Vec3(x + l.widthPixels, y + l.heightPixels, 0.0f));
 
         texcoords.push_back(l.texcoords.bottomLeft());
-        texcoords.push_back(l.texcoords.bottomRight);
-        texcoords.push_back(l.texcoords.topLeft);
+        texcoords.push_back(l.texcoords.bottomRight());
+        texcoords.push_back(l.texcoords.topLeft());
         texcoords.push_back(l.texcoords.topRight());
 
         indices.push_back(idxBase);
