@@ -54,6 +54,10 @@ namespace sb
         TVec2(const base_type& v):
             base_type(v)
         {}
+        TVec2& operator =(const TVec2& v) {
+            base_type::operator=(v);
+            return *this;
+        }
 
         template<typename T>
         TVec2(const TVec2<T>& v):
