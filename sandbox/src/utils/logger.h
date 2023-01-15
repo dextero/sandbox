@@ -169,7 +169,7 @@ private:
 
         int bytes_written = snprintf(format_buffer, sizeof(format_buffer),
                                      "\033\[%dm%s%s\033\[0m",
-                                     color, prefix, msg);
+                                     static_cast<int>(color), prefix, msg);
         sbAssert(bytes_written >= 0
                      && bytes_written < (int)sizeof(format_buffer),
                  "format_buffer too small");
