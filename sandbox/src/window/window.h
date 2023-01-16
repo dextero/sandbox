@@ -4,6 +4,7 @@
 #include <queue>
 
 #include <X11/Xlib.h>
+#include <X11/Xatom.h>
 
 #include "rendering/renderer.h"
 #include "rendering/color.h"
@@ -27,11 +28,12 @@ namespace sb
         bool create(unsigned width, unsigned height);
         void resize(unsigned width, unsigned height);
         bool setFullscreen(bool fullscreen = true);
-        const Vec2i getSize();
+        Vec2i getSize() const;
         void close();
         bool getEvent(Event& e);
-        bool isOpened();
-        bool hasFocus();
+        bool isOpened() const;
+        bool isFullscreen() const;
+        bool hasFocus() const;
         void setTitle(const std::string& str);
 
         void clear(const Color& c);
@@ -55,11 +57,22 @@ namespace sb
         ::Display* mDisplay;
         ::Window mWindow;
 
-        bool mLockCursor;
-        bool mFullscreen;
+        bool mLockCursor; bool mFullscreen;
+        Vec2i mSize;
 
         Renderer mRenderer;
         std::queue<Event> mEvents;
+
+        template <typename T>
+        int setXProperty(const char* propName, T value) {
+            return XChangeProperty(mDisplay,
+                                   mWindow,
+                                   XInternAtom(mDisplay, propName, False),
+                                   XA_ATOM,
+                                   32,
+                                   PropModeReplace,
+                                   (unsigned char*)&value, sizeof(value) / sizeof(long));
+        }
     };
 } // namespace sb
 

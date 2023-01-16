@@ -537,6 +537,7 @@ public:
         case sb::Key::F2: showModels = !showModels; break;
         case sb::Key::F3: showTrees = !showTrees; break;
         case sb::Key::F4: showLightSources = !showLightSources; break;
+        case sb::Key::F11: wnd.setFullscreen(!wnd.isFullscreen()); break;
         case sb::Key::F12: canFly = !canFly; break;
         case sb::Key::Space:
             scene.shaderToggler.toggle();

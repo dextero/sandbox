@@ -24,7 +24,6 @@ namespace sb
 
     {
         create(width, height);
-        mRenderer.setViewport(0, 0, width, height);
     }
 
     Window::~Window()
@@ -106,6 +105,7 @@ namespace sb
 
         gLog.trace("mapping window\n");
         XMapWindow(mDisplay, mWindow);
+        resize(width, height);
 
         mRenderer.init(mDisplay, mWindow, bestFbc);
 
@@ -114,20 +114,77 @@ namespace sb
 
     void Window::resize(unsigned width, unsigned height)
     {
-        (void)width;
-        (void)height;
-        sbFail("Window::resize not implemented");
+        XWindowAttributes xwa;
+        XGetWindowAttributes(mDisplay, mWindow, &xwa);
+        XMoveResizeWindow(mDisplay, mWindow, xwa.x, xwa.y, width, height);
+
+        mSize = Vec2i((int)width, (int)height);
+        mRenderer.setViewport(0, 0, width, height);
     }
 
     bool Window::setFullscreen(bool fullscreen)
     {
-        sbFail("Window::setFullscreen not implemented");
+        gLog.info("setFullscreen: %d", (int)fullscreen);
+        struct MwmHints {
+            unsigned long flags;
+            unsigned long functions;
+            unsigned long decorations;
+            long input_mode;
+            unsigned long status;
+        };
+        enum {
+            MWM_HINTS_FUNCTIONS = (1L << 0),
+            MWM_HINTS_DECORATIONS =  (1L << 1),
+
+            MWM_FUNC_ALL = (1L << 0),
+            MWM_FUNC_RESIZE = (1L << 1),
+            MWM_FUNC_MOVE = (1L << 2),
+            MWM_FUNC_MINIMIZE = (1L << 3),
+            MWM_FUNC_MAXIMIZE = (1L << 4),
+            MWM_FUNC_CLOSE = (1L << 5)
+        };
+
+        Vec2i newSize;
+
+        if (fullscreen) {
+            Screen* screen = XDefaultScreenOfDisplay(mDisplay);
+            newSize = Vec2i(WidthOfScreen(screen), HeightOfScreen(screen));
+
+            struct MwmHints hints;
+            hints.flags = MWM_HINTS_DECORATIONS;
+            hints.decorations = 0;
+            setXProperty("_MOTIF_WM_HINTS", hints);
+
+            Atom props[] = {
+                XInternAtom(mDisplay, "_NET_WM_STATE_FULLSCREEN", False),
+                XInternAtom(mDisplay, "_NET_WM_STATE_ABOVE", False),
+                None
+            };
+            setXProperty("_NET_WM_STATE", props);
+
+            gLog.info("hints size %zu, state size %zu", sizeof(hints), sizeof(props));
+        } else {
+            newSize = mSize;
+
+            Atom props[] = { None };
+            setXProperty("_NET_WM_STATE", props);
+
+            struct MwmHints hints;
+            hints.flags = MWM_HINTS_DECORATIONS;
+            hints.decorations = MWM_FUNC_MOVE | MWM_FUNC_MINIMIZE | MWM_FUNC_CLOSE;
+            setXProperty("_MOTIF_WM_HINTS", hints);
+
+            gLog.info("hints size %zu, state size %zu", sizeof(hints), sizeof(props));
+        }
+
+        XMoveResizeWindow(mDisplay, mWindow, 0, 0, newSize.x, newSize.y);
 
         mFullscreen = fullscreen;
+        mRenderer.setViewport(0, 0, newSize.x, newSize.y);
         return true;
     }
 
-    const Vec2i Window::getSize()
+    Vec2i Window::getSize() const
     {
         XWindowAttributes attribs;
         XGetWindowAttributes(mDisplay, mWindow, &attribs);
@@ -206,12 +263,16 @@ namespace sb
             return false;
     }
 
-    bool Window::isOpened()
+    bool Window::isOpened() const
     {
         return mWindow != 0;
     }
 
-    bool Window::hasFocus()
+    bool Window::isFullscreen() const {
+        return mFullscreen;
+    }
+
+    bool Window::hasFocus() const
     {
         ::Window focused;
         int focusState;
